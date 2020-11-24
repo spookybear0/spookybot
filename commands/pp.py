@@ -1,8 +1,8 @@
 import requests
 
-def pp(*args):
+async def pp(ctx, args):
     final = ""
-    r = requests.get(url=f"https://osu.spookybear.xyz/letsapi/v1/pp?b={args[0][1]}").json()
+    r = requests.get(url=f"https://osu.spookybear.xyz/letsapi/v1/pp?b={args[1]}").json()
     pp = r["pp"]
     for i in range(4):
         j = i+1

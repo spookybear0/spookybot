@@ -16,15 +16,18 @@ class SpookyBot(osu_irc.Client):
     async def onMessage(self, msg):
         print(msg.content)
         if msg.is_private:
-            print(msg.user_name + " " +  msg.content)
             args = parse_args(msg.content)
-            responce = parse_commands(args)
+            ctx = {
+                "message": msg,
+                "msg": msg,
+                "username": msg.user_name
+            }
+            responce = await parse_commands(args, ctx)
             if responce: # only send if command detected
                 await self.sendPM(msg.user_name, str(responce))
                 print("Sent "+ msg.user_name + " this \"" + str(responce) + "\"")
             elif msg.content.startswith("is"):
                 all = re.findall(r"is playing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is listening to \[https://osu\.ppy\.sh/b/([0-9]+) .*\]", str(msg.content))
-                print(all)
                 await self.sendPM(msg.user_name, pp(all[0][1]))
 
 if __name__ == "__main__":
