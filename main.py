@@ -27,6 +27,7 @@ class SpookyBot(osu_irc.Client):
                 await self.sendPM(msg.user_name, str(responce))
                 print("Sent "+ msg.user_name + " this \"" + str(responce) + "\"")
             elif msg.content.startswith("is"):
+                # get /np
                 all = re.findall(r"is playing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is listening to \[https://osu\.ppy\.sh/b/([0-9]+) .*\]", str(msg.content))
                 await self.sendPM(msg.user_name, pp(all[0][1]))
 

@@ -1,10 +1,28 @@
-import os, pyosu
+import pyosu, os, asyncio, time
 
 path = os.path.dirname(os.path.realpath(__file__))
 
-token = open(path + "/../token", "r").read()
-
 api = pyosu.OsuApi(open(path + "/../osuapikey", "r").read())
+
+modes = {
+    "osu": 0,
+    "osu!": 0,
+    "osu!std": 0,
+    "standard": 0,
+    "osu!standard": 0,
+    "taiko": 1,
+    "osu!taiko": 1,
+    "ctb": 2,
+    "catch": 2,
+    "osu!ctb": 2,
+    "osu!catch": 2,
+    "mania": 3,
+    "osu!mania": 3,
+    "0": 0,
+    "1": 1,
+    "2": 2,
+    "3": 3
+}
 
 def num_to_mod(number):
     number = int(number)
@@ -36,21 +54,32 @@ def num_to_mod(number):
 
     return mod_list
 
-async def recent(ctx, args):
+async def top(ctx, args):
     try:
-        username = args[1]
+        amount = int(args[1])
+    except IndexError:
+        amount = 1
+    else:
+        if amount > 5:
+            amount = 5
+    try:
+        username = args[2]
     except IndexError:
         username = ctx["username"]
     try:
-        mode = args[2]
+        mode = modes.get(args[3]) # switch statement (None if not True)
     except IndexError:
         mode = 0
-    recent = await api.get_user_recent(username, mode, "string")
-    map = await api.get_beatmap(beatmap_id=recent.beatmap_id)
-    perfect = ""
-    if not recent.perfect:
-        perfect = "| PERFECT"
-    # pp calc
-    pp = await api.get_score(map.beatmap_id, user=username)
-    pp = round(pp.pp, 1)
-    return f"{map.artist} - {map.title} [{map.version}] {num_to_mod(recent.enabled_mods)} *{round(map.difficultyrating, 2)} | {recent.rank} | {pp}pp | {int(recent.score)} | {recent.maxcombo} | {recent.count300} x 300, {recent.count100} x 100, {recent.count50} x 50, {recent.countmiss} miss {perfect}"
+    if amount == 1:
+        best = await api.get_user_best(username, mode, "string")
+        map = await api.get_beatmap(beatmap_id=best.beatmap_id)
+        perfect = ""
+        if not best.perfect:
+            perfect = "| PERFECT"
+        return f"{map.artist} - {map.title} [{map.version}] {num_to_mod(best.enabled_mods)} *{round(map.difficultyrating, 2)} | {best.rank} | {best.pp}pp | {int(best.score)} | {best.maxcombo} | {best.count300} x 300, {best.count100} x 100, {best.count50} x 50, {best.countmiss} miss {perfect}"
+    else:
+        return "Getting multiple top plays isn't supported yet, check back later."
+        bests = await api.get_user_bests(username, mode, "string", amount)
+
+resp = asyncio.run(top({"username": "spookybear0"}, ["!top", 1, "spookybear0", "osu"]))
+print(resp)
