@@ -8,11 +8,11 @@ async def parse_commands(args: list, ctx: dict):
         args.pop(1)
         for name, handler in commands.items():
             if args[0].startswith(name):
-                try:
-                    msg = await handler(args, ctx)
-                except Exception as e:
-                    print(f"Error in command {name}. Error: {e}")
-                    return f"Error in command {name}."
+                #try:
+                msg = await handler(ctx, args)
+                #except Exception as e:
+                #    print(f"Error in command {name}. Error: {e}")
+                #    return f"Error in command {name}."
                 if msg:
                     return msg
 
@@ -20,5 +20,6 @@ commands = {
     "pp": commands.pp,
     "ping": commands.ping,
     "recent": commands.recent,
-    "getuser": commands.getuser
+    "user": commands.user,
+    "rank": commands.rank
 }
