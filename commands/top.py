@@ -70,6 +70,9 @@ async def top(ctx, args):
         mode = modes.get(args[3]) # switch statement (None if not True)
     except IndexError:
         mode = 0
+    else:
+        if not mode:
+            mode = 0
     if amount == 1:
         best = await api.get_user_best(username, mode, "string")
         map = await api.get_beatmap(beatmap_id=best.beatmap_id)
@@ -80,6 +83,3 @@ async def top(ctx, args):
     else:
         return "Getting multiple top plays isn't supported yet, check back later."
         bests = await api.get_user_bests(username, mode, "string", amount)
-
-resp = asyncio.run(top({"username": "spookybear0"}, ["!top", 1, "spookybear0", "osu"]))
-print(resp)

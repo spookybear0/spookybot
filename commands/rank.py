@@ -1,8 +1,8 @@
-import requests, asyncio
+import requests
 
 def to_int(x):
     final = 0
-    num_map = {'K':1000, 'M':1000000, 'B':1000000000}
+    num_map = {"K":1000, "M":1000000, "B":1000000000}
     if x.isdigit():
         final = int(x)
     else:
