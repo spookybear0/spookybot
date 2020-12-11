@@ -21,5 +21,7 @@ commands = {
     "ping": commands.ping,
     "recent": commands.recent,
     "user": commands.user,
-    "rank": commands.rank
+    "rank": commands.rank,
+    "top": commands.top,
+    "help": commands.help
 }
