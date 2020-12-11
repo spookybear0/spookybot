@@ -1,4 +1,4 @@
-import pyosu, os, asyncio, time
+import pyosu, os
 
 path = os.path.dirname(os.path.realpath(__file__))
 

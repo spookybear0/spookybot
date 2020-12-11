@@ -1,7 +1,7 @@
 from helpers.parse import parse_args
 from helpers.command import parse_commands
 from helpers.np import pp
-import osu_irc, os, requests, re
+import osu_irc, os, re
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -14,10 +14,9 @@ class SpookyBot(osu_irc.Client):
         print("SpookyBot is ready!")
 
     async def onMessage(self, msg):
-        print(msg.content)
         if msg.is_private:
             args = parse_args(msg.content)
-            ctx = {
+            ctx = { # context object to send
                 "message": msg,
                 "msg": msg,
                 "username": msg.user_name
