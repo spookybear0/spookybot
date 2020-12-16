@@ -3,7 +3,7 @@ import requests
 async def pp(ctx, args):
     map = args[1]
     final = ""
-    r = requests.get(url=f"https://osu.spookybear.xyz/letsapi/v1/pp?b={map}").json()
+    r = requests.get(url=f"https://ripple.moe/letsapi/v1/pp?b={map}").json()
     pp = r["pp"]
     for i in range(4):
         j = i+1
