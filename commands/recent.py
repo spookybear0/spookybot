@@ -49,7 +49,7 @@ async def download_file(url, filename):
                     f.write(chunk)
             return await response.release()
 
-async def py_oppai(map_id:str, accs=[100], mods=0, misses=0, combo=None, completion=None, fc=None, plot = False, imgur = None):
+async def py_oppai(map_id:str, accs=[100], mods=0, misses=0, combo=None, fc=None):
     url = 'https://osu.ppy.sh/osu/{}'.format(map_id)
 
     # try:
@@ -132,13 +132,17 @@ async def recent(ctx, args):
         mode = 0
     recent = await api.get_user_recent(username, mode, "string")
     map = await api.get_beatmap(beatmap_id=recent.beatmap_id)
+    acc = (recent.count300 + (recent.count100/3) + (recent.count50/6))/map.max_combo
     perfect = ""
     if not recent.perfect:
         perfect = "| PERFECT"
     # pp calc
     if recent.rank == "F":
-        pp = await py_oppai()
+        try:
+            pp = await py_oppai(recent.map_id, acc, mods=recent.mods, misses=recent.misses, combo=recent.maxcombo, fc=recent.perfect)["pp"]
+        except:
+            pp = "pp unavailable"
     else: 
         pp = await api.get_score(map.beatmap_id, user=username)
         pp = round(pp.pp, 1)
-    return f"{map.artist} - {map.title} [{map.version}] {num_to_mod(recent.enabled_mods)} *{round(map.difficultyrating, 2)} | {recent.rank} | {pp}pp | {int(recent.score)} | {recent.maxcombo} | {recent.count300} x 300, {recent.count100} x 100, {recent.count50} x 50, {recent.countmiss} miss {perfect}"
+    return f"{map.artist} - {map.title} [{map.version}] {num_to_mod(recent.enabled_mods)} {acc}% *{round(map.difficultyrating, 2)} | {recent.rank} | {pp}pp | {int(recent.score)} | {recent.maxcombo} | {recent.count300} x 300, {recent.count100} x 100, {recent.count50} x 50, {recent.countmiss} miss {perfect}"
