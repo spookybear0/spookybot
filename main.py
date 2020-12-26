@@ -10,15 +10,13 @@ prefix = "!"
 token = open(path + "/token", "r").read()
 nickname = "spookybear0"
 
-def callback(until):
-    print("Rate limited: " + until)
-
 class SpookyBot(osu_irc.Client):
     async def onReady(self):
         print("SpookyBot is ready!")
 
-    @RateLimiter(max_calls=10, period=5, callback=callback)
+    @RateLimiter(max_calls=10, period=5)
     async def onMessage(self, msg):
+        print("msg")
         if msg.is_private:
             args = parse_args(msg.content)
             ctx = { # context object to send
