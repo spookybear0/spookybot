@@ -2,6 +2,7 @@ from helpers.parse import parse_args
 from helpers.command import parse_commands
 from helpers.np import pp
 import osu_irc, os, re
+from ratelimiter import RateLimiter
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -9,10 +10,14 @@ prefix = "!"
 token = open(path + "/token", "r").read()
 nickname = "spookybear0"
 
+def callback(until):
+    print("Rate limited: " + until)
+
 class SpookyBot(osu_irc.Client):
     async def onReady(self):
         print("SpookyBot is ready!")
 
+    @RateLimiter(max_calls=10, period=5, callback=callback)
     async def onMessage(self, msg):
         if msg.is_private:
             args = parse_args(msg.content)
