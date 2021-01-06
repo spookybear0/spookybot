@@ -1,4 +1,4 @@
-import requests, asyncio
+import requests
 
 async def pp(ctx, args):
     map = args[1]
@@ -10,5 +10,3 @@ async def pp(ctx, args):
         final += f" {i+97}%: {round(pp[i], 2)}pp |"
     final = r["song_name"] + " | " + final + " *" + str(r["stars"]) + " | BPM " + str(r["bpm"]) + " | AR" + str(r["ar"])
     return final
-
-asyncio.run(pp({}, [0, 2617250]))

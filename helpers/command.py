@@ -23,5 +23,7 @@ commands = {
     "user": commands.user,
     "rank": commands.rank,
     "top": commands.top,
-    "help": commands.help
+    "help": commands.help,
+    "bugreport": commands.bugreport,
+    "github": commands.github
 }
