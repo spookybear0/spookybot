@@ -5,3 +5,5 @@ from .user import user
 from .rank import rank
 from .top import top
 from .help import help
+from .github import github
+from .bugreport import bugreport
