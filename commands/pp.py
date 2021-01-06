@@ -7,6 +7,8 @@ async def pp(ctx, args):
     pp = r["pp"]
     pp.reverse()
     for i in range(4):
-        final += f" {i+97}%: {pp[i]}pp |"
+        final += f" {i+97}%: {round(pp[i], 2)}pp |"
     final = r["song_name"] + " | " + final + " *" + str(r["stars"]) + " | BPM " + str(r["bpm"]) + " | AR" + str(r["ar"])
     return final
+
+asyncio.run(pp({}, [0, 2617250]))
