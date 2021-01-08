@@ -1,4 +1,4 @@
-import requests, asyncio
+import requests
 
 def to_int(x):
     final = 0
@@ -10,7 +10,7 @@ def to_int(x):
             final = float(x[:-1]) * num_map.get(x[-1].upper(), 1)
     return int(final)
 
-async def rank(ctx, args):
+async def rank(ctx, args, test=False):
     try:
         pprank = args[1]
     except IndexError:
@@ -27,7 +27,6 @@ async def rank(ctx, args):
         t = "pp"
         pprank = pprank.replace("p", "")
         pprank = pprank.replace("p", "")
-        print(pprank)
         pprank = to_int(pprank)
     else:
         try:
@@ -47,7 +46,13 @@ async def rank(ctx, args):
             except Exception:
                 pass
     r = requests.get(f"https://osudaily.net/data/getPPRank.php?t={t}&v={pprank}&m=0")
-    if t == "pp":
-        return f"You need {pprank}pp to be #{r.text}."
-    elif t == "rank":
-        return f"You need {r.text}pp to be rank {args[1]} (#{pprank})."
+    if test:
+        if t == "pp":
+            return int(r.text)
+        elif t == "rank":
+            return int(r.text)
+    else:
+        if t == "pp":
+            return f"You need {pprank}pp to be #{r.text}."
+        elif t == "rank":
+            return f"You need {r.text}pp to be rank {args[1]} (#{pprank})."
