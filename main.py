@@ -1,7 +1,7 @@
 from helpers.parse import parse_args
 from helpers.command import parse_commands
 from helpers.np import pp
-import osu_irc, os, re
+import osu_irc, os, re, json
 from ratelimiter import RateLimiter
 
 path = os.path.dirname(os.path.realpath(__file__))
@@ -9,6 +9,12 @@ path = os.path.dirname(os.path.realpath(__file__))
 prefix = "!"
 token = open(path + "/token", "r").read()
 nickname = "spookybear0"
+
+try:
+    users = json.load(open(path + "/unique_users.txt", "r"))
+except FileNotFoundError:
+    users = list()
+    json.dump(users, open(path + "/unique_users.txt", "w"))
 
 def can_be_int(num):
     try:
@@ -34,6 +40,7 @@ class SpookyBot(osu_irc.Client):
             }
             responce = await parse_commands(args, ctx)
             if responce: # only send if command detected
+                users.append(msg.user_name)
                 await self.sendPM(msg.user_name, str(responce))
                 print("Sent " + msg.user_name + " this \"" + str(responce) + "\"")
             elif msg.content.startswith("is"):
@@ -66,3 +73,6 @@ if __name__ == "__main__":
         pass
     except KeyboardInterrupt:
         pass
+    finally:
+        users = list(dict.fromkeys(users))
+        json.dump(users, open(path + "/unique_users.txt", "w"))
