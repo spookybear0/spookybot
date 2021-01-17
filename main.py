@@ -65,14 +65,15 @@ class SpookyBot(osu_irc.Client):
                 await self.sendPM(msg.user_name, pp(bid))
 
 if __name__ == "__main__":
-    spookybot = SpookyBot(token=token, nickname=nickname)
-    try:
-        print("Starting SpookyBot")
-        spookybot.run()
-    except RuntimeError:
-        pass
-    except KeyboardInterrupt:
-        pass
-    finally:
-        users = list(dict.fromkeys(users))
-        json.dump(users, open(path + "/unique_users.txt", "w"))
+    while True:
+        spookybot = SpookyBot(token=token, nickname=nickname)
+        try:
+            print("Starting SpookyBot")
+            spookybot.run()
+        except RuntimeError:
+            pass
+        except KeyboardInterrupt:
+            pass
+        finally:
+            users = list(dict.fromkeys(users))
+            json.dump(users, open(path + "/unique_users.txt", "w"))
