@@ -29,8 +29,10 @@ class SpookyBot(osu_irc.Client):
 
     @RateLimiter(max_calls=10, period=5)
     async def onMessage(self, msg):
-        print("msg")
         if msg.is_private:
+            print("msg")
+            userdump = list(dict.fromkeys(users))
+            json.dump(userdump, open(path + "/unique_users.txt", "w"))
             args = parse_args(msg.content)
             ctx = { # context object to send
                 "message": msg,
