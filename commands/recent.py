@@ -125,11 +125,13 @@ async def recent(ctx, args):
     try:
         username = args[1]
     except IndexError:
-        username = ctx["username"]
+        username = ctx.username
+        
     try:
         mode = args[2]
     except IndexError:
         mode = 0
+        
     recent = await api.get_user_recent(username, mode, "string")
     map = await api.get_beatmap(beatmap_id=recent.beatmap_id)
     acc = (recent.count300 + (recent.count100/3) + (recent.count50/6))/map.max_combo

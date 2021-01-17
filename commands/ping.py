@@ -1,3 +1,3 @@
 
-async def ping(*args):
+async def ping(ctx, args):
     return "Pong!"

@@ -15,10 +15,12 @@ async def rank(ctx, args, test=False):
         pprank = args[1]
     except IndexError:
         return "Invalid arguments."
+    
     try:
         type = args[2]
     except IndexError:
         type = None
+        
     t = "pp"
     if type == "rank":
         t = "rank"
@@ -28,24 +30,25 @@ async def rank(ctx, args, test=False):
         pprank = pprank.replace("p", "")
         pprank = pprank.replace("p", "")
         pprank = to_int(pprank)
+        
     else:
         try:
             pprank = int(pprank)
         except ValueError: # is str
             if pprank.endswith("pp"):
-                pprank = pprank.replace("p", "")
-                pprank = pprank.replace("p", "")
+                pprank = pprank.replace("pp", "")
                 pprank = to_int(pprank)
             else:
                 t = "rank"
                 pprank = to_int(pprank)
         else:
             try:
-                pprank = pprank.replace("p", "")
-                pprank = pprank.replace("p", "")
+                pprank = pprank.replace("pp", "")
             except Exception:
                 pass
+            
     r = requests.get(f"https://osudaily.net/data/getPPRank.php?t={t}&v={pprank}&m=0")
+    
     if test:
         if t == "pp":
             return int(r.text)
@@ -53,6 +56,6 @@ async def rank(ctx, args, test=False):
             return int(r.text)
     else:
         if t == "pp":
-            return f"You need {pprank}pp to be #{r.text}."
+            return f"You need rank #{r.text} to have {pprank}pp."
         elif t == "rank":
             return f"You need {r.text}pp to be rank {args[1]} (#{pprank})."

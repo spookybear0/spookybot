@@ -8,7 +8,7 @@ async def user(ctx, args):
     try:
         username = args[1]
     except IndexError:
-        username = ctx["username"]
+        username = ctx.username
     try:
         mode = args[2]
     except IndexError:

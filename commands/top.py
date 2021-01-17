@@ -65,7 +65,7 @@ async def top(ctx, args):
     try:
         username = args[2]
     except IndexError:
-        username = ctx["username"]
+        username = ctx.username
     try:
         mode = modes.get(args[3]) # switch statement (None if not True)
     except IndexError:

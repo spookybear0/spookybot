@@ -1,7 +1,8 @@
 from helpers.parse import parse_args
 from helpers.command import parse_commands
-from helpers.np import pp
-import osu_irc, os, re, json
+from helpers.np import pp, mod_to_num
+from helpers.classify import Classify
+import osu_irc, os, re, json, time
 from ratelimiter import RateLimiter
 
 path = os.path.dirname(os.path.realpath(__file__))
@@ -27,30 +28,38 @@ class SpookyBot(osu_irc.Client):
     async def onReady(self):
         print("SpookyBot is ready!")
 
-    @RateLimiter(max_calls=10, period=5)
     async def onMessage(self, msg):
         if msg.is_private:
             print("msg")
-            userdump = list(dict.fromkeys(users))
-            json.dump(userdump, open(path + "/unique_users.txt", "w"))
             args = parse_args(msg.content)
-            ctx = { # context object to send
-                "message": msg,
-                "msg": msg,
+            ctx = Classify({ # context object to send to command
+                "message": msg, # message object
+                "msg": msg, # alias to message
                 "username": msg.user_name,
-                "content": msg.content
-            }
+                "content": msg.content # raw message contents (not parsed)
+            })
             responce = await parse_commands(args, ctx)
             if responce: # only send if command detected
-                users.append(msg.user_name)
-                await self.sendPM(msg.user_name, str(responce))
-                print("Sent " + msg.user_name + " this \"" + str(responce) + "\"")
+                @RateLimiter(max_calls=10, period=5)
+                async def send_msg():
+                    users.append(msg.user_name)
+                    userdump = list(dict.fromkeys(users))
+                    json.dump(userdump, open(path + "/unique_users.txt", "w"))
+                    await self.sendPM(msg.user_name, str(responce))
+                    print("Sent " + msg.user_name + " this \"" + str(responce) + "\"")
+                await send_msg()
             elif msg.content.startswith("is"):
                 # get /np
+                users.append(msg.user_name)
+                userdump = list(dict.fromkeys(users))
+                json.dump(userdump, open(path + "/unique_users.txt", "w"))
                 all = re.findall(r"is playing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)|is listening to \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is editing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is watching \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)",
                 str(msg.content))
                 mods = ""
-                bid = 0
+                bid = 0 # beatmap id
+                
+                # this thing of how to find mods
+                
                 if all[0][0] != "" and can_be_int(all[0][0]): bid = int(all[0][0])
                 elif all[0][0] != "": mods = all[0][0]
                 if all[0][1] != "" and can_be_int(all[0][1]): bid = int(all[0][1])
@@ -63,8 +72,10 @@ class SpookyBot(osu_irc.Client):
                 elif all[0][4] != "": mods = all[0][4]
                 if all[0][5] != "" and can_be_int(all[0][4]): bid = int(all[0][5])
                 elif all[0][5] != "": mods = all[0][5]
-                mods = mods[1:]
-                await self.sendPM(msg.user_name, pp(bid))
+                
+                mods = mod_to_num(mods[1:])
+                
+                await self.sendPM(msg.user_name, pp(bid, mods))
 
 if __name__ == "__main__":
     while True:
@@ -79,3 +90,4 @@ if __name__ == "__main__":
         finally:
             users = list(dict.fromkeys(users))
             json.dump(users, open(path + "/unique_users.txt", "w"))
+        time.sleep(10)
