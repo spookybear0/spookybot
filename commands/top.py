@@ -79,7 +79,8 @@ async def top(ctx, args):
         perfect = ""
         if not best.perfect:
             perfect = "| PERFECT"
-        return f"{map.artist} - {map.title} [{map.version}] {num_to_mod(best.enabled_mods)} *{round(map.difficultyrating, 2)} | {best.rank} | {best.pp}pp | {int(best.score)} | {best.maxcombo} | {best.count300} x 300, {best.count100} x 100, {best.count50} x 50, {best.countmiss} miss {perfect}"
+        acc = (best.count300 + (best.count100/3) + (best.count50/6))/map.max_combo
+        return f"{map.artist} - {map.title} [{map.version}] {round(acc, 2)}% {num_to_mod(best.enabled_mods)} {round(map.difficultyrating, 2)}* | {best.rank} | {best.pp}pp | {int(best.score)} | {best.maxcombo} | {best.count300} x 300, {best.count100} x 100, {best.count50} x 50, {best.countmiss} miss {perfect}"
     else:
         return "Getting multiple top plays isn't supported yet, check back later."
         bests = await api.get_user_bests(username, mode, "string", amount)
