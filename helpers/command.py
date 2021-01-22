@@ -1,6 +1,7 @@
-import commands
+import os
 
 prefix = "!"
+realpath = os.path.dirname(os.path.realpath(__file__))
 
 async def parse_commands(args: list, ctx: dict):
     if args[0].startswith(prefix):
@@ -16,14 +17,10 @@ async def parse_commands(args: list, ctx: dict):
                 if msg:
                     return msg
 
-commands = {
-    "pp": commands.pp,
-    "ping": commands.ping,
-    "recent": commands.recent,
-    "user": commands.user,
-    "rank": commands.rank,
-    "top": commands.top,
-    "help": commands.help,
-    "bugreport": commands.bugreport,
-    "github": commands.github
-}
+commands = {}
+
+# get all commands dynamicly
+for f in os.listdir(realpath + "\\..\\commands"): # commands folder
+    if f.endswith(".py") and f != "__init__.py" and f != os.path.isdir(f):
+        name = f.replace(".py", "")
+        commands[name] = getattr(__import__(f"commands.{name}"), name)
