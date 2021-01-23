@@ -18,3 +18,5 @@ async def user(ctx, args):
         return f"{username} has {u.pp_raw}pp and is rank #{u.pp_rank} globally and #{u.pp_country_rank} rank in {u.country}."
     except AttributeError:
         return "User not found!"
+    
+aliases = ["osu"]

@@ -11,3 +11,5 @@ async def bugreport(ctx, args):
     f.write(bug + "\n")
     f.close()
     return "Bug report submitted! Remember, if you want your bug report to go faster, create an issue on github (!github)"
+
+aliases = ["br"]
