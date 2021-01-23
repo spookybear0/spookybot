@@ -2,12 +2,16 @@ import requests
 
 def pp(map, mods=0):
     final = ""
-    r = requests.get(url=f"https://ripple.moe/letsapi/v1/pp?b={map}&m={mods}").json()
-    pp = r["pp"]
+    r = requests.get(url=f"https://ripple.moe/letsapi/v1/pp?b={map}&m={mods}").json() # ripple api to get pp
+    try:
+        pp = r["pp"]
+    except KeyError: # gamemode not supported
+        final += "Only osu!standard is supported for pp.\n"
+        pp = 0.00
     pp.reverse()
     for i in range(4):
         final += f" {i+97}%: {round(pp[i], 2)}pp |"
-    final = r["song_name"] + " | " + final + " *" + str(round(r["stars"], 2)) + " | BPM " + str(r["bpm"]) + " | AR " + str(r["ar"])
+    final += r["song_name"] + " | " + final + " *" + str(round(r["stars"], 2)) + " | BPM " + str(r["bpm"]) + " | AR " + str(r["ar"])
     return final
 
 def mod_to_num(mods):

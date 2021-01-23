@@ -30,7 +30,6 @@ class SpookyBot(osu_irc.Client):
 
     async def onMessage(self, msg):
         if msg.is_private:
-            print("msg")
             args = parse_args(msg.content)
             ctx = Classify({ # context object to send to command
                 "message": msg, # message object
@@ -75,7 +74,10 @@ class SpookyBot(osu_irc.Client):
                 
                 mods = mod_to_num(mods[1:])
                 
-                await self.sendPM(msg.user_name, pp(bid, mods))
+                result = pp(bid, mods).split("\n")
+                
+                for r in result:
+                    await self.sendPM(msg.user_name, r)
 
 if __name__ == "__main__":
     while True:
