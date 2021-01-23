@@ -20,7 +20,18 @@ async def parse_commands(args: list, ctx: dict):
 commands = {}
 
 # get all commands dynamicly
-for f in os.listdir(realpath + "\\..\\commands"): # commands folder
-    if f.endswith(".py") and f != "__init__.py" and f != os.path.isdir(f):
-        name = f.replace(".py", "")
-        commands[name] = getattr(__import__(f"commands.{name}"), name)
+if os.name == "nt":
+    for f in os.listdir(realpath + "\\..\\commands"): # commands folder
+        if f.endswith(".py") and f != "__init__.py" and f != os.path.isdir(f):
+            name = f.replace(".py", "")
+            commands[name] = getattr(__import__(f"commands.{name}"), name)
+elif os.name == "posix":
+    for f in os.listdir(realpath + "/../commands"): # commands folder
+        if f.endswith(".py") and f != "__init__.py" and f != os.path.isdir(f):
+            name = f.replace(".py", "")
+            commands[name] = getattr(__import__(f"commands.{name}"), name)
+else:
+    for f in os.listdir(realpath + "/../commands"): # commands folder
+        if f.endswith(".py") and f != "__init__.py" and f != os.path.isdir(f):
+            name = f.replace(".py", "")
+            commands[name] = getattr(__import__(f"commands.{name}"), name)
