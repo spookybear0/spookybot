@@ -1,4 +1,4 @@
-import unittest, asyncio
+import unittest, asyncio, os
 from commands import rank, github, help, ping, pp, recent, top, user
 from ratelimiter import RateLimiter
         
@@ -64,13 +64,13 @@ class TestRank(unittest.TestCase):
 class TestRecent(unittest.TestCase):
     def test_if_fail(self):
         try:
-            r = asyncio.run(recent.recent({}, ["!recent", "WhiteCat"]))
+            r = asyncio.run(recent.recent({}, ["!recent", "WhiteCat"], os.getenv("OSUAPIKEY")))
         except Exception as e:
             try:
-                r = asyncio.run(recent.recent({}, ["!recent", "Vaxei"]))
+                r = asyncio.run(recent.recent({}, ["!recent", "Vaxei"], os.getenv("OSUAPIKEY")))
             except Exception as e:
                 try:
-                    r = asyncio.run(recent.recent({}, ["!recent", "BTMC"]))
+                    r = asyncio.run(recent.recent({}, ["!recent", "BTMC"], os.getenv("OSUAPIKEY")))
                 except Exception as e:
                     self.fail(e)
 
@@ -79,7 +79,7 @@ class TestRecent(unittest.TestCase):
 class TestTop(unittest.TestCase):
     def test_if_fail(self):
         try:
-            r = asyncio.run(top.top({}, ["!top", "1", "WhiteCat"]))
+            r = asyncio.run(top.top({}, ["!top", "1", "WhiteCat"], os.getenv("OSUAPIKEY")))
         except Exception as e:
             self.fail(e)
             
@@ -88,7 +88,7 @@ class TestTop(unittest.TestCase):
 class TestUser(unittest.TestCase):
     def test_if_fail(self):
         try:
-            r = asyncio.run(user.user({}, ["!user", "peppy"]))
+            r = asyncio.run(user.user({}, ["!user", "peppy"], os.getenv("OSUAPIKEY")))
         except Exception as e:
             self.fail(e)
 
