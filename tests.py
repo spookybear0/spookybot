@@ -63,7 +63,6 @@ class TestRank(unittest.TestCase):
 
 class TestRecent(unittest.TestCase):
     def test_if_fail(self):
-        return # api key not working
         try:
             r = asyncio.run(recent.recent({}, ["!recent", "WhiteCat"]))
         except Exception as e:
@@ -79,7 +78,6 @@ class TestRecent(unittest.TestCase):
 
 class TestTop(unittest.TestCase):
     def test_if_fail(self):
-        return # api key not working
         try:
             r = asyncio.run(top.top({}, ["!top", "1", "WhiteCat"]))
         except Exception as e:
@@ -89,7 +87,6 @@ class TestTop(unittest.TestCase):
 
 class TestUser(unittest.TestCase):
     def test_if_fail(self):
-        return # api key not working
         try:
             r = asyncio.run(user.user({}, ["!user", "peppy"]))
         except Exception as e:
