@@ -26,8 +26,9 @@ async def parse_commands(args: list, ctx):
                             return f"Error in command {name}. Report this to spookybear0."
                         if msg:
                             return msg
-                # no commands matched
-                return "Unknown command, type !help to get a list of commands!"
+                continue
+        return "Unknown command!"
+        
                 
 
 commands = {}
@@ -49,4 +50,5 @@ for f in os.listdir(realpath + f"{divider}..{divider}commands"): # commands fold
                 aliases = getattr(getattr(command, "recommend"), "aliases")
             except AttributeError:
                 aliases = []
+
             commands[name] = {"handler": getattr(getattr(command, name), name), "aliases": aliases}
