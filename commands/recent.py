@@ -4,7 +4,7 @@ path = os.path.dirname(os.path.realpath(__file__))
 
 key = open(path + "/../osuapikey", "r").read()
 for k in key:
-    print(k)
+    print(k, end="")
 
 api = pyosu.OsuApi()
 
