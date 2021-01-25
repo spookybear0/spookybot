@@ -29,35 +29,35 @@ class TestPP(unittest.TestCase):
 class TestRank(unittest.TestCase):
     def test_manual_type_pp(self):
         r = asyncio.run(rank.rank({}, ["!rank", "100", "pp"], True))
-        self.assertLess(2023918, r)
+        self.assertGreater(2023918, r)
         
     def test_manual_type_pp2(self):
         r = asyncio.run(rank.rank({}, ["!rank", "200pp", "pp"], True))
-        self.assertLess(1503935, r)
+        self.assertGreater(1503935, r)
         
     def test_manual_type_pp_str(self):
         r = asyncio.run(rank.rank({}, ["!rank", "1k", "pp"], True))
-        self.assertLess(573709, r)
+        self.assertGreater(573709, r)
         
     def test_manual_type_pp_str2(self):
         r = asyncio.run(rank.rank({}, ["!rank", "1kpp", "pp"], True))
-        self.assertLess(573709, r)
+        self.assertGreater(573709, r)
     
     def test_manual_type_rank(self):
         r = asyncio.run(rank.rank({}, ["!rank", "300k", "rank"], True))
-        self.assertLess(1971, r)
+        self.assertGreater(1971, r)
         
     def test_manual_type_rank2(self):
         r = asyncio.run(rank.rank({}, ["!rank", "300000", "rank"], True))
-        self.assertLess(1971, r, 1000)
+        self.assertGreater(1971, r, 1000)
         
     def test_rank_str(self):
         r = asyncio.run(rank.rank({}, ["!rank", "1k"], True))
-        self.assertLess(10492, r, 1000)
+        self.assertGreater(10492, r, 1000)
         
     def test_rank_pp_str(self):
         r = asyncio.run(rank.rank({}, ["!rank", "1kpp"], True))
-        self.assertLess(573709, r, 1000)
+        self.assertGreater(573709, r, 1000)
         
 # recent can't have real tests as it depends on a recent play
 
@@ -66,7 +66,13 @@ class TestRecent(unittest.TestCase):
         try:
             r = asyncio.run(recent.recent({}, ["!recent", "WhiteCat"]))
         except Exception as e:
-            self.fail(e)
+            try:
+                r = asyncio.run(recent.recent({}, ["!recent", "Vaxei"]))
+            except Exception as e:
+                try:
+                    r = asyncio.run(recent.recent({}, ["!recent", "BTMC"]))
+                except Exception as e:
+                    self.fail(e)
 
 # top play test will be made later (maybe I will use peppys)
 
