@@ -55,6 +55,7 @@ def num_to_mod(number):
     return mod_list
 
 async def top(ctx, args):
+    print(os.getenv("OSUAPIKEY"))
     api = pyosu.OsuApi(os.getenv("OSUAPIKEY"))
     try:
         amount = int(args[1])
