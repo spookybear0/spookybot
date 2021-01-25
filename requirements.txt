@@ -1,4 +1,3 @@
 git+https://github.com/The-CJ/osu_irc.py.git#egg=osu_irc
 pyosu
 ratelimiter
-pyoppai
