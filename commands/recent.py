@@ -120,6 +120,7 @@ async def py_oppai(map_id:str, accs=[100], mods=0, misses=0, combo=None, fc=None
 # end from owo bot
 
 async def recent(ctx, args):
+    api = pyosu.OsuApi(os.getenv("OSUAPIKEY"))
     try:
         username = args[1]
     except IndexError:
@@ -148,4 +149,4 @@ async def recent(ctx, args):
     mods = " ".join(num_to_mod(recent.enabled_mods))
     return f"{map.artist} - {map.title} [{map.version}] +{mods} {round(acc, 2)}% *{round(map.difficultyrating, 2)} | {recent.rank} | {pp}pp | {int(recent.score)} | {recent.maxcombo} | {recent.count300} x 300, {recent.count100} x 100, {recent.count50} x 50, {recent.countmiss} miss {perfect}"
 
-aliases = ["rs"]
+aliases = ["rs", "replay", "last"]
