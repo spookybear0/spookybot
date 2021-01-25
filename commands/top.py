@@ -2,8 +2,6 @@ import pyosu, os
 
 path = os.path.dirname(os.path.realpath(__file__))
 
-api = pyosu.OsuApi(open(path + "/../osuapikey", "r").read())
-
 modes = {
     "osu": 0,
     "osu!": 0,
@@ -55,9 +53,11 @@ def num_to_mod(number):
     return mod_list
 
 async def top(ctx, args):
-    global api
-    if not os.getenv("OSUAPIKEY"):
+    if os.getenv("OSUAPIKEY"):
         api = pyosu.OsuApi(os.getenv("OSUAPIKEY"))
+    else:
+        api = pyosu.OsuApi(open(path + "/../osuapikey", "r").read())
+
     try:
         amount = int(args[1])
     except IndexError:
