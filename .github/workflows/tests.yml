@@ -20,7 +20,7 @@ jobs:
         env:
           OSUAPIKEY: ${{ secrets.OSUAPIKEY }}
         run: |
-          sed "$OSUAPIKEY" osuapikey
+          echo "$OSUAPIKEY" > osuapikey
           python3 -m pip install aiohttp
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt -U
