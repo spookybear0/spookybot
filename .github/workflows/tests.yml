@@ -28,5 +28,5 @@ jobs:
         env:
           OSUAPIKEY: ${{ secrets.OSUAPIKEY }}
         run: |
-        echo "$OSUAPIKEY" > osuapikey
-        python3 tests.py 
+          echo "$OSUAPIKEY" > osuapikey
+          python3 tests.py 
