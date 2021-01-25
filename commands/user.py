@@ -2,9 +2,14 @@ import pyosu, os
 
 path = os.path.dirname(os.path.realpath(__file__))
 
-api = pyosu.OsuApi(open(path + "/../osuapikey", "r").read())
+key = open(path + "/../osuapikey", "r").read()
 
-async def user(ctx, args):
+async def user(ctx, args, keyw=None):
+    if keyw:
+        api = pyosu.OsuApi(keyw)
+    else:
+        api = pyosu.OsuApi(key)
+    
     try:
         username = args[1]
     except IndexError:
