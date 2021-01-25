@@ -2,3 +2,5 @@ git+https://github.com/The-CJ/osu_irc.py.git#egg=osu_irc
 pyosu
 ratelimiter
 aiohttp
+git+https://github.com/Renondedju/Osu.py
+git+https://github.com/Francesco149/oppai#egg=pyoppai&subdirectory=pyoppai
