@@ -17,10 +17,8 @@ jobs:
         with:
           python-version: 3.9
       - name: Install dependencies
-        env:
-          OSUAPIKEY: ${{ secrets.OSUAPIKEY }}
         run: |
-          echo "$OSUAPIKEY" > osuapikey
+          cat $HOME/secrets/my_secret.json >> osuapikey
           python3 -m pip install aiohttp
           python3 -m pip install --upgrade pip
           python3 -m pip install -r requirements.txt -U
