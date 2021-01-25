@@ -1,9 +1,9 @@
-import os
+import os, asyncio
 
 prefix = "!"
 realpath = os.path.dirname(os.path.realpath(__file__))
 
-async def parse_commands(args: list, ctx: dict):
+async def parse_commands(args: list, ctx):
     if args[0].startswith(prefix):
         args.insert(0, args[0].replace(prefix, ""))
         args.pop(1)
@@ -49,5 +49,4 @@ for f in os.listdir(realpath + f"{divider}..{divider}commands"): # commands fold
                 aliases = getattr(getattr(command, "recommend"), "aliases")
             except AttributeError:
                 aliases = []
-            
-            commands[name] = {"handler": getattr(command, name), "aliases": aliases}
+            commands[name] = {"handler": getattr(getattr(command, name), name), "aliases": aliases}
