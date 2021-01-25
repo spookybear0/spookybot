@@ -64,13 +64,13 @@ class TestRank(unittest.TestCase):
 class TestRecent(unittest.TestCase):
     def test_if_fail(self):
         try:
-            r = asyncio.run(recent.recent({}, ["!recent", "WhiteCat"], os.getenv("OSUAPIKEY")))
+            r = asyncio.run(recent.recent({}, ["!recent", "WhiteCat"]))
         except Exception as e:
             try:
-                r = asyncio.run(recent.recent({}, ["!recent", "Vaxei"], os.getenv("OSUAPIKEY")))
+                r = asyncio.run(recent.recent({}, ["!recent", "Vaxei"]))
             except Exception as e:
                 try:
-                    r = asyncio.run(recent.recent({}, ["!recent", "BTMC"], os.getenv("OSUAPIKEY")))
+                    r = asyncio.run(recent.recent({}, ["!recent", "BTMC"]))
                 except Exception as e:
                     self.fail(e)
 
@@ -79,7 +79,7 @@ class TestRecent(unittest.TestCase):
 class TestTop(unittest.TestCase):
     def test_if_fail(self):
         try:
-            r = asyncio.run(top.top({}, ["!top", "1", "WhiteCat"], os.getenv("OSUAPIKEY")))
+            r = asyncio.run(top.top({}, ["!top", "1", "WhiteCat"]))
         except Exception as e:
             self.fail(e)
             
@@ -88,7 +88,7 @@ class TestTop(unittest.TestCase):
 class TestUser(unittest.TestCase):
     def test_if_fail(self):
         try:
-            r = asyncio.run(user.user({}, ["!user", "peppy"], os.getenv("OSUAPIKEY")))
+            r = asyncio.run(user.user({}, ["!user", "peppy"]))
         except Exception as e:
             self.fail(e)
 

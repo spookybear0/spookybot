@@ -2,7 +2,7 @@ import os, pyosu, pyoppai, aiohttp
 
 path = os.path.dirname(os.path.realpath(__file__))
 
-key = open(path + "/../osuapikey", "r").read()
+api = pyosu.OsuApi(open(path + "/../osuapikey", "r").read())
 
 def num_to_mod(number):
     number = int(number)
@@ -119,12 +119,7 @@ async def py_oppai(map_id:str, accs=[100], mods=0, misses=0, combo=None, fc=None
 
 # end from owo bot
 
-async def recent(ctx, args, keyw=None):
-    if keyw:
-        api = pyosu.OsuApi(keyw)
-    else:
-        api = pyosu.OsuApi(key)
-    
+async def recent(ctx, args):
     try:
         username = args[1]
     except IndexError:
