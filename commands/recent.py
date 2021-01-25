@@ -120,7 +120,9 @@ async def py_oppai(map_id:str, accs=[100], mods=0, misses=0, combo=None, fc=None
 # end from owo bot
 
 async def recent(ctx, args):
-    api = pyosu.OsuApi(os.getenv("OSUAPIKEY"))
+    global api
+    if not os.getenv("OSUAPIKEY"):
+        api = pyosu.OsuApi(os.getenv("OSUAPIKEY"))
     try:
         username = args[1]
     except IndexError:
