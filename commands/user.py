@@ -1,7 +1,7 @@
 import pyosu, os
 
 path = os.path.dirname(os.path.realpath(__file__))
-token = open(path + "/../token", "r").read()
+
 api = pyosu.OsuApi(open(path + "/../osuapikey", "r").read())
 
 async def user(ctx, args):
