@@ -2,7 +2,11 @@ import os, pyosu, pyoppai, aiohttp
 
 path = os.path.dirname(os.path.realpath(__file__))
 
-api = pyosu.OsuApi(open(path + "/../osuapikey", "r").read())
+key = open(path + "/../osuapikey", "r").read()
+for k in key:
+    print(k)
+
+api = pyosu.OsuApi()
 
 def num_to_mod(number):
     number = int(number)
