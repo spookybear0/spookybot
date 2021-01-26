@@ -8,7 +8,7 @@ async def parse_commands(args: list, ctx):
         args.insert(0, args[0].replace(prefix, ""))
         args.pop(1)
         for name, info in commands.items():
-            if args[0].startswith(name):
+            if args[0] == name:
                 try:
                     msg = await info["handler"](ctx, args)
                 except Exception as e:
@@ -18,7 +18,7 @@ async def parse_commands(args: list, ctx):
                     return msg
             else: # not the original name or unknown command
                 for alias in info["aliases"]:
-                    if args[0].startswith(alias):
+                    if args[0] == alias:
                         try:
                             msg = await info["handler"](ctx, args)
                         except Exception as e:

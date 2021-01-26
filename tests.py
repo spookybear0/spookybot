@@ -62,7 +62,7 @@ class TestRank(unittest.TestCase):
 # recent can't have real tests as it depends on a recent play
 
 class TestRecent(unittest.TestCase):
-    def test_if_fail(self):
+    def test_if_fail(self): # triple check for recent plays
         try:
             r = asyncio.run(recent.recent({}, ["!recent", "WhiteCat"]))
         except Exception as e:
