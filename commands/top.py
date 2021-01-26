@@ -91,7 +91,7 @@ async def top(ctx, args):
         perfect = ""
         if not best.perfect:
             perfect = "| PERFECT"
-        acc = acc_calc(recent.count300, recent.count100, recent.count50, recent.countmiss)
+        acc = acc_calc(best.count300, best.count100, best.count50, best.countmiss)
         return f"{map.artist} - {map.title} [{map.version}] {round(acc, 2)}% {num_to_mod(best.enabled_mods)} {round(map.difficultyrating, 2)}* | {best.rank} | {round(best.pp, 2)}pp | {int(best.score)} | {best.maxcombo} | {best.count300} x 300, {best.count100} x 100, {best.count50} x 50, {best.countmiss} miss {perfect}"
     else:
         return "Getting multiple top plays isn't supported yet, check back later."
