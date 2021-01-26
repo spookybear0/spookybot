@@ -11,8 +11,7 @@ def pp(map, mods=0):
     pp.reverse()
     for i in range(4):
         final += f" {i+97}%: {round(pp[i], 2)}pp |"
-    print(r["song_name"])
-    final += r["song_name"] + " | " + final + " *" + str(round(r["stars"], 2)) + " | BPM " + str(r["bpm"]) + " | AR " + str(r["ar"])
+    final = r["song_name"] + " |" + final + " " + str(round(r["stars"], 2)) + "* | " + str(r["bpm"]) + " BPM | AR " + str(r["ar"])
     return final
 
 def mod_to_num(mods):
