@@ -7,7 +7,7 @@ def pp(map, mods=0):
         pp = r["pp"]
     except KeyError: # gamemode not supported
         final += "Only osu!standard is supported for pp.\n"
-        pp = 0.00
+        pp = [0.00]
     pp.reverse()
     for i in range(4):
         final += f" {i+97}%: {round(pp[i], 2)}pp |"

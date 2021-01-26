@@ -4,6 +4,15 @@ path = os.path.dirname(os.path.realpath(__file__))
 
 api = pyosu.OsuApi(open(path + "/../osuapikey", "r").read())
 
+def acc_calc(n300, n100, n50, misses):
+    """calculates accuracy (0.0-1.0)"""
+    h = n300 + n100 + n50 + misses
+
+    if h <= 0:
+        return 0.0
+
+    return (n50 * 50.0 + n100 * 100.0 + n300 * 300.0) / (h * 300.0)
+
 def num_to_mod(number):
     number = int(number)
     mod_list = []
@@ -137,7 +146,7 @@ async def recent(ctx, args):
         
     recent = await api.get_user_recent(username, mode, "string")
     map = await api.get_beatmap(beatmap_id=recent.beatmap_id)
-    acc = ((recent.count300*300) + (recent.count100*100) + (recent.count50*50) + (recent.countmiss*0))/(recent.count300 + recent.count100 + recent.count50 + recent.countmiss)*300
+    acc = acc_calc(recent.count300, recent.count100, recent.count50, recent.countmiss)
     perfect = ""
     if not recent.perfect:
         perfect = "| PERFECT"

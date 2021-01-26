@@ -22,6 +22,15 @@ modes = {
     "3": 3
 }
 
+def acc_calc(n300, n100, n50, misses):
+    """calculates accuracy (0.0-1.0)"""
+    h = n300 + n100 + n50 + misses
+
+    if h <= 0:
+        return 0.0
+
+    return (n50 * 50.0 + n100 * 100.0 + n300 * 300.0) / (h * 300.0)
+
 def num_to_mod(number):
     number = int(number)
     mod_list = []
@@ -82,7 +91,7 @@ async def top(ctx, args):
         perfect = ""
         if not best.perfect:
             perfect = "| PERFECT"
-        acc = ((best.count300*300) + (best.count100*100) + (best.count50*50) + (best.countmiss*0))/(best.count300 + best.count100 + best.count50 + best.countmiss)*300
+        acc = acc_calc(recent.count300, recent.count100, recent.count50, recent.countmiss)
         return f"{map.artist} - {map.title} [{map.version}] {round(acc, 2)}% {num_to_mod(best.enabled_mods)} {round(map.difficultyrating, 2)}* | {best.rank} | {round(best.pp, 2)}pp | {int(best.score)} | {best.maxcombo} | {best.count300} x 300, {best.count100} x 100, {best.count50} x 50, {best.countmiss} miss {perfect}"
     else:
         return "Getting multiple top plays isn't supported yet, check back later."
