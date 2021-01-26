@@ -160,6 +160,6 @@ async def recent(ctx, args):
         pp = await api.get_score(map.beatmap_id, user=username)
         pp = round(pp.pp, 1)
     mods = " ".join(num_to_mod(recent.enabled_mods))
-    return f"{map.artist} - {map.title} [{map.version}] +{mods} {round(acc, 2)}% *{round(map.difficultyrating, 2)} | {recent.rank} | {pp}pp | {int(recent.score)} | {recent.maxcombo} | {recent.count300} x 300, {recent.count100} x 100, {recent.count50} x 50, {recent.countmiss} miss {perfect}"
+    return f"{map.artist} - {map.title} [{map.version}] +{mods} {round(acc, 2)}% *{round(map.difficultyrating, 2)} | {recent.rank} | {pp}pp | {int(recent.score)} | {recent.maxcombo}x | {recent.count300} x 300, {recent.count100} x 100, {recent.count50} x 50, {recent.countmiss} miss {perfect}"
 
 aliases = ["rs", "replay", "last"]
