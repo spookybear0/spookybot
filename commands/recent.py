@@ -137,7 +137,7 @@ async def recent(ctx, args):
         
     recent = await api.get_user_recent(username, mode, "string")
     map = await api.get_beatmap(beatmap_id=recent.beatmap_id)
-    acc = (recent.count300 + (recent.count100/3) + (recent.count50/6))/map.max_combo
+    acc = ((recent.count300*300) + (recent.count100*100) + (recent.count50*50) + (recent.countmiss*0))/(recent.count300 + recent.count100 + recent.count50 + recent.countmiss)*300
     perfect = ""
     if not recent.perfect:
         perfect = "| PERFECT"
