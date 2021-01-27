@@ -1,6 +1,4 @@
-import http3
-
-client = http3.AsyncClient()
+import aiohttp
 
 def to_int(x):
     final = 0
@@ -48,16 +46,19 @@ async def rank(ctx, args, test=False):
                 pprank = pprank.replace("pp", "")
             except Exception:
                 pass
-            
-    r = await client.get(f"https://osudaily.net/data/getPPRank.php?t={t}&v={pprank}&m=0")
     
+    async with aiohttp.ClientSession() as session:
+        r = await session.get(f"https://osudaily.net/data/getPPRank.php?t={t}&v={pprank}&m=0")
+
+    text = await r.text()
+
     if test:
         if t == "pp":
-            return int(r.text)
+            return int(text)
         elif t == "rank":
-            return int(r.text)
+            return int(text)
     else:
         if t == "pp":
-            return f"You need rank #{r.text} to have {pprank}pp."
+            return f"You need rank #{text} to have {pprank}pp."
         elif t == "rank":
-            return f"You need {r.text}pp to be rank {args[1]} (#{pprank})."
+            return f"You need {text}pp to be rank {args[1]} (#{pprank})."

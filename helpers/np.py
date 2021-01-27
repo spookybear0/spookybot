@@ -1,11 +1,12 @@
-import http3
-
-client = http3.AsyncClient()
+import aiohttp
 
 async def pp(map, mods=0):
     final = ""
-    r = await client.get(url=f"https://ripple.moe/letsapi/v1/pp?b={map}&m={mods}") # ripple api to get pp
-    r = r.json()
+    async with aiohttp.ClientSession() as session:
+        r = await session.get(f"https://ripple.moe/letsapi/v1/pp?b={map}&m={mods}") # ripple api to get pp
+
+    r = await r.json()
+    
     try:
         pp = r["pp"]
     except KeyError: # gamemode not supported
