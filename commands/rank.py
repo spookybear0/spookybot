@@ -48,15 +48,14 @@ async def rank(ctx, args, test=False):
                 pass
     
     async with aiohttp.ClientSession() as session:
-        r = await session.get(f"https://osudaily.net/data/getPPRank.php?t={t}&v={pprank}&m=0")
-
-    text = await r.text()
+        async with session.get(f"https://osudaily.net/data/getPPRank.php?t={t}&v={pprank}&m=0") as r:
+            text = await r.text()
 
     if test:
         if t == "pp":
             return int(text)
         elif t == "rank":
-            return int(text)
+               return int(text)
     else:
         if t == "pp":
             return f"You need rank #{text} to have {pprank}pp."

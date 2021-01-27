@@ -65,7 +65,9 @@ async def top(ctx, args):
     if os.getenv("OSUAPIKEY"):
         api = pyosu.OsuApi(os.getenv("OSUAPIKEY"))
     else:
-        api = pyosu.OsuApi(open(path + "/../osuapikey", "r").read())
+        f = open(path + "/../osuapikey", "r")
+        api = pyosu.OsuApi(f.read())
+        f.close()
 
     try:
         amount = int(args[1])
