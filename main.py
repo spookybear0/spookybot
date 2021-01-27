@@ -74,7 +74,7 @@ class SpookyBot(osu_irc.Client):
                 
                 mods = mod_to_num(mods[1:])
                 
-                result = pp(bid, mods).split("\n")
+                result = await pp(bid, mods).split("\n")
                 
                 for r in result:
                     await self.sendPM(msg.user_name, r)

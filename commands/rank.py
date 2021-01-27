@@ -1,4 +1,6 @@
-import requests
+import http3
+
+client = http3.AsyncClient()
 
 def to_int(x):
     final = 0
@@ -47,7 +49,7 @@ async def rank(ctx, args, test=False):
             except Exception:
                 pass
             
-    r = requests.get(f"https://osudaily.net/data/getPPRank.php?t={t}&v={pprank}&m=0")
+    r = await client.get(f"https://osudaily.net/data/getPPRank.php?t={t}&v={pprank}&m=0")
     
     if test:
         if t == "pp":
