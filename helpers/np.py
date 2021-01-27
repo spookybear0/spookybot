@@ -4,7 +4,8 @@ client = http3.AsyncClient()
 
 async def pp(map, mods=0):
     final = ""
-    r = await client.get(url=f"https://ripple.moe/letsapi/v1/pp?b={map}&m={mods}").json() # ripple api to get pp
+    r = await client.get(url=f"https://ripple.moe/letsapi/v1/pp?b={map}&m={mods}") # ripple api to get pp
+    r = r.json()
     try:
         pp = r["pp"]
     except KeyError: # gamemode not supported
