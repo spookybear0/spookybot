@@ -16,16 +16,16 @@ async def parse_commands(args: list, ctx):
                     return f"Error in command {name}. Report this to spookybear0."
                 if msg:
                     return msg
-            else: # not the original name or unknown command
-                for alias in info["aliases"]:
-                    if args[0] == alias:
-                        try:
-                            msg = await info["handler"](ctx, args)
-                        except Exception as e:
-                            print(f"Error in command {name}. Error: {e}")
-                            return f"Error in command {name}. Report this to spookybear0."
-                        if msg:
-                            return msg
+            # not the original name or unknown command
+            for alias in info["aliases"]:
+                if args[0] == alias:
+                    try:
+                        msg = await info["handler"](ctx, args)
+                    except Exception as e:
+                        print(f"Error in command {name}. Error: {e}")
+                        return f"Error in command {name}. Report this to spookybear0."
+                    if msg:
+                        return msg
                 continue
         return "Unknown command!"
         
