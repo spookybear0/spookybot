@@ -2,7 +2,8 @@ from helpers.parse import parse_args
 from helpers.command import parse_commands
 from helpers.np import pp, mod_to_num
 from helpers.classify import Classify
-import osu_irc, os, re, json, time
+from helpers.config import load_config, user_config
+import osu_irc, os, re, json, time, aiomysql, asyncio
 from ratelimiter import RateLimiter
 
 path = os.path.dirname(os.path.realpath(__file__))
@@ -27,8 +28,11 @@ def can_be_int(num):
 class SpookyBot(osu_irc.Client):
     async def onReady(self):
         print("SpookyBot is ready!")
+        
+    async def onError(self, error):
+        print(f"Uncatched error: {error}")
 
-    async def onMessage(self, msg):
+    async def onMessage(self, msg: osu_irc.Message):
         if msg.is_private:
             args = parse_args(msg.content)
             ctx = Classify({ # context object to send to command
@@ -78,8 +82,21 @@ class SpookyBot(osu_irc.Client):
                 
                 for r in result.split("\n"):
                     await self.sendPM(msg.user_name, r)
+                    
+async def main():
+    global users, config, conn
 
-if __name__ == "__main__":
+    load_config()
+    config = user_config
+
+    loop = asyncio.get_event_loop()
+    conn = await aiomysql.connect(host=config["sql_server"], port=config["sql_port"],
+                                       user=config["sql_user"], password=config["sql_password"], db=config["sql_db"],
+                                       loop=loop)
+    cursor = await conn.cursor()
+    cursor.execute()
+    cursor.close()
+
     while True:
         spookybot = SpookyBot(token=token, nickname=nickname)
         try:
@@ -93,3 +110,6 @@ if __name__ == "__main__":
             users = list(dict.fromkeys(users))
             json.dump(users, open(path + "/unique_users.txt", "w"))
         time.sleep(10)
+
+if __name__ == "__main__":
+    asyncio.run(main())
