@@ -1,6 +1,6 @@
-import unittest, asyncio, os
+import unittest, asyncio
 from commands import rank, github, help, ping, pp, recent, top, user
-from ratelimiter import RateLimiter
+from helpers.config import load_config
         
 class TestGithub(unittest.TestCase):
     def test_github(self):
@@ -93,6 +93,10 @@ class TestUser(unittest.TestCase):
             self.fail(e)
 
 if __name__ == '__main__':
+    try:
+        load_config()
+    except SystemExit:
+        exit()
     try:
         unittest.main()
     except RuntimeError:
