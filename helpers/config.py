@@ -32,18 +32,18 @@ default_config = {
     "sql_port": 3308
 }
 
-user_config = {}
+config = {}
 
 config_options = list(default_config.keys())
 
 
 def load_config(location: str=path + "/../config.json"):
-    config = JsonFile(location)
-    user_config_temp = config.get_file()
+    conf = JsonFile(location)
+    user_config_temp = conf.get_file()
 
     if user_config_temp is None:
         print("Generating new config")
-        config.write_file(default_config)
+        conf.write_file(default_config)
         print("Generated new config! Please edit it and restart GDPyS.")
         raise SystemExit
 
@@ -57,11 +57,11 @@ def load_config(location: str=path + "/../config.json"):
             user_config_temp[def_conf_option] = default_config[def_conf_option]
 
     if updated_conf:
-        config.write_file(user_config_temp)
+        conf.write_file(user_config_temp)
         print(
             "Your config has been updated! Please change the new vaulues to your liking."
         )
         raise SystemExit
 
     for key in dict_keys(user_config_temp):
-        user_config[key] = user_config_temp[key]
+        config[key] = user_config_temp[key]

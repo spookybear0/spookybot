@@ -23,16 +23,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `general`
---
-
-CREATE TABLE `general` (
-  `apipass` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `users`
 --
 
@@ -81,7 +71,7 @@ ALTER TABLE `general`
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY `username` (`username`),
+  ADD PRIMARY KEY (`username`),
   ADD KEY `id` (`id`),
   ADD KEY `timesused` (`timesused`),
   ADD KEY `latestmsg` (`apipass`);
@@ -90,7 +80,7 @@ ALTER TABLE `users`
 -- Indexes for table `logs`
 --
 ALTER TABLE `logs`
-  ADD PRIMARY KEY `username` (`username`),
+  ADD PRIMARY KEY (`username`),
   ADD KEY `id` (`id`),
   ADD KEY `log` (`log`);
 
@@ -98,6 +88,9 @@ ALTER TABLE `logs`
 -- Indexes for table `bans`
 --
 ALTER TABLE `bans`
-  ADD PRIMARY KEY `username` (`username`),
+  ADD PRIMARY KEY (`username`),
   ADD KEY `id` (`id`),
   ADD KEY `reason` (`reason`);
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -2,10 +2,12 @@ from helpers.parse import parse_args
 from helpers.command import parse_commands
 from helpers.np import pp, mod_to_num
 from helpers.classify import Classify
-from helpers.config import load_config, user_config
-import osu_irc, os, re, json, time, aiomysql, asyncio
+from helpers.config import load_config, config
+from helpers.bot import init_bot, bot
+import osu_irc, os, re, json, time, aiomysql, asyncio, nest_asyncio
 from ratelimiter import RateLimiter
 
+nest_asyncio.apply()
 path = os.path.dirname(os.path.realpath(__file__))
 
 prefix = "!"
@@ -45,11 +47,17 @@ class SpookyBot(osu_irc.Client):
             if responce: # only send if command detected
                 @RateLimiter(max_calls=10, period=5)
                 async def send_msg():
-                    users.append(msg.user_name)
-                    userdump = list(dict.fromkeys(users))
-                    json.dump(userdump, open(path + "/unique_users.txt", "w"))
+                    cursor = await conn.cursor()
+                    cursor.execute( # update user data
+                    """INSERT INTO `users`(username, id, timesused, latestmsg)
+                    VALUES (%s, %s, 1, %s)
+                    ON DUPLICATE KEY UPDATE timesused = timesused + 1;""", (msg.user_name, msg.user_id, msg.content)) # TODO: no sql inject pls
+                    
+                    await cursor.close()
+                    await conn.commit()
+                    
                     await self.sendPM(msg.user_name, str(responce))
-                    print("Sent " + msg.user_name + " this \"" + str(responce) + "\"")
+                    print(f"Sent {msg.user_name} this \"{responce}\"") # debugging
                 await send_msg()
             elif msg.content.startswith("is"):
                 # get /np
@@ -84,18 +92,16 @@ class SpookyBot(osu_irc.Client):
                     await self.sendPM(msg.user_name, r)
                     
 async def main():
-    global users, config, conn
+    global users, conn
+    
+    await init_bot()
 
     load_config()
-    config = user_config
 
     loop = asyncio.get_event_loop()
     conn = await aiomysql.connect(host=config["sql_server"], port=config["sql_port"],
                                        user=config["sql_user"], password=config["sql_password"], db=config["sql_db"],
                                        loop=loop)
-    cursor = await conn.cursor()
-    cursor.execute()
-    cursor.close()
 
     while True:
         spookybot = SpookyBot(token=token, nickname=nickname)
