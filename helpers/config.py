@@ -29,7 +29,10 @@ default_config = {
     "sql_user": "root",
     "sql_db": "spookybot",
     "sql_password": "",
-    "sql_port": 3308
+    "sql_port": 3306,
+    "osuapikey": "",
+    "token": "",
+    "discordbottoken": ""
 }
 
 config = {}

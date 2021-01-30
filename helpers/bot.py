@@ -1,5 +1,6 @@
 import discord, os, asyncio, threading, time
 from discord.ext import commands
+from helpers.config import config
 
 enabled = False
 
@@ -8,7 +9,7 @@ bot = commands.Bot(command_prefix="!")
 
 def bot_thread_func(loop: asyncio.BaseEventLoop):
     asyncio.set_event_loop(loop)
-    asyncio.run(bot.start(open(path + "/../discordtoken", "r").read()))
+    asyncio.run(bot.start(config["discordbottoken"]))
 
 async def init_bot():
     if not enabled:

@@ -1,4 +1,5 @@
 import pyosu, os
+from helpers.config import config
 
 path = os.path.dirname(os.path.realpath(__file__))
 
@@ -65,9 +66,7 @@ async def top(ctx, args):
     if os.getenv("OSUAPIKEY"):
         api = pyosu.OsuApi(os.getenv("OSUAPIKEY"))
     else:
-        f = open(path + "/../osuapikey", "r")
-        api = pyosu.OsuApi(f.read())
-        f.close()
+        api = pyosu.OsuApi(config["osuapikey"])
 
     try:
         amount = int(args[1])

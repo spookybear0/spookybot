@@ -29,7 +29,6 @@ SET time_zone = "+00:00";
 CREATE TABLE `users` (
   `username` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `id` int(11) NOT NULL,
-  `timesused` int(11) NOT NULL DEFAULT '0',
   `latestmsg` varchar(50) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
@@ -57,15 +56,33 @@ CREATE TABLE `bans` (
   `reason` varchar(50) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `suggestions`
+--
+
+CREATE TABLE `suggestions` (
+  `suggestion` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `userid` int(11) NOT NULL,
+  `username` varchar(50) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bugreports`
+--
+
+CREATE TABLE `bugreports` (
+  `bugreport` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `userid` int(11) NOT NULL,
+  `username` varchar(50) COLLATE utf8_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
 --
 -- Indexes for dumped tables
 --
-
---
--- Indexes for table `general`
---
-ALTER TABLE `general`
-  ADD KEY `apipass` (`apipass`);
 
 --
 -- Indexes for table `users`
@@ -73,8 +90,7 @@ ALTER TABLE `general`
 ALTER TABLE `users`
   ADD PRIMARY KEY (`username`),
   ADD KEY `id` (`id`),
-  ADD KEY `timesused` (`timesused`),
-  ADD KEY `latestmsg` (`apipass`);
+  ADD KEY `latestmsg` (`latestmsg`);
 
 --
 -- Indexes for table `logs`
@@ -91,6 +107,22 @@ ALTER TABLE `bans`
   ADD PRIMARY KEY (`username`),
   ADD KEY `id` (`id`),
   ADD KEY `reason` (`reason`);
+
+--
+-- Indexes for table `bans`
+--
+ALTER TABLE `suggestions`
+  ADD PRIMARY KEY (`suggestion`),
+  ADD KEY `userid` (`userid`),
+  ADD KEY `username` (`username`);
+
+--
+-- Indexes for table `bans`
+--
+ALTER TABLE `bugreports`
+  ADD PRIMARY KEY (`bugreport`),
+  ADD KEY `userid` (`userid`),
+  ADD KEY `username` (`username`);
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

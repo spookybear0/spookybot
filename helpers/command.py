@@ -1,4 +1,4 @@
-import os, asyncio
+import os
 
 prefix = "!"
 realpath = os.path.dirname(os.path.realpath(__file__))

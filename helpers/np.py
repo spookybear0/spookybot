@@ -37,3 +37,29 @@ def mod_to_num(mods):
     if "Perfect" in mods:    total += 1<<14
 
     return int(total)
+
+def can_be_int(num):
+    try:
+        int(num)
+    except:
+        return False
+    return True
+
+def process_re(all):
+    mods = ""
+    bid = 0 # beatmap id
+    
+    if all[0][0] != "" and can_be_int(all[0][0]): bid = int(all[0][0])
+    elif all[0][0] != "": mods = all[0][0]
+    if all[0][1] != "" and can_be_int(all[0][1]): bid = int(all[0][1])
+    elif all[0][1] != "": mods = all[0][1]
+    if all[0][2] != "" and can_be_int(all[0][2]): bid = int(all[0][2])
+    elif all[0][2] != "": mods = all[0][2]
+    if all[0][3] != "" and can_be_int(all[0][3]): bid = int(all[0][3])
+    elif all[0][3] != "": mods = all[0][3]
+    if all[0][4] != "" and can_be_int(all[0][4]): bid = int(all[0][4])
+    elif all[0][4] != "": mods = all[0][4]
+    if all[0][5] != "" and can_be_int(all[0][4]): bid = int(all[0][5])
+    elif all[0][5] != "": mods = all[0][5]
+    
+    return [mod_to_num(mods[1:]), bid]
