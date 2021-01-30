@@ -50,7 +50,7 @@ def load_config(location: str=path + "/../config.json"):
     if user_config_temp is None:
         print("Generating new config")
         conf.write_file(default_config)
-        print("Generated new config! Please edit it and restart GDPyS.")
+        print("Generated new config! Please edit it and restart spookybot.")
         raise SystemExit
 
     # Checks for default configuration updates.
