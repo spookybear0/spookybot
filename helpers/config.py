@@ -35,7 +35,10 @@ default_config = {
     "discordbottoken": ""
 }
 
-config = {}
+config = {
+"osuapikey": os.getenv("OSUAPIKEY"),
+"token": os.getenv("OSUTOKEN")
+}
 
 config_options = list(default_config.keys())
 

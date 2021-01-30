@@ -1,5 +1,5 @@
 import os
-from helpers.db import bugreport
+from helpers.db import report_bug
 
 async def bugreport(ctx, args):
     bug = args[1]

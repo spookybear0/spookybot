@@ -19,6 +19,7 @@ jobs:
       - name: Install dependencies
         env:
           OSUAPIKEY: ${{ secrets.OSUAPIKEY }}
+          OSUTOKEN: ${{ secrets.OSUTOKEN }}
         run: |
           echo "$OSUAPIKEY" > osuapikey
           python3 -m pip install aiohttp
