@@ -12,7 +12,7 @@ async def add_user(username, user_id, content):
     cursor = await conn.cursor()
     await cursor.execute( # update user data
     """INSERT INTO `users`(username, id, latestmsg)
-    VALUES (%s, %s, 1, %s);""",(username, user_id, content))
+    VALUES (%s, %s, %s);""",(username, user_id, content))
                     
     await cursor.close()
     await conn.commit()
@@ -66,6 +66,16 @@ async def get_bugs():
 async def get_suggestions():
     cursor = await conn.cursor()
     await cursor.execute("SELECT * FROM suggestions;")
+    
+    result = await cursor.fetchall()
+    
+    await cursor.close()
+    
+    return result
+
+async def get_users():
+    cursor = await conn.cursor()
+    await cursor.execute("SELECT * FROM users;")
     
     result = await cursor.fetchall()
     

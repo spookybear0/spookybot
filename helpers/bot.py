@@ -1,10 +1,10 @@
 import discord, os, asyncio, pyosu, textwrap
 from discord.ext import commands
 from helpers.config import config
-from helpers.db import ban_user, get_bugs, get_suggestions, connect_db
+from helpers.db import ban_user, get_bugs, get_suggestions, get_users, connect_db
 from multiprocessing import Process, Queue
 
-enabled = True
+enabled = False
 
 path = os.path.dirname(os.path.realpath(__file__))
 api = pyosu.OsuApi(config["osuapikey"])
@@ -19,14 +19,20 @@ async def ban(ctx: commands.Context, username, reason=""):
 @bot.command()
 @commands.is_owner()
 async def bugs(ctx: commands.Context):
-    bugs = await get_bugs()
-    await ctx.send(f"```{bugs}```")
+    result = await get_bugs()
+    await ctx.send(f"```{result}```")
     
 @bot.command()
 @commands.is_owner()
 async def suggestions(ctx: commands.Context):
-    suggestions = await get_suggestions()
-    await ctx.send(f"```{suggestions}```")
+    result = await get_suggestions()
+    await ctx.send(f"```{result}```")
+    
+@bot.command()
+@commands.is_owner()
+async def users(ctx: commands.Context):
+    users = await get_users()
+    await ctx.send(f"```{users}```")
 
 
 @bot.command(name="exec", aliases=["eval"])
