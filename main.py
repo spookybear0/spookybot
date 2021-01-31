@@ -70,7 +70,7 @@ async def main():
     await connect_db(loop)
     
     while True:
-        spookybot = SpookyBot(token=token, nickname=nickname)
+        spookybot = SpookyBot(loop, token=token, nickname=nickname)
         try:
             print("Starting SpookyBot")
             spookybot.run()
