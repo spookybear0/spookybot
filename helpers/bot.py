@@ -2,7 +2,7 @@ import discord, os, asyncio, pyosu, textwrap
 from discord.ext import commands
 from helpers.config import config
 from helpers.db import ban_user, get_bugs, get_suggestions, get_users, connect_db
-from multiprocessing import Process
+import multiprocessing as mp
 
 enabled = True
 
@@ -73,7 +73,8 @@ def start_bot():
 async def init_bot():
     if not enabled:
         return
-    botprocess = Process(target=start_bot)
+    mp.set_start_method('spawn')
+    botprocess = mp.Process(target=start_bot)
     botprocess.start()
     
 def stop_bot():

@@ -63,14 +63,14 @@ class SpookyBot(osu_irc.Client):
 async def main():
     loop = asyncio.get_event_loop()
     
+    await connect_db(loop)
+    
     await init_bot()
     
     token = config["token"]
-
-    await connect_db(loop)
     
     while True:
-        spookybot = SpookyBot(loop, token=token, nickname=nickname)
+        spookybot = SpookyBot(token=token, nickname=nickname)
         try:
             print("Starting SpookyBot")
             spookybot.run()
