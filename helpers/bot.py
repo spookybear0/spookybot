@@ -3,7 +3,7 @@ from discord.ext import commands
 from helpers.config import config
 from helpers.db import ban_user, get_bugs, get_suggestions
 
-enabled = False
+enabled = True
 
 path = os.path.dirname(os.path.realpath(__file__))
 api = pyosu.OsuApi(config["osuapikey"])
