@@ -1,13 +1,14 @@
-import discord, os, asyncio, threading, pyosu
+import discord, os, asyncio, pyosu, textwrap
 from discord.ext import commands
 from helpers.config import config
-from helpers.db import ban_user, get_bugs, get_suggestions
+from helpers.db import ban_user, get_bugs, get_suggestions, connect_db
+from multiprocessing import Process, Queue
 
 enabled = True
 
 path = os.path.dirname(os.path.realpath(__file__))
 api = pyosu.OsuApi(config["osuapikey"])
-bot = commands.Bot(command_prefix="!")
+bot = commands.Bot(command_prefix="s!")
 
 @bot.command()
 @commands.is_owner()
@@ -17,26 +18,57 @@ async def ban(ctx: commands.Context, username, reason=""):
     
 @bot.command()
 @commands.is_owner()
-async def bugs(ctx: commands.Context, username, reason=""):
+async def bugs(ctx: commands.Context):
     bugs = await get_bugs()
     await ctx.send(f"```{bugs}```")
     
 @bot.command()
 @commands.is_owner()
-async def suggestions(ctx: commands.Context, username, reason=""):
+async def suggestions(ctx: commands.Context):
     suggestions = await get_suggestions()
     await ctx.send(f"```{suggestions}```")
 
-def bot_thread_func(loop: asyncio.BaseEventLoop):
-    asyncio.set_event_loop(loop)
-    asyncio.run(bot.start(config["discordbottoken"]))
+
+@bot.command(name="exec", aliases=["eval"])
+@commands.is_owner()
+async def exec(ctx, *, body: str):
+    def indent(text, amount, ch=' '):
+        return textwrap.indent(text, amount * ch)
+    env = {
+            "bot": bot,
+            "ctx": ctx,
+            "channel": ctx.channel,
+            "author": ctx.author,
+            "guild": ctx.guild,
+            "message": ctx.message,
+            "discord": discord
+        }
+    body = body.strip("```py")
+    body = body.strip("`")
+    body = indent(body, 4)
+    to_compile = f"import asyncio\nasync def func():{body}\nresult = asyncio.create_task(func())"
+    try:
+        loc = {}
+        exec(to_compile, env, loc)
+    except Exception as e:
+        await ctx.message.add_reaction("❌")
+        return await ctx.send(f"```\n{e.__class__.__name__}: {e}\n```")
+    else:
+        await ctx.message.add_reaction("✅")
+        result = loc["result"].result()
+        return await ctx.send(f"```\n{result}\n```")
+    
+def start_bot():
+    global conn
+    asyncio.run(connect_db(asyncio.get_event_loop()))
+    from helpers.db import conn
+    bot.run(config["discordbottoken"])
 
 async def init_bot():
     if not enabled:
         return
-    
-    bot_thread = threading.Thread(target=bot_thread_func, args=(asyncio.get_event_loop(),))
-    bot_thread.start()
+    botprocess = Process(target=start_bot)
+    botprocess.start()
     
 def stop_bot():
     bot.logout()

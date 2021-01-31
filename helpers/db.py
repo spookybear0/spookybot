@@ -10,7 +10,7 @@ async def connect_db(loop):
 
 async def add_user(username, user_id, content):
     cursor = await conn.cursor()
-    cursor.execute( # update user data
+    await cursor.execute( # update user data
     """INSERT INTO `users`(username, id, latestmsg)
     VALUES (%s, %s, 1, %s);""",(username, user_id, content))
                     
@@ -19,7 +19,7 @@ async def add_user(username, user_id, content):
     
 async def log_command(username, user_id, content):
     cursor = await conn.cursor()
-    cursor.execute( # add log
+    await cursor.execute( # add log
     """INSERT INTO `logs`(username, id, log)
     VALUES (%s, %s, %s);""",(username, user_id, content))
                     
@@ -28,7 +28,7 @@ async def log_command(username, user_id, content):
     
 async def report_bug(username, user_id, bug):
     cursor = await conn.cursor()
-    cursor.execute( # report bug
+    await cursor.execute( # report bug
     """INSERT INTO `bugreports`(bug, userid, username)
     VALUES (%s, %s, %s);""",(bug, user_id, username))
                     
@@ -37,7 +37,7 @@ async def report_bug(username, user_id, bug):
     
 async def add_suggestion(username, user_id, suggestion):
     cursor = await conn.cursor()
-    cursor.execute( # add suggestion
+    await cursor.execute( # add suggestion
     """INSERT INTO `suggestions`(bug, userid, username)
     VALUES (%s, %s, %s);""",(suggestion, user_id, username))
                     
@@ -46,7 +46,7 @@ async def add_suggestion(username, user_id, suggestion):
     
 async def ban_user(username, user_id, reason):
     cursor = await conn.cursor()
-    cursor.execute( # ban user
+    await cursor.execute( # ban user
     """INSERT INTO `bans`(username, id, reason)
     VALUES (%s, %s, %s);""",(username, user_id, reason))
                     
@@ -55,9 +55,9 @@ async def ban_user(username, user_id, reason):
     
 async def get_bugs():
     cursor = await conn.cursor()
-    cursor.execute("SELECT * FROM bugreports;")
+    await cursor.execute("SELECT * FROM bugreports;")
     
-    result = cursor.fetchall()
+    result = await cursor.fetchall()
     
     await cursor.close()
     
@@ -65,9 +65,9 @@ async def get_bugs():
 
 async def get_suggestions():
     cursor = await conn.cursor()
-    cursor.execute("SELECT * FROM suggestions;")
+    await cursor.execute("SELECT * FROM suggestions;")
     
-    result = cursor.fetchall()
+    result = await cursor.fetchall()
     
     await cursor.close()
     

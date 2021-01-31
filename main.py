@@ -10,7 +10,7 @@ from helpers.np import pp, process_re
 from helpers.classify import Classify
 from helpers.bot import init_bot, bot
 from helpers.db import add_user, log_command, connect_db
-import osu_irc, os, re, time, asyncio, nest_asyncio
+import osu_irc, os, re, time, asyncio, nest_asyncio, threading
 from ratelimiter import RateLimiter
 
 nest_asyncio.apply()
@@ -60,7 +60,7 @@ class SpookyBot(osu_irc.Client):
                     
 async def main():
     await init_bot()
-
+    
     token = config["token"]
 
     await connect_db(asyncio.get_event_loop())
@@ -70,8 +70,8 @@ async def main():
         try:
             print("Starting SpookyBot")
             spookybot.run()
-        except RuntimeError:
-            pass
+        except RuntimeError as e:
+            print(e)
         except KeyboardInterrupt:
             pass
         time.sleep(10)
