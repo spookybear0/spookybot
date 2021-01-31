@@ -10,12 +10,13 @@ from helpers.np import pp, process_re
 from helpers.classify import Classify
 from helpers.bot import init_bot, bot
 from helpers.db import add_user, log_command, connect_db
-import osu_irc, os, re, time, asyncio, nest_asyncio, threading
+import osu_irc, os, re, time, asyncio, nest_asyncio, pyosu
 from ratelimiter import RateLimiter
 
 nest_asyncio.apply()
 path = os.path.dirname(os.path.realpath(__file__))
 
+api = pyosu.OsuApi(config["osuapikey"])
 prefix = "!"
 nickname = "spookybear0"
 
@@ -29,12 +30,13 @@ class SpookyBot(osu_irc.Client):
     async def onMessage(self, msg: osu_irc.Message):
         if msg.is_private:
             args = parse_args(msg.content)
+            userid = await api.get_user(msg.user_name).user_id
             ctx = Classify({ # context object to send to command
                 "message": msg, # message object
                 "msg": msg, # alias to message
                 "username": msg.user_name,
                 "content": msg.content, # raw message contents (not parsed)
-                "userid": msg.user_id
+                "userid":  userid
             })
             responce = await parse_commands(args, ctx)
             if responce: # only send if command detected

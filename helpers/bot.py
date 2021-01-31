@@ -2,7 +2,7 @@ import discord, os, asyncio, pyosu, textwrap
 from discord.ext import commands
 from helpers.config import config
 from helpers.db import ban_user, get_bugs, get_suggestions, get_users, connect_db
-from multiprocessing import Process, Queue
+from multiprocessing import Process
 
 enabled = True
 
