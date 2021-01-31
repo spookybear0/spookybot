@@ -52,3 +52,23 @@ async def ban_user(username, user_id, reason):
                     
     await cursor.close()
     await conn.commit()
+    
+async def get_bugs():
+    cursor = await conn.cursor()
+    cursor.execute("SELECT * FROM bugreports;")
+    
+    result = cursor.fetchall()
+    
+    await cursor.close()
+    
+    return result
+
+async def get_suggestions():
+    cursor = await conn.cursor()
+    cursor.execute("SELECT * FROM suggestions;")
+    
+    result = cursor.fetchall()
+    
+    await cursor.close()
+    
+    return result
