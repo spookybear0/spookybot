@@ -43,3 +43,12 @@ async def add_suggestion(username, user_id, suggestion):
                     
     await cursor.close()
     await conn.commit()
+    
+async def ban_user(username, user_id, reason):
+    cursor = await conn.cursor()
+    cursor.execute( # ban user
+    """INSERT INTO `bans`(username, id, reason)
+    VALUES (%s, %s, %s);""",(username, user_id, reason))
+                    
+    await cursor.close()
+    await conn.commit()
