@@ -4,7 +4,7 @@ from helpers.config import config
 from helpers.db import ban_user, get_bugs, get_suggestions, get_users, connect_db
 from multiprocessing import Process, Queue
 
-enabled = False
+enabled = True
 
 path = os.path.dirname(os.path.realpath(__file__))
 api = pyosu.OsuApi(config["osuapikey"])
