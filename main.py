@@ -61,11 +61,13 @@ class SpookyBot(osu_irc.Client):
                     await self.sendPM(msg.user_name, r)
                     
 async def main():
-    await init_bot()
+    loop = asyncio.get_event_loop()
+    
+    loop.create_task(init_bot())
     
     token = config["token"]
 
-    await connect_db(asyncio.get_event_loop())
+    await connect_db(loop)
     
     while True:
         spookybot = SpookyBot(token=token, nickname=nickname)
