@@ -66,7 +66,6 @@ async def exec(ctx, *, body: str):
     
 def start_bot():
     global conn
-    asyncio.run(connect_db(asyncio.get_event_loop()))
     from helpers.db import conn
     bot.run(config["discordbottoken"])
 
