@@ -42,15 +42,15 @@ class SpookyBot(osu_irc.Client):
             if responce: # only send if command detected
                 @RateLimiter(max_calls=10, period=5)
                 async def send_msg():
-                    await add_user(msg.user_name, msg.user_id, msg.content) # add user to db
-                    await log_command(msg.user_name, msg.user_id, msg.content) # log the message
+                    await add_user(msg.user_name, user.user_id, msg.content) # add user to db
+                    await log_command(msg.user_name, user.user_id, msg.content) # log the message
                     
                     await self.sendPM(msg.user_name, str(responce))
                     print(f"Sent {msg.user_name} this \"{responce}\"") # debugging
                 await send_msg()
             elif msg.content.startswith("is "):
                 # get /np
-                await add_user(msg.user_name, msg.user_id, msg.content)
+                await add_user(msg.user_name, user.user_id, msg.content)
                 
                 all = re.findall(r"is playing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)|is listening to \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is editing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is watching \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)",
                 str(msg.content))
