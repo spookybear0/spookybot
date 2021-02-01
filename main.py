@@ -5,7 +5,7 @@ except SystemExit:
     exit()
 
 from helpers.parse import parse_args
-from helpers.command import parse_commands
+from helpers.command import parse_commands, init_commands
 from helpers.np import pp, process_re
 from helpers.classify import Classify
 from helpers.bot import init_bot, bot
@@ -55,13 +55,20 @@ class SpookyBot(osu_irc.Client):
                 all = re.findall(r"is playing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)|is listening to \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is editing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is watching \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)",
                 str(msg.content))
                 
-                result = await pp(*process_re(all))
+                mods, bid = process_re(all) # bid = beatmap id
+                
+                mode = await api.get_beatmap(beatmap_id=map).mode
+                
+                result = await pp(bid, mods, mode)
                 
                 for r in result.split("\n"):
                     await self.sendPM(msg.user_name, r)
                     
 async def main():
+    global spookybot
     loop = asyncio.get_event_loop()
+    
+    init_commands()
     
     await connect_db(loop)
     

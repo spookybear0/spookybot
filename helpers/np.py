@@ -1,9 +1,9 @@
 import aiohttp
 
-async def pp(map, mods=0):
+async def pp(map, mods=0, mode=0):
     final = ""
     async with aiohttp.ClientSession() as session:
-        async with session.get(f"https://ripple.moe/letsapi/v1/pp?b={map}&m={mods}") as r: # ripple api to get pp
+        async with session.get(f"https://ripple.moe/letsapi/v1/pp?b={map}&m={mods}&g={mode}") as r: # ripple api to get pp
             r = await r.json()
     
     try:

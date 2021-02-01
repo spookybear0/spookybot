@@ -1,7 +1,17 @@
 import os
+from main import spookybot
 
 prefix = "!"
 realpath = os.path.dirname(os.path.realpath(__file__))
+
+def is_owner(func):
+    async def decorator(ctx, args):
+        if ctx.username == "spookybear0":
+            return await func(ctx, args)
+        else:
+            spookybot.sendPM(ctx.username, "Invalid permissions!")
+    
+    return decorator
 
 async def parse_commands(args: list, ctx):
     if args[0].startswith(prefix):
@@ -27,21 +37,20 @@ async def parse_commands(args: list, ctx):
                     if msg:
                         return msg
                 continue
-        return "Unknown command!"
-        
-                
-
+        return "Unknown command!"            
+    
 commands = {}
 
-# get all commands dynamicly
-if os.name == "nt":
-    divider = "\\"
-elif os.name == "posix":
-    divider = "/"
-else:
-    divider = "/"
+def init_commands():
+    # get all commands dynamicly
+    if os.name == "nt":
+        divider = "\\"
+    elif os.name == "posix":
+        divider = "/"
+    else:
+        divider = "/"
 
-for f in os.listdir(realpath + f"{divider}..{divider}commands"): # commands folder
+    for f in os.listdir(realpath + f"{divider}..{divider}commands"): # commands folder
         if f.endswith(".py") and f != "__init__.py" and f != os.path.isdir(f):
             name = f.replace(".py", "")
             command = __import__(f"commands.{name}")
@@ -50,5 +59,5 @@ for f in os.listdir(realpath + f"{divider}..{divider}commands"): # commands fold
                 aliases = getattr(getattr(command, "recommend"), "aliases")
             except AttributeError:
                 aliases = []
-
+                
             commands[name] = {"handler": getattr(getattr(command, name), name), "aliases": aliases}

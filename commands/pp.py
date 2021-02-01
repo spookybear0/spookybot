@@ -1,4 +1,8 @@
 from helpers.np import pp as np
+from helpers.config import config
+import pyosu
+
+api = pyosu.OsuApi(config["osuapikey"])
 
 async def pp(ctx, args):
     try:
@@ -6,4 +10,6 @@ async def pp(ctx, args):
     except IndexError:
         return "Invalid arguments."
     
-    return await np(map)
+    mode = await api.get_beatmap(beatmap_id=map).mode
+    
+    return await np(map, 0, mode)

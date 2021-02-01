@@ -29,7 +29,7 @@ SET time_zone = "+00:00";
 CREATE TABLE `users` (
   `username` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `id` int(11) NOT NULL,
-  `latestmsg` varchar(50) COLLATE utf8_unicode_ci NOT NULL
+  `latestmsg` varchar(240) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -41,7 +41,7 @@ CREATE TABLE `users` (
 CREATE TABLE `logs` (
   `username` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `id` int(11) NOT NULL,
-  `log` varchar(50) COLLATE utf8_unicode_ci NOT NULL
+  `log` varchar(240) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -53,7 +53,7 @@ CREATE TABLE `logs` (
 CREATE TABLE `bans` (
   `username` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `id` int(11) NOT NULL,
-  `reason` varchar(50) COLLATE utf8_unicode_ci NOT NULL
+  `reason` varchar(240) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -63,7 +63,7 @@ CREATE TABLE `bans` (
 --
 
 CREATE TABLE `suggestions` (
-  `suggestion` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `suggestion` varchar(240) COLLATE utf8_unicode_ci NOT NULL,
   `userid` int(11) NOT NULL,
   `username` varchar(50) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -75,7 +75,7 @@ CREATE TABLE `suggestions` (
 --
 
 CREATE TABLE `bugreports` (
-  `bugreport` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
+  `bugreport` varchar(240) COLLATE utf8_unicode_ci NOT NULL,
   `userid` int(11) NOT NULL,
   `username` varchar(50) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
