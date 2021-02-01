@@ -42,10 +42,7 @@ class SpookyBot(osu_irc.Client):
             if responce: # only send if command detected
                 @RateLimiter(max_calls=10, period=5)
                 async def send_msg():
-                    try:
-                        await add_user(msg.user_name, user.user_id, msg.content) # add user to db
-                    except pymysql.err.IntegrityError:
-                        pass
+                    await add_user(msg.user_name, user.user_id, msg.content) # add user to db
                     await log_command(msg.user_name, user.user_id, msg.content) # log the message
                     
                     await self.sendPM(msg.user_name, str(responce))

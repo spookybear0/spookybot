@@ -1,5 +1,5 @@
 from helpers.config import config
-import aiomysql
+import aiomysql, pymysql
 
 async def connect_db(loop):
     global conn
@@ -10,9 +10,12 @@ async def connect_db(loop):
 
 async def add_user(username, user_id, content):
     cursor = await conn.cursor()
-    await cursor.execute( # update user data
-    """INSERT INTO `users`(username, id, latestmsg)
-    VALUES (%s, %s, %s);""",(username, user_id, content))
+    try:
+        await cursor.execute( # update user data
+        """INSERT INTO `users`(username, id, latestmsg)
+        VALUES (%s, %s, %s);""",(username, user_id, content))
+    except pymysql.err.IntegrityError:
+        pass
                     
     await cursor.close()
     await conn.commit()
