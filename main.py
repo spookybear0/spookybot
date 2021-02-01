@@ -30,13 +30,13 @@ class SpookyBot(osu_irc.Client):
     async def onMessage(self, msg: osu_irc.Message):
         if msg.is_private:
             args = parse_args(msg.content)
-            userid = await api.get_user(msg.user_name).user_id
+            user = await api.get_user(msg.user_name)
             ctx = Classify({ # context object to send to command
                 "message": msg, # message object
                 "msg": msg, # alias to message
                 "username": msg.user_name,
                 "content": msg.content, # raw message contents (not parsed)
-                "userid":  userid
+                "userid":  user.user_id
             })
             responce = await parse_commands(args, ctx)
             if responce: # only send if command detected
