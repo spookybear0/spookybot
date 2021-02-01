@@ -15,7 +15,10 @@ async def add_user(username, user_id, content):
         """INSERT INTO `users`(username, id, latestmsg)
         VALUES (%s, %s, %s);""",(username, user_id, content))
     except pymysql.err.IntegrityError:
-        pass
+        await cursor.execute( # update user data
+        """UPDATE `users`
+        SET latestmsg = %s
+        WHERE username = %s;""",(content, username))
                     
     await cursor.close()
     await conn.commit()
