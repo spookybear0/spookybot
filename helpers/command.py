@@ -1,5 +1,4 @@
 import os
-from main import spookybot
 
 prefix = "!"
 realpath = os.path.dirname(os.path.realpath(__file__))
@@ -9,6 +8,7 @@ def is_owner(func):
         if ctx.username == "spookybear0":
             return await func(ctx, args)
         else:
+            from main import spookybot
             spookybot.sendPM(ctx.username, "Invalid permissions!")
     
     return decorator

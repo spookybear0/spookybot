@@ -9,7 +9,7 @@ from helpers.command import parse_commands, init_commands
 from helpers.np import pp, process_re
 from helpers.classify import Classify
 from helpers.bot import init_bot, bot
-from helpers.db import add_user, log_command, connect_db
+from helpers.db import add_user, log_command, set_last_beatmap, connect_db
 import osu_irc, os, re, time, asyncio, nest_asyncio, pyosu
 from ratelimiter import RateLimiter
 
@@ -56,6 +56,8 @@ class SpookyBot(osu_irc.Client):
                 str(msg.content))
                 
                 mods, bid = process_re(all) # bid = beatmap id
+                
+                await set_last_beatmap(msg.user_name, bid)
                 
                 mode = await api.get_beatmap(beatmap_id=map).mode
                 
