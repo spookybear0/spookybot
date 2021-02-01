@@ -1,5 +1,5 @@
 from helpers.config import config
-import aiomysql, pymysql
+import aiomysql
 
 async def connect_db(loop):
     global conn
@@ -10,15 +10,11 @@ async def connect_db(loop):
 
 async def add_user(username, user_id, content):
     cursor = await conn.cursor()
-    try:
-        await cursor.execute( # update user data
-        """INSERT INTO `users`(username, id, latestmsg)
-        VALUES (%s, %s, %s);""",(username, user_id, content))
-    except pymysql.err.IntegrityError:
-        await cursor.execute( # update user data
-        """UPDATE `users`
-        SET latestmsg = %s
-        WHERE username = %s;""",(content, username))
+    
+    await cursor.execute( # update user data
+    """INSERT INTO `users`(username, id, latestmsg)
+    VALUES (%s, %s, %s)
+    ON DUPLICATE KEY UPDATE latestmsg = %s;""",(username, user_id, content))
                     
     await cursor.close()
     await conn.commit()
@@ -95,6 +91,38 @@ async def set_last_beatmap(username, bid):
     """UPDATE `users`
     SET lastbeatmap = %s
     WHERE username = %s;""",(bid, username))
+                    
+    await cursor.close()
+    await conn.commit()
+    
+async def remove_user(username=None, user_id=None):
+    cursor = await conn.cursor()
+    if username:
+        await cursor.execute( # remove user by username
+        """DELETE FROM `users`
+        WHERE username = %s;""",(username))
+    elif user_id:
+        await cursor.execute( # remove user by id
+        """DELETE FROM `users`
+        WHERE id = %s;""",(user_id))
+    else:
+        raise ValueError("username or user_id argument must be filled in")
+                    
+    await cursor.close()
+    await conn.commit()
+    
+async def unban_user(username=None, user_id=None):
+    cursor = await conn.cursor()
+    if username:
+        await cursor.execute( # unban by username
+        """DELETE FROM `bans`
+        WHERE username = %s;""",(username))
+    elif user_id:
+        await cursor.execute( # unban by id
+        """DELETE FROM `bans`
+        WHERE id = %s;""",(user_id))
+    else:
+        raise ValueError("username or user_id argument must be filled in")
                     
     await cursor.close()
     await conn.commit()
