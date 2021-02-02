@@ -7,13 +7,15 @@ from helpers.classify import Classify
 from helpers.command import parse_commands, init_commands
 from helpers.db import add_user, log_command, set_last_beatmap, connect_db
 from helpers.np import pp, process_re
+from contextlib import redirect_stdout
+from io import StringIO
 import multiprocessing as mp
 
 enabled = True
 
 path = os.path.dirname(os.path.realpath(__file__))
 api = pyosu.OsuApi(config["osuapikey"])
-bot = commands.Bot(command_prefix="s!")
+bot = commands.Bot(command_prefix="!")
 
 @bot.command()
 @commands.is_owner()
@@ -42,7 +44,7 @@ async def users(ctx: commands.Context):
 
 @bot.command(name="exec", aliases=["eval"])
 @commands.is_owner()
-async def exec(ctx, *, body: str):
+async def _exec(ctx, *, body: str):
     def indent(text, amount, ch=' '):
         return textwrap.indent(text, amount * ch)
     env = {
@@ -54,20 +56,27 @@ async def exec(ctx, *, body: str):
             "message": ctx.message,
             "discord": discord
         }
-    body = body.strip("```py")
-    body = body.strip("`")
-    body = indent(body, 4)
-    to_compile = f"import asyncio\nasync def func():{body}\nresult = asyncio.create_task(func())"
+    body = indent(body.replace("```py", "").strip("`"), 4)
+    result = None
+    to_compile = f"import asyncio\nasync def func():\n{body}\nresult = asyncio.run(func())"
+    
+    loc = {}
+    stdout = StringIO() 
     try:
-        loc = {}
-        exec(to_compile, env, loc)
+        with redirect_stdout(stdout):
+            exec(to_compile, env, loc)
     except Exception as e:
         await ctx.message.add_reaction("❌")
         return await ctx.send(f"```\n{e.__class__.__name__}: {e}\n```")
     else:
         await ctx.message.add_reaction("✅")
-        result = loc["result"].result()
-        return await ctx.send(f"```\n{result}\n```")
+        result = loc["result"]
+        stdout = stdout.getvalue()[:-1]
+        
+        if stdout:
+            await ctx.send(f"stdout \n```\n{stdout}\n```")
+        if result:
+            await ctx.send(f"return value \n```\n{result}\n```")
     
 async def onMessage(msg: osu_irc.Message): # fake
     init_commands()
@@ -110,7 +119,7 @@ async def onMessage(msg: osu_irc.Message): # fake
     
 @bot.command()
 @commands.is_owner()
-async def msg(ctx: commands.Context, *msg: str):
+async def msg(ctx: commands.Context, *, msg: str):
     try: message = osu_irc.Message(msg)
     except AttributeError: message = osu_irc.Message(" ".join(msg))
     message._user_name = "spookybear0"
