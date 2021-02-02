@@ -1,11 +1,11 @@
+from spook.spookybot.helpers.db import remove_user
 import discord, os, asyncio, pyosu, textwrap, osu_irc, re
 from discord.ext import commands
 from helpers.config import config
-from helpers.db import ban_user, get_bugs, get_suggestions, get_users, connect_db
 from helpers.parse import parse_args
 from helpers.classify import Classify
 from helpers.command import parse_commands, init_commands
-from helpers.db import add_user, log_command, set_last_beatmap, connect_db
+from helpers.db import ban_user, get_bugs, get_suggestions, get_users, unban_user, connect_db, log_command, set_last_beatmap, add_user
 from helpers.np import pp, process_re
 from contextlib import redirect_stdout
 from io import StringIO
@@ -22,6 +22,18 @@ bot = commands.Bot(command_prefix="!")
 async def ban(ctx: commands.Context, username, reason=""):
     user_id = await api.get_user(username).user_id
     await ban_user(username, user_id, reason)
+    
+@bot.command()
+@commands.is_owner()
+async def unban(ctx: commands.Context, username):
+    await unban_user(username)
+    await ctx.send("Unbanned user!")
+    
+@bot.command()
+@commands.is_owner()
+async def unban_id(ctx: commands.Context, user_id):
+    await unban_user(None, user_id)
+    await ctx.send("Unbanned user!")
     
 @bot.command()
 @commands.is_owner()
@@ -129,6 +141,24 @@ async def msg(ctx: commands.Context, *, msg: str):
     
     await ctx.send(f"```{r}```") # fake message
     
+@bot.command(name="add_user")
+@commands.is_owner()
+async def _add_user(ctx: commands.Context, username, userid, content=""):
+    await add_user(username, userid, content)
+    await ctx.send("User added!")
+    
+@bot.command(name="remove_user")
+@commands.is_owner()
+async def _remove_user(ctx: commands.Context, username):
+    await remove_user(username)
+    await ctx.send("User removed!")
+
+@bot.command(name="remove_user_id")
+@commands.is_owner()
+async def _remove_user_id(ctx: commands.Context, userid):
+    await remove_user(user_id=userid)
+    await ctx.send("User removed!")
+
 def start_bot():
     global conn
     asyncio.run(connect_db(asyncio.get_event_loop()))
