@@ -60,7 +60,7 @@ class SpookyBot(osu_irc.Client):
                 
                 await set_last_beatmap(msg.user_name, bid)
                 
-                mode = await api.get_beatmap(beatmap_id=map)
+                mode = await api.get_beatmap(beatmap_id=bid)
                 
                 result = await pp(bid, mods, mode.mode)
                 

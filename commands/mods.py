@@ -10,8 +10,6 @@ async def mods(ctx, args):
         modlist = args[1]
     except:
         modlist = 0
-        
-    print(modlist, mod_to_num(modlist))
     
     map = await get_last_beatmap(ctx.username)
     
