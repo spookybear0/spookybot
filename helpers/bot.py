@@ -92,6 +92,7 @@ async def _exec(ctx, *, body: str):
 async def onMessage(msg: osu_irc.Message): # fake
     init_commands()
     args = parse_args(msg.content)
+    print(msg.content, args)
     user = await api.get_user(msg.user_name)
     ctx = Classify({ # context object to send to command
         "message": msg, # message object
