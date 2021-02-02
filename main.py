@@ -82,7 +82,7 @@ async def main():
         print("Starting SpookyBot on discord.")
         await init_bot(spookybot)
         if debug:
-            while True: pass # blocl
+            while True: pass
         try:
             if not debug:
                 print("Starting SpookyBot.")

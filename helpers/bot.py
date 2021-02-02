@@ -122,9 +122,9 @@ async def onMessage(msg: osu_irc.Message): # fake
                 
         await set_last_beatmap(msg.user_name, bid)
                 
-        mode = await api.get_beatmap(beatmap_id=map).mode
+        mode = await api.get_beatmap(beatmap_id=map)
                 
-        result = await pp(bid, mods, mode)
+        result = await pp(bid, mods, mode.mode)
                 
         for r in result.split("\n"):
             return r
