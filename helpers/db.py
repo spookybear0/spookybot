@@ -126,3 +126,13 @@ async def unban_user(username=None, user_id=None):
                     
     await cursor.close()
     await conn.commit()
+    
+async def get_last_beatmap(username):
+    cursor = await conn.cursor()
+    await cursor.execute("SELECT lastbeatmap FROM users WHERE username = %s;",(username))
+    
+    result = await cursor.fetchall()
+    
+    await cursor.close()
+    
+    return result

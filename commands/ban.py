@@ -1,9 +1,8 @@
 from helpers.db import ban_user
+from helpers.command import is_owner
 
+@is_owner
 async def ban(ctx, args):
     reason = args[1]
-    if ctx.username == "spookybear0":
-        await ban_user(ctx.username, ctx.user_id, reason)
-        return "User banned!"
-    else:
-        return "Invalid Permissions"
+    await ban_user(ctx.username, ctx.user_id, reason)
+    return "User banned!"

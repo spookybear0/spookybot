@@ -57,7 +57,7 @@ def init_commands():
             command = __import__(f"commands.{name}")
             
             try:
-                aliases = getattr(getattr(command, "recommend"), "aliases")
+                aliases = getattr(getattr(command, name), "aliases")
             except AttributeError:
                 aliases = []
                 

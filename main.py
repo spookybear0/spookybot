@@ -19,6 +19,7 @@ path = os.path.dirname(os.path.realpath(__file__))
 api = pyosu.OsuApi(config["osuapikey"])
 prefix = "!"
 nickname = "spookybear0"
+debug = False
 
 class SpookyBot(osu_irc.Client):
     async def onReady(self):
@@ -59,9 +60,9 @@ class SpookyBot(osu_irc.Client):
                 
                 await set_last_beatmap(msg.user_name, bid)
                 
-                mode = await api.get_beatmap(beatmap_id=map).mode
+                mode = await api.get_beatmap(beatmap_id=map)
                 
-                result = await pp(bid, mods, mode)
+                result = await pp(bid, mods, mode.mode)
                 
                 for r in result.split("\n"):
                     await self.sendPM(msg.user_name, r)
@@ -78,15 +79,21 @@ async def main():
     
     while True:
         spookybot = SpookyBot(token=token, nickname=nickname)
+        print("Starting SpookyBot on discord.")
         await init_bot(spookybot)
+        if debug:
+            while True: pass # blocl
         try:
-            print("Starting SpookyBot")
-            spookybot.run()
+            if not debug:
+                print("Starting SpookyBot.")
+                spookybot.run()
         except RuntimeError as e:
-            spookybot.stop()
+            if not debug:
+                spookybot.stop()
             print(e)
         except KeyboardInterrupt:
-            spookybot.stop()
+            if not debug:
+                spookybot.stop()
             await bot.logout()
         time.sleep(10)
 
