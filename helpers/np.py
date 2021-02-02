@@ -1,4 +1,8 @@
-import aiohttp
+import aiohttp, pyosu, time, os
+from helpers.config import config
+from maniera.calculator import Maniera
+
+api = pyosu.OsuApi(config["osuapikey"])
 
 async def pp(map, mods=0, mode=0):
     final = ""
@@ -8,10 +12,26 @@ async def pp(map, mods=0, mode=0):
     
     try:
         pp = r["pp"]
-    except KeyError: # gamemode not supported
-        final += "Only osu!standard is supported for pp.\n"
-        pp = [0.00]
+    except KeyError: # gamemode not supported / mania
+        try:
+            scores = [1000000, 900000, 750000]
+            pp = []
+            
+            mapobject = await api.get_beatmap(beatmap_id=map)
+            
+            for s in scores:
+                pp.append(await mania_pp(map, mods, s))
+
+            i = 0
+            for s in scores:
+                final += f" {s}: {round(pp[i], 2)}pp |"
+                i += 1
+            final = mapobject.artist + "-" + mapobject.title + "[" + mapobject.version + "] |" + final + " " + str(round(mapobject.difficultyrating, 2)) + "* | " + str(mapobject.bpm) + " BPM | AR " + str(mapobject.diff_approach)
+            return final
+        except Exception as e:
+            return "Mania is not yet supported for pp."
     pp.reverse()
+    
     for i in range(4):
         final += f" {i+97}%: {round(pp[i], 2)}pp |"
     final = r["song_name"] + " |" + final + " " + str(round(r["stars"], 2)) + "* | " + str(r["bpm"]) + " BPM | AR " + str(r["ar"])
@@ -63,3 +83,30 @@ def process_re(all):
     elif all[0][5] != "": mods = all[0][5]
     
     return [mod_to_num(mods[1:]), bid]
+
+async def download_file(url, filename):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            with open(filename, 'wb') as f:
+                while True:
+                    chunk = await response.content.read(1024)
+                    if not chunk:
+                        break
+                    f.write(chunk)
+            return await response.release()
+
+async def mania_pp(map_id: int, mods: int, score: int):
+    url = f"https://osu.ppy.sh/osu/{map_id}"
+    filepath = f"data/osu/temp/"
+    
+    try:
+        os.makedirs(filepath)
+    except Exception:
+        pass
+    
+    await download_file(url, filepath + "{map_id}.osu")
+    
+    calc = Maniera(filepath + "{map_id}.osu", mods, score)
+    calc.calculate()
+    
+    return round(calc.pp, 2)

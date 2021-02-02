@@ -7,3 +7,4 @@ pyosu
 aiomysql
 nest_asyncio
 discord
+maniera
