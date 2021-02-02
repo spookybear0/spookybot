@@ -11,8 +11,8 @@ async def pp(ctx, args):
     except IndexError:
         return "Invalid arguments."
     
-    mode = await api.get_beatmap(beatmap_id=map).mode
+    mode = await api.get_beatmap(beatmap_id=map)
     
     await set_last_beatmap(ctx.username, map)
     
-    return await np(map, 0, mode)
+    return await np(map, 0, mode.mode)

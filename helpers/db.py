@@ -12,9 +12,9 @@ async def add_user(username, user_id, content):
     cursor = await conn.cursor()
     
     await cursor.execute( # update user data
-    """INSERT INTO `users`(username, id, latestmsg)
-    VALUES (%s, %s, %s)
-    ON DUPLICATE KEY UPDATE latestmsg = %s;""",(username, user_id, content))
+    """INSERT INTO `users`(username, id, latestmsg, lastbeatmap)
+    VALUES (%s, %s, %s, '0')
+    ON DUPLICATE KEY UPDATE latestmsg = %s;""",(username, user_id, content, content))
                     
     await cursor.close()
     await conn.commit()

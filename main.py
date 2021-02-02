@@ -10,7 +10,7 @@ from helpers.np import pp, process_re
 from helpers.classify import Classify
 from helpers.bot import init_bot, bot
 from helpers.db import add_user, log_command, set_last_beatmap, connect_db
-import osu_irc, os, re, time, asyncio, nest_asyncio, pyosu, pymysql
+import osu_irc, os, re, time, asyncio, nest_asyncio, pyosu
 from ratelimiter import RateLimiter
 
 nest_asyncio.apply()
@@ -74,19 +74,20 @@ async def main():
     
     await connect_db(loop)
     
-    await init_bot()
-    
     token = config["token"]
     
     while True:
         spookybot = SpookyBot(token=token, nickname=nickname)
+        await init_bot(spookybot)
         try:
             print("Starting SpookyBot")
             spookybot.run()
         except RuntimeError as e:
+            spookybot.stop()
             print(e)
         except KeyboardInterrupt:
-            pass
+            spookybot.stop()
+            await bot.logout()
         time.sleep(10)
 
 if __name__ == "__main__":

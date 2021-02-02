@@ -1,4 +1,4 @@
-import os
+import os, traceback
 
 prefix = "!"
 realpath = os.path.dirname(os.path.realpath(__file__))
@@ -32,6 +32,7 @@ async def parse_commands(args: list, ctx):
                     try:
                         msg = await info["handler"](ctx, args)
                     except Exception as e:
+                        print(traceback.format_exc())
                         print(f"Error in command {name}. Error: {e}")
                         return f"Error in command {name}. Report this to spookybear0."
                     if msg:

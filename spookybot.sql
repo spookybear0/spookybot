@@ -30,7 +30,7 @@ CREATE TABLE `users` (
   `username` varchar(50) COLLATE utf8_unicode_ci NOT NULL,
   `id` int(11) NOT NULL,
   `latestmsg` varchar(240) COLLATE utf8_unicode_ci NOT NULL,
-  `lastbeatmap` int(11)
+  `lastbeatmap` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 -- --------------------------------------------------------
@@ -97,7 +97,7 @@ ALTER TABLE `users`
 -- Indexes for table `logs`
 --
 ALTER TABLE `logs`
-  ADD PRIMARY KEY (`username`),
+  ADD KEY (`username`),
   ADD KEY `id` (`id`),
   ADD KEY `log` (`log`);
 
