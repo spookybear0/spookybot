@@ -85,12 +85,12 @@ async def get_users():
     
     return result
 
-async def set_last_beatmap(username, bid):
+async def set_last_beatmap(username, map_id):
     cursor = await conn.cursor()
     await cursor.execute( # ban user
     """UPDATE `users`
     SET lastbeatmap = %s
-    WHERE username = %s;""",(bid, username))
+    WHERE username = %s;""",(map_id, username))
                     
     await cursor.close()
     await conn.commit()

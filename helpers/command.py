@@ -43,6 +43,7 @@ async def parse_commands(args: list, ctx):
 commands = {}
 
 def init_commands():
+    global modules
     # get all commands dynamicly
     if os.name == "nt":
         divider = "\\"
@@ -51,14 +52,30 @@ def init_commands():
     else:
         divider = "/"
 
-    for f in os.listdir(realpath + f"{divider}..{divider}commands"): # commands folder
-        if f.endswith(".py") and f != "__init__.py" and f != os.path.isdir(f):
-            name = f.replace(".py", "")
-            command = __import__(f"commands.{name}")
+    modules = [""]
+    for f in os.listdir(realpath + f"{divider}..{divider}commands{divider}"):
+        if os.path.isdir(realpath + f"{divider}..{divider}commands{divider}{f}"):
+            modules.append(f)
             
-            try:
-                aliases = getattr(getattr(command, name), "aliases")
-            except AttributeError:
-                aliases = []
+        
+    for m in modules:
+        for f in os.listdir(realpath + f"{divider}..{divider}commands{divider}{m}"):
+            if f.endswith(".py") and f != "__init__.py" and f != os.path.isdir(f):
+                name = f.replace(".py", "")
+                if m:
+                    command = __import__(f"commands.{m}.{name}")
+                else:
+                    command = __import__(f"commands.{name}")
                 
-            commands[name] = {"handler": getattr(getattr(command, name), name), "aliases": aliases}
+                try:
+                    if m:
+                        aliases = getattr(getattr(command, name), "aliases")
+                    else:
+                        aliases = getattr(getattr(command, name), "aliases")
+                except AttributeError:
+                    aliases = []
+                
+                if m:
+                    commands[name] = {"handler": getattr(getattr(getattr(command, m), name), name), "aliases": aliases}
+                else:
+                    commands[name] = {"handler": getattr(getattr(command, name), name), "aliases": aliases}

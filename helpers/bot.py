@@ -118,13 +118,13 @@ async def onMessage(msg: osu_irc.Message): # fake
         all = re.findall(r"is playing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)|is listening to \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is editing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is watching \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)",
         str(msg.content))
                 
-        mods, bid = process_re(all) # bid = beatmap id
+        mods, map_id = process_re(all)
                 
-        await set_last_beatmap(msg.user_name, bid)
+        await set_last_beatmap(msg.user_name, map_id)
                 
-        mode = await api.get_beatmap(beatmap_id=bid)
+        mode = await api.get_beatmap(beatmap_id=map_id)
                 
-        result = await pp(bid, mods, mode.mode)
+        result = await pp(map_id, mods, mode.mode)
                 
         for r in result.split("\n"):
             return r
