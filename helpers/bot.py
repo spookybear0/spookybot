@@ -4,7 +4,7 @@ from helpers.config import config
 from helpers.parse import parse_args
 from helpers.classify import Classify
 from helpers.command import parse_commands, init_commands
-from helpers.db import ban_user, get_bugs, get_suggestions, get_users, unban_user, connect_db, log_command, set_last_beatmap, add_user, remove_user
+from helpers.db import ban_user, get_bugs, get_suggestions, get_users, unban_user, connect_db, log_command, set_last_beatmap, add_user, remove_user, get_banned
 from helpers.np import pp, process_re
 from contextlib import redirect_stdout
 from io import StringIO
@@ -21,6 +21,7 @@ bot = commands.Bot(command_prefix="!")
 async def ban(ctx: commands.Context, username, reason=""):
     user = await api.get_user(username)
     await ban_user(username, user.user_id, reason)
+    await ctx.send("Banned user!")
     
 @bot.command()
 @commands.is_owner()
@@ -90,44 +91,48 @@ async def _exec(ctx, *, body: str):
             await ctx.send(f"return value \n```\n{result}\n```")
     
 async def onMessage(msg: osu_irc.Message): # fake
-    init_commands()
-    args = parse_args(msg.content)
-    print(msg.content, args)
-    user = await api.get_user(msg.user_name)
-    ctx = Classify({ # context object to send to command
-        "message": msg, # message object
-        "msg": msg, # alias to message
-        "username": msg.user_name,
-        "content": msg.content, # raw message contents (not parsed)
-        "userid":  user.user_id
-    })
-    responce = await parse_commands(args, ctx)
-    if responce: # only send if command detected
-        async def send_msg():
-            await add_user(msg.user_name, user.user_id, msg.content) # add user to db
-            await log_command(msg.user_name, user.user_id, msg.content) # log the message
+    banned = await get_banned(msg.user_name)
+    if not banned:
+        init_commands()
+        args = parse_args(msg.content)
+        print(msg.content, args)
+        user = await api.get_user(msg.user_name)
+        ctx = Classify({ # context object to send to command
+            "message": msg, # message object
+            "msg": msg, # alias to message
+            "username": msg.user_name,
+            "content": msg.content, # raw message contents (not parsed)
+            "userid":  user.user_id
+        })
+        responce = await parse_commands(args, ctx)
+        if responce: # only send if command detected
+            async def send_msg():
+                await add_user(msg.user_name, user.user_id, msg.content) # add user to db
+                await log_command(msg.user_name, user.user_id, msg.content) # log the message
 
-            print(f"TEST Sent {msg.user_name} this \"{responce}\"")
-            return str(responce)
-        r = await send_msg()
-        return r
-    elif msg.content.startswith("is "):
-        # get /np
-        await add_user(msg.user_name, user.user_id, msg.content)
-                
-        all = re.findall(r"is playing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)|is listening to \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is editing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is watching \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)",
-        str(msg.content))
-                
-        mods, map_id = process_re(all)
-                
-        await set_last_beatmap(msg.user_name, map_id)
-                
-        mode = await api.get_beatmap(beatmap_id=map_id)
-                
-        result = await pp(map_id, mods, mode.mode)
-                
-        for r in result.split("\n"):
+                print(f"TEST Sent {msg.user_name} this \"{responce}\"")
+                return str(responce)
+            r = await send_msg()
             return r
+        elif msg.content.startswith("is "):
+            # get /np
+            await add_user(msg.user_name, user.user_id, msg.content)
+                    
+            all = re.findall(r"is playing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)|is listening to \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is editing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is watching \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)",
+            str(msg.content))
+                    
+            mods, map_id = process_re(all)
+                    
+            await set_last_beatmap(msg.user_name, map_id)
+                    
+            mode = await api.get_beatmap(beatmap_id=map_id)
+                    
+            result = await pp(map_id, mods, mode.mode)
+                    
+            for r in result.split("\n"):
+                return r
+    else:
+        return "You are banned!"
     
 @bot.command()
 @commands.is_owner()
