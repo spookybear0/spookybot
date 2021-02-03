@@ -158,7 +158,8 @@ async def recent(ctx, args):
         except:
             pp = "pp unavailable"
     else: 
-        pp = round(await api.get_score(map.beatmap_id, user=username).pp, 2)
+        score = await api.get_score(map.beatmap_id, user=username)
+        pp = round(score.pp, 2)
     mods = " ".join(num_to_mod(recent.enabled_mods))
     if mods:
         mods = " +" + mods
