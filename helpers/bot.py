@@ -4,7 +4,7 @@ from helpers.config import config
 from helpers.parse import parse_args
 from helpers.classify import Classify
 from helpers.command import parse_commands, init_commands
-from helpers.db import ban_user, get_bugs, get_suggestions, get_users, unban_user, connect_db, log_command, set_last_beatmap, add_user, remove_user, get_banned
+from helpers.db import ban_user, get_bugs, get_suggestions, get_users, unban_user, connect_db, log_command, set_last_beatmap, add_user, remove_user, get_banned, get_logs
 from helpers.np import pp, process_re
 from contextlib import redirect_stdout
 from io import StringIO
@@ -167,6 +167,12 @@ async def _remove_user(ctx: commands.Context, username):
 async def _remove_user_id(ctx: commands.Context, userid):
     await remove_user(user_id=userid)
     await ctx.send("User removed!")
+
+@bot.command(name="logs")
+@commands.is_owner()
+async def _logs(ctx: commands.Context):
+    logs = await get_logs()
+    await ctx.send("```" + str(logs) + "```")
 
 def start_bot():
     global conn

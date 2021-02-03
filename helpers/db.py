@@ -147,3 +147,13 @@ async def get_banned(username):
     
     if result: return True
     return False
+
+async def get_logs():
+    cursor = await conn.cursor()
+    await cursor.execute("SELECT log FROM logs;")
+    
+    result = await cursor.fetchall()
+    
+    await cursor.close()
+    
+    return result
