@@ -19,8 +19,8 @@ bot = commands.Bot(command_prefix="!")
 @bot.command()
 @commands.is_owner()
 async def ban(ctx: commands.Context, username, reason=""):
-    user_id = await api.get_user(username).user_id
-    await ban_user(username, user_id, reason)
+    user = await api.get_user(username)
+    await ban_user(username, user.user_id, reason)
     
 @bot.command()
 @commands.is_owner()
