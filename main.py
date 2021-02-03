@@ -30,7 +30,7 @@ class SpookyBot(osu_irc.Client):
 
     async def onMessage(self, msg: osu_irc.Message):
         banned = await get_banned(msg.user_name)
-        if not banned:
+        if msg.is_private:
             args = parse_args(msg.content)
             user = await api.get_user(msg.user_name)
             ctx = Classify({ # context object to send to command
@@ -47,10 +47,19 @@ class SpookyBot(osu_irc.Client):
                     await add_user(msg.user_name, user.user_id, msg.content) # add user to db
                     await log_command(msg.user_name, user.user_id, msg.content) # log the message
                     
-                    await self.sendPM(msg.user_name, str(responce))
-                    print(f"Sent {msg.user_name} this \"{responce}\"") # debugging
+                    if banned:
+                        r = "You are banned!"
+                    else:
+                        r = responce
+                    
+                    await self.sendPM(msg.user_name, str(r))
+                    print(f"Sent {msg.user_name} this \"{r}\"") # debugging
                 await send_msg()
             elif msg.content.startswith("is "):
+                
+                print(f"Got /np from {msg.user_name} which contains this \"{msg.content}\"")
+                await log_command(msg.user_name, user.user_id, msg.content)
+                
                 # get /np
                 await add_user(msg.user_name, user.user_id, msg.content)
                 
@@ -67,8 +76,7 @@ class SpookyBot(osu_irc.Client):
                 
                 for r in result.split("\n"):
                     await self.sendPM(msg.user_name, r)
-        else:
-            await self.sendPM(msg.user_name, "You are banned!")
+            
                     
 async def main():
     global spookybot
