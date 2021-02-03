@@ -136,3 +136,14 @@ async def get_last_beatmap(username):
     await cursor.close()
     
     return result
+
+async def get_banned(username):
+    cursor = await conn.cursor()
+    await cursor.execute("SELECT * FROM bans WHERE username = %s;",(username))
+    
+    result = await cursor.fetchall()
+    
+    await cursor.close()
+    
+    if result: return True
+    return False

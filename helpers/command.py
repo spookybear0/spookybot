@@ -56,7 +56,6 @@ def init_commands():
     for f in os.listdir(realpath + f"{divider}..{divider}commands{divider}"):
         if os.path.isdir(realpath + f"{divider}..{divider}commands{divider}{f}"):
             modules.append(f)
-            
         
     for m in modules:
         for f in os.listdir(realpath + f"{divider}..{divider}commands{divider}{m}"):

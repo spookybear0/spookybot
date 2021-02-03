@@ -9,7 +9,7 @@ from helpers.command import parse_commands, init_commands
 from helpers.np import pp, process_re
 from helpers.classify import Classify
 from helpers.bot import init_bot, bot
-from helpers.db import add_user, log_command, set_last_beatmap, connect_db
+from helpers.db import add_user, log_command, set_last_beatmap, get_banned, connect_db
 import osu_irc, os, re, time, asyncio, nest_asyncio, pyosu
 from ratelimiter import RateLimiter
 
@@ -29,7 +29,8 @@ class SpookyBot(osu_irc.Client):
         print(f"Uncatched error: {error}")
 
     async def onMessage(self, msg: osu_irc.Message):
-        if msg.is_private:
+        banned = await get_banned(msg.user_name)
+        if not banned:
             args = parse_args(msg.content)
             user = await api.get_user(msg.user_name)
             ctx = Classify({ # context object to send to command
@@ -66,6 +67,8 @@ class SpookyBot(osu_irc.Client):
                 
                 for r in result.split("\n"):
                     await self.sendPM(msg.user_name, r)
+        else:
+            await self.sendPM(msg.user_name, "You are banned!")
                     
 async def main():
     global spookybot
