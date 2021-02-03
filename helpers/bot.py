@@ -95,8 +95,10 @@ async def onMessage(msg: osu_irc.Message): # fake
     if not banned:
         init_commands()
         args = parse_args(msg.content)
-        print(msg.content, args)
+        print(msg.content, msg.user_name, args)
+        
         user = await api.get_user(msg.user_name)
+        
         ctx = Classify({ # context object to send to command
             "message": msg, # message object
             "msg": msg, # alias to message
@@ -115,6 +117,10 @@ async def onMessage(msg: osu_irc.Message): # fake
             r = await send_msg()
             return r
         elif msg.content.startswith("is "):
+        
+            print(f"Got /np from {msg.user_name} which contains this \"{msg.content}\"")
+            await log_command(msg.user_name, user.user_id, msg.content)
+            
             # get /np
             await add_user(msg.user_name, user.user_id, msg.content)
                     
@@ -122,6 +128,8 @@ async def onMessage(msg: osu_irc.Message): # fake
             str(msg.content))
                     
             mods, map_id = process_re(all)
+            
+            print(mods, map_id)
                     
             await set_last_beatmap(msg.user_name, map_id)
                     
@@ -140,7 +148,7 @@ async def msg(ctx: commands.Context, *, msg: str):
     try: message = osu_irc.Message(msg)
     except AttributeError: message = osu_irc.Message(" ".join(msg)); err = True
     else: err = False
-    message._user_name = "spookybear0"
+    message._user_name = "RealistikDash"
     if err:
         message._content = " ".join(msg)
     else:

@@ -56,6 +56,8 @@ def mod_to_num(mods):
     if "SpunOut" in mods:    total += 1<<12
     if "Perfect" in mods:    total += 1<<14
     
+    mods = mods.upper()
+    
     if "NF" in mods:    total += 1<<0
     if "EZ" in mods:    total += 1<<1
     if "HD" in mods:    total += 1<<3
