@@ -42,7 +42,7 @@ class SpookyBot(osu_irc.Client):
             })
             responce = await parse_commands(args, ctx)
             if responce: # only send if command detected
-                @RateLimiter(max_calls=10, period=5)
+                @RateLimiter(max_calls=10, period=5) # user rate limits
                 async def send_msg():
                     await add_user(msg.user_name, user.user_id, msg.content) # add user to db
                     await log_command(msg.user_name, user.user_id, msg.content) # log the message

@@ -144,11 +144,11 @@ async def onMessage(msg: osu_irc.Message): # fake
     
 @bot.command()
 @commands.is_owner()
-async def msg(ctx: commands.Context, *, msg: str):
+async def msg(ctx: commands.Context, user: str, *, msg: str):
     try: message = osu_irc.Message(msg)
     except AttributeError: message = osu_irc.Message(" ".join(msg)); err = True
     else: err = False
-    message._user_name = "RealistikDash"
+    message._user_name = user
     if err:
         message._content = " ".join(msg)
     else:
