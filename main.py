@@ -55,27 +55,28 @@ class SpookyBot(osu_irc.Client):
                     await self.sendPM(msg.user_name, str(r))
                     print(f"Sent {msg.user_name} this \"{r}\"") # debugging
                 await send_msg()
-            elif msg.content.startswith("is "):
-                
-                print(f"Got /np from {msg.user_name} which contains this \"{msg.content}\"")
-                await log_command(msg.user_name, user.user_id, msg.content)
-                
-                # get /np
-                await add_user(msg.user_name, user.user_id, msg.content)
-                
-                all = re.findall(r"is playing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)|is listening to \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is editing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is watching \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)",
-                str(msg.content))
-                
-                mods, map_id = process_re(all)
-                
-                await set_last_beatmap(msg.user_name, map_id)
-                
-                mode = await api.get_beatmap(beatmap_id=map_id)
-                
-                result = await pp(map_id, mods, mode.mode)
-                
-                for r in result.split("\n"):
-                    await self.sendPM(msg.user_name, r)
+        if msg.content.startswith("is "):
+            user = await api.get_user(msg.user_name)
+
+            print(f"Got /np from {msg.user_name} which contains this \"{msg.content}\"")
+            await log_command(msg.user_name, user.user_id, msg.content)
+            
+            # get /np
+            await add_user(msg.user_name, user.user_id, msg.content)
+            
+            all = re.findall(r"is playing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)|is listening to \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is editing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is watching \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)",
+            str(msg.content))
+            
+            mods, map_id = process_re(all)
+            
+            await set_last_beatmap(msg.user_name, map_id)
+            
+            mode = await api.get_beatmap(beatmap_id=map_id)
+            
+            result = await pp(map_id, mods, mode.mode)
+            
+            for r in result.split("\n"):
+                await self.sendPM(msg.user_name, r)
             
                     
 async def main():
