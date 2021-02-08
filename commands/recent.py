@@ -12,7 +12,7 @@ def acc_calc(n300, n100, n50, misses):
     if h <= 0:
         return 0.0
 
-    return (n50 * 50.0 + n100 * 100.0 + n300 * 300.0) / (h * 300.0)
+    return (n50 * 50.0 + n100 * 100.0 + n300 * 300.0) / (h * 300.0) * 100
 
 def num_to_mod(number):
     number = int(number)
