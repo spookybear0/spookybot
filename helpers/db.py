@@ -5,9 +5,9 @@ async def connect_db(loop):
     global conn
     conn = await aiomysql.connect(host=config["sql_server"], port=config["sql_port"],
                                        user=config["sql_user"], password=config["sql_password"], db=config["sql_db"],
-                                       loop=loop)
+                                       loop=loop, connect_timeout=2880000)
     cursor = await conn.cursor()
-    cursor.execute("SET GLOBAL connect_timeout=28800")
+    cursor.execute("SET GLOBAL connect_timeout=2880000")
     await cursor.close()
     await conn.commit()
     return conn
