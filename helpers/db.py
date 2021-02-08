@@ -7,7 +7,7 @@ async def connect_db(loop):
                                        user=config["sql_user"], password=config["sql_password"], db=config["sql_db"],
                                        loop=loop, connect_timeout=2880000)
     cursor = await conn.cursor()
-    cursor.execute("SET GLOBAL connect_timeout=2880000")
+    await cursor.execute("SET GLOBAL connect_timeout=2880000")
     await cursor.close()
     await conn.commit()
     return conn
