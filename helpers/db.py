@@ -8,6 +8,7 @@ async def connect_db(loop):
                                        loop=loop, connect_timeout=2880000)
     cursor = await conn.cursor()
     await cursor.execute("SET GLOBAL connect_timeout=2880000")
+    await cursor.execute("SET max_allowed_packet=67108864")
     await cursor.close()
     await conn.commit()
     return conn
