@@ -19,7 +19,6 @@ path = os.path.dirname(os.path.realpath(__file__))
 api = pyosu.OsuApi(config["osuapikey"])
 prefix = "!"
 nickname = "spookybear0"
-debug = False
 
 class SpookyBot(osu_irc.Client):
     async def onReady(self):
@@ -93,19 +92,15 @@ async def main():
         spookybot = SpookyBot(token=token, nickname=nickname)
         print("Starting SpookyBot on discord.")
         await init_bot(spookybot)
-        if debug:
-            while True: pass
+
         try:
-            if not debug:
-                print("Starting SpookyBot.")
-                spookybot.run()
+            print("Starting SpookyBot.")
+            spookybot.run()
         except RuntimeError as e:
-            if not debug:
-                spookybot.stop()
+            spookybot.stop()
             print(e)
         except KeyboardInterrupt:
-            if not debug:
-                spookybot.stop()
+            spookybot.stop()
             await bot.logout()
         time.sleep(10)
 
