@@ -10,7 +10,7 @@ from contextlib import redirect_stdout
 from io import StringIO
 import multiprocessing as mp
 
-enabled = True
+enabled = False
 
 path = os.path.dirname(os.path.realpath(__file__))
 api = pyosu.OsuApi(config["osuapikey"])

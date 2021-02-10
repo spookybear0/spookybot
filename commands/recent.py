@@ -130,6 +130,7 @@ async def py_oppai(map_id:str, accs=[100], mods=0, misses=0, combo=None, fc=None
 # end from owo bot
 
 async def recent(ctx, args):
+    return "Command is broken, will be fixed."
     if os.getenv("OSUAPIKEY"):
         api = pyosu.OsuApi(os.getenv("OSUAPIKEY"))
     else:
