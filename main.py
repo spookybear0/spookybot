@@ -9,8 +9,9 @@ from helpers.command import parse_commands, init_commands
 from helpers.np import pp, process_re
 from helpers.classify import Classify
 from helpers.bot import init_bot, bot
-from helpers.db import add_user, log_command, set_last_beatmap, get_banned, connect_db
+from helpers.db import add_user, log_command, set_last_beatmap, get_banned, connect_db, conn
 import osu_irc, os, re, time, asyncio, nest_asyncio, pyosu, pymysql
+import aioschedule as schedule
 from ratelimiter import RateLimiter
 
 nest_asyncio.apply()
@@ -22,10 +23,15 @@ nickname = "spookybear0"
 
 class SpookyBot(osu_irc.Client):
     async def onReady(self):
+        schedule.every(10).minutes.do(self.ping_myqsl)
+        await schedule.run_pending() # keep mysql server alive
         print("SpookyBot is ready!")
         
     async def onError(self, error):
         print(f"Uncatched error: {error}")
+        
+    async def ping_mysql(self):
+        await conn.ping()
 
     async def onMessage(self, msg: osu_irc.Message):
         banned = await get_banned(msg.user_name)
