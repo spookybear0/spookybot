@@ -10,7 +10,7 @@ from helpers.np import pp, process_re
 from helpers.classify import Classify
 from helpers.bot import init_bot, bot
 from helpers.db import add_user, log_command, set_last_beatmap, get_banned, connect_db
-import osu_irc, os, re, time, asyncio, nest_asyncio, pyosu
+import osu_irc, os, re, time, asyncio, nest_asyncio, pyosu, pymysql
 from ratelimiter import RateLimiter
 
 nest_asyncio.apply()
@@ -102,6 +102,9 @@ async def main():
         except KeyboardInterrupt:
             spookybot.stop()
             await bot.logout()
+        except pymysql.err.OperationalError:
+            spookybot.stop()
+            await connect_db(loop)
         time.sleep(10)
 
 if __name__ == "__main__":
