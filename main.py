@@ -34,7 +34,8 @@ class SpookyBot(osu_irc.Client):
     async def ping_mysql(self):
         print("Pinging mysql!")
         await self.conn.ping()
-        asyncio.get_event_loop().call_later(600, self.ping_mysql())
+        await asyncio.sleep(600)
+        return (await self.ping_mysql())
 
     async def onMessage(self, msg: osu_irc.Message):
         banned = await get_banned(msg.user_name)
