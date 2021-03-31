@@ -57,7 +57,7 @@ class SpookyBot(osu_irc.Client):
                     await log_command(msg.user_name, user.user_id, msg.content) # log the message
                     
                     if banned:
-                        r = "You are banned!"
+                        return
                     else:
                         r = responce
                     
