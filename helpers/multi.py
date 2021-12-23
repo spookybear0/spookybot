@@ -81,11 +81,13 @@ async def add(ctx, args):
 async def skip(ctx, args):
     ctx.match.skip = True
     await ctx.match.sendMultiMessage(f"Skipping map!. In the future this will require a vote.")
+    await ctx.match.sendMultiCommand("aborttimer")
     
 @is_owner
 async def force_skip(ctx, args):
     ctx.match.skip = True
     await ctx.match.sendMultiMessage(f"Force skipped!")
+    await ctx.match.sendMultiCommand("aborttimer")
     
 async def info(ctx, args):
     await ctx.match.sendMultiMessage(f"Use !add (map id or link) to add a map to the queue, Use !help for more info.")
