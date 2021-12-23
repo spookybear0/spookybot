@@ -1,4 +1,7 @@
-from asyncio.exceptions import CancelledError
+try:
+    from asyncio.exceptions import CancelledError
+except ModuleNotFoundError:
+    from asyncio import CancelledError
 from helpers.config import load_config, config
 try:
     load_config()
