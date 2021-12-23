@@ -92,14 +92,25 @@ async def force_skip(ctx, args):
     
 async def info(ctx, args):
     await ctx.match.sendMultiMessage(f"Use !add (map id or link) to add a map to the queue, Use !help for more info.")
+    
+async def queue(ctx, args):
+    if not ctx.username in ctx.match.queue_user:
+        await ctx.match.sendMultiMessage("You are not in the queue.")
+        return
+    ind = ctx.match.queue_user.index(ctx.username)
+    if ind == 0:
+        await ctx.match.sendMultiMessage(f"Your map is being played now.")
+    else:
+        await ctx.match.sendMultiMessage(f"Your map will be played after {ind} more maps.")
 
 commands = {
             "say": {"handler": say, "aliases": []},
             "exec": {"handler": eval, "aliases": ["eval"]},
-            "add": {"handler": add, "aliases": ["add_map", "queue"]},
+            "add": {"handler": add, "aliases": ["add_map", "a"]},
             "skip": {"handler": skip, "aliases": ["s"]},
             "forceskip": {"handler": force_skip, "aliases": ["fs"]},
-            "info": {"handler": info, "aliases": ["i"]}
+            "info": {"handler": info, "aliases": ["i"]},
+            "queue": {"handler": queue, "aliases": ["q"]}
             }
 
 class Match:
