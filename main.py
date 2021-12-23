@@ -37,11 +37,11 @@ class SpookyBot(osu_irc.Client):
         print("SpookyBot is ready!")
         
         # create matches
-        await self.create_match("5-6.99* | SpookyBot Map Queue | Testing Phase (!info)")
+        await self.create_match("5-6.99* | SpookyBot Map Queue | Testing (!info)")
         await asyncio.sleep(3)
-        await self.create_match("4-5.99* | SpookyBot Map Queue | Testing Phase (!info)")
+        await self.create_match("4-5.99* | SpookyBot Map Queue | Testing (!info)")
         await asyncio.sleep(3)
-        await self.create_match("3-4.99* | SpookyBot Map Queue | Testing Phase (!info)")
+        await self.create_match("3-4.99* | SpookyBot Map Queue | Testing (!info)")
         
     async def create_match(self, name: str):
         global recent_mp_id
