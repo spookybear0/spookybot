@@ -133,7 +133,7 @@ async def recent(ctx, args):
     if os.getenv("OSUAPIKEY"):
         api = pyosu.OsuApi(os.getenv("OSUAPIKEY"))
     else:
-        api = pyosu.OsuApi(open(path + "/../osuapikey", "r").read())
+        api = pyosu.OsuApi(config["osuapikey"])
         
     try:
         username = args[1]

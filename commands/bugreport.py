@@ -7,6 +7,6 @@ async def bugreport(ctx, args):
     if len(bug.split(" ")) < 2:
         return "Use quotes for sentences with more than one word."
     await report_bug(ctx.username, ctx.user_id, bug)
-    return "Bug report submitted! Remember, if you want your bug report to go faster, create an issue on github (!github)"
+    return "Bug report submitted! Remember, if you want your bug report to be read faster, create an issue on github (!github)"
 
 aliases = ["br"]
