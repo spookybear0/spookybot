@@ -174,7 +174,7 @@ if __name__ == "__main__":
         print("Closing Games")
         for i, game in enumerate(games_open):
             if i != 0:
-                time.sleep(5)
+                time.sleep(1)
             asyncio.run(spookybot.joinChannel(f"mp_{game.mp_id}"))
             asyncio.run(spookybot.sendMessage(f"mp_{game.mp_id}", "!mp close"))
         spookybot.stop()
