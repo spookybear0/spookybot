@@ -62,7 +62,7 @@ class SpookyBot(osu_irc.Client):
         return (await self.ping_mysql())
 
     async def onMessage(self, msg: osu_irc.Message):
-        banned = await get_banned(msg.user_name)
+        #banned = await get_banned(msg.user_name)
         if msg.room_name.startswith("mp_"):
             global games_open
             mp_id = re.findall(r"mp_([0-9]+)", msg.room_name)[0]
@@ -89,6 +89,8 @@ class SpookyBot(osu_irc.Client):
             user = await api.get_user(msg.user_name)
             
             if msg.user_name == "BanchoBot":
+                if msg.content.startswith("You cannot create any more"):
+                    return
                 global recent_mp_id
                 mp_id = int(re.findall(r"Created the tournament match https:\/\/osu\.ppy\.sh\/mp\/([0-9]+)", msg.content)[0])
                 recent_mp_id = mp_id
@@ -109,10 +111,10 @@ class SpookyBot(osu_irc.Client):
                     await add_user(msg.user_name, user.user_id, msg.content) # add user to db
                     await log_command(msg.user_name, user.user_id, msg.content) # log the message
                     
-                    if banned:
-                        return
-                    else:
-                        r = responce
+                    #if banned:
+                    #    return
+                    #else:
+                    r = responce
                     
                     await self.sendPM(msg.user_name, str(r))
                     print(f"Sent {msg.user_name} this \"{r}\"") # debugging

@@ -1,4 +1,3 @@
-import osu_irc
 import re
 from helpers.parse import parse_args
 from helpers.command import prefix, is_owner
@@ -81,7 +80,7 @@ async def add(ctx, args):
 async def skip(ctx, args):
     ctx.match.skip = True
     ctx.match.played_map = True
-    await ctx.match.sendMultiMessage(f"Skipping map!. In the future this will require a vote.")
+    await ctx.match.sendMultiMessage(f"Skipping map! In the future this will require a vote.")
     await ctx.match.sendMultiCommand("aborttimer")
     
 @is_owner
@@ -137,6 +136,9 @@ class Match:
             if (not self.in_progress and self.played_map and not self.timer_started) or self.skip:
                 if self.skip:
                     self.skip = False
+                    self.in_progress = False
+                    self.played_map = True
+                    self.timer_started = False
                     self.queue_map.pop(0)
                     self.queue_user.pop(0)
                 try:
@@ -148,8 +150,10 @@ class Match:
                 else:
                     self.no_maps_in_queue_alert = True
                     self.played_map = False
+                    await self.sendMultiMessage(f"Changing map to {map}.")
                     await self.changeMap(map)
                     await asyncio.sleep(0.5)
+                    await self.sendMultiMessage("Starting match timer.")
                     await self.startMatch(60)
             
             await asyncio.sleep(0.1)
@@ -212,7 +216,7 @@ class Match:
         elif re.match(r"(.*) joined in slot (\d+)\.", content):
             username, slot = re.findall(r"(.*) joined in slot (\d+)\.", content)[0]
             slot = int(slot)
-            self.slots[slot] = Player(username, slot, False, None)
+            self.slots[slot] = username
         elif re.match(r"(.*) left the game\.", content):
             username = re.findall(r"(.*) left the game\.", content)[0]
             self.slots.pop(self.get_slot_from_username(username))
