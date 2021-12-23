@@ -187,6 +187,7 @@ class Match:
         await self.irc.joinChannel(f"mp_{self.mp_id}") # join irc channel
         
         await self.sendMultiCommand("password") # remove password
+        await self.sendMultiCommand("mods Freemod") # add Freemod
         
         asyncio.get_event_loop().create_task(self.loop())
         
