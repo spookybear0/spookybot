@@ -80,12 +80,14 @@ async def add(ctx, args):
 
 async def skip(ctx, args):
     ctx.match.skip = True
+    ctx.match.played_map = True
     await ctx.match.sendMultiMessage(f"Skipping map!. In the future this will require a vote.")
     await ctx.match.sendMultiCommand("aborttimer")
     
 @is_owner
 async def force_skip(ctx, args):
     ctx.match.skip = True
+    ctx.match.played_map = True
     await ctx.match.sendMultiMessage(f"Force skipped!")
     await ctx.match.sendMultiCommand("aborttimer")
     
