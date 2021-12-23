@@ -2,18 +2,20 @@ from helpers.config import config
 import aiomysql
 
 async def connect_db(loop):
-    global conn
-    conn = await aiomysql.connect(host=config["sql_server"], port=config["sql_port"],
+    global pool
+    pool = await aiomysql.create_pool(host=config["sql_server"], port=config["sql_port"],
                                        user=config["sql_user"], password=config["sql_password"], db=config["sql_db"],
                                        loop=loop, connect_timeout=2880000)
+    conn = await pool.acquire()
     cursor = await conn.cursor()
     await cursor.execute("SET GLOBAL connect_timeout=2880000")
     await cursor.execute("SET GLOBAL max_allowed_packet=67108864")
     await cursor.close()
     await conn.commit()
-    return conn
+    return pool
 
 async def add_user(username, user_id, content):
+    conn = await pool.acquire()
     cursor = await conn.cursor()
     
     await cursor.execute( # update user data
@@ -25,6 +27,7 @@ async def add_user(username, user_id, content):
     await conn.commit()
     
 async def log_command(username, user_id, content):
+    conn = await pool.acquire()
     cursor = await conn.cursor()
     await cursor.execute( # add log
     """INSERT INTO `logs`(username, id, log)
@@ -34,6 +37,7 @@ async def log_command(username, user_id, content):
     await conn.commit()
     
 async def report_bug(username, user_id, bug):
+    conn = await pool.acquire()
     cursor = await conn.cursor()
     await cursor.execute( # report bug
     """INSERT INTO `bugreports`(bug, userid, username)
@@ -43,6 +47,7 @@ async def report_bug(username, user_id, bug):
     await conn.commit()
     
 async def add_suggestion(username, user_id, suggestion):
+    conn = await pool.acquire()
     cursor = await conn.cursor()
     await cursor.execute( # add suggestion
     """INSERT INTO `suggestions`(bug, userid, username)
@@ -52,6 +57,7 @@ async def add_suggestion(username, user_id, suggestion):
     await conn.commit()
     
 async def ban_user(username, user_id, reason):
+    conn = await pool.acquire()
     cursor = await conn.cursor()
     await cursor.execute( # ban user
     """INSERT INTO `bans`(username, id, reason)
@@ -61,6 +67,7 @@ async def ban_user(username, user_id, reason):
     await conn.commit()
     
 async def get_bugs():
+    conn = await pool.acquire()
     cursor = await conn.cursor()
     await cursor.execute("SELECT * FROM bugreports;")
     
@@ -71,6 +78,7 @@ async def get_bugs():
     return result
 
 async def get_suggestions():
+    conn = await pool.acquire()
     cursor = await conn.cursor()
     await cursor.execute("SELECT * FROM suggestions;")
     
@@ -81,6 +89,7 @@ async def get_suggestions():
     return result
 
 async def get_users():
+    conn = await pool.acquire()
     cursor = await conn.cursor()
     await cursor.execute("SELECT * FROM users;")
     
@@ -91,6 +100,7 @@ async def get_users():
     return result
 
 async def set_last_beatmap(username, map_id):
+    conn = await pool.acquire()
     cursor = await conn.cursor()
     await cursor.execute( # ban user
     """UPDATE `users`
@@ -101,6 +111,7 @@ async def set_last_beatmap(username, map_id):
     await conn.commit()
     
 async def remove_user(username=None, user_id=None):
+    conn = await pool.acquire()
     cursor = await conn.cursor()
     if username:
         await cursor.execute( # remove user by username
@@ -117,6 +128,7 @@ async def remove_user(username=None, user_id=None):
     await conn.commit()
     
 async def unban_user(username=None, user_id=None):
+    conn = await pool.acquire()
     cursor = await conn.cursor()
     if username:
         await cursor.execute( # unban by username
@@ -133,6 +145,7 @@ async def unban_user(username=None, user_id=None):
     await conn.commit()
     
 async def get_last_beatmap(username):
+    conn = await pool.acquire()
     cursor = await conn.cursor()
     await cursor.execute("SELECT lastbeatmap FROM users WHERE username = %s;",(username))
     
@@ -143,6 +156,7 @@ async def get_last_beatmap(username):
     return result
 
 async def get_banned(username):
+    conn = await pool.acquire()
     cursor = await conn.cursor()
     await cursor.execute("SELECT * FROM bans WHERE username = %s;",(username))
     
@@ -154,6 +168,7 @@ async def get_banned(username):
     return False
 
 async def get_logs():
+    conn = await pool.acquire()
     cursor = await conn.cursor()
     await cursor.execute("SELECT log FROM logs;")
     

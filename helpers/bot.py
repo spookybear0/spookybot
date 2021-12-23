@@ -183,9 +183,9 @@ async def _logs(ctx: commands.Context):
     await ctx.send("```" + str(logs) + "```")
 
 def start_bot():
-    global conn
+    global pool
     asyncio.run(connect_db(asyncio.get_event_loop()))
-    from helpers.db import conn
+    from helpers.db import pool
     bot.run(config["discordbottoken"])
 
 async def init_bot(spookybot):

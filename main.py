@@ -15,7 +15,7 @@ from helpers.classify import Classify
 from helpers.bot import init_bot, bot
 from helpers.db import add_user, log_command, set_last_beatmap, get_banned, connect_db
 from helpers.multi import Match
-import osu_irc, os, re, time, asyncio, nest_asyncio, pyosu, pymysql
+import osu_irc, os, re, time, asyncio, nest_asyncio, pyosu
 from threading import Thread
 from ratelimiter import RateLimiter
 
@@ -31,8 +31,8 @@ recent_mp_id = 0
 
 class SpookyBot(osu_irc.Client):
     async def onReady(self):
-        from helpers.db import conn # db loaded
-        self.conn = conn
+        from helpers.db import pool # db loaded
+        self.pool = pool
         #await self.ping_mysql()
         print("SpookyBot is ready!")
         
@@ -56,15 +56,9 @@ class SpookyBot(osu_irc.Client):
         
     async def onError(self, error):
         print(f"Uncatched error: {error}")
-        
-    async def ping_mysql(self):
-        print("Pinging mysql!")
-        await self.conn.ping()
-        await asyncio.sleep(600)
-        return (await self.ping_mysql())
 
     async def onMessage(self, msg: osu_irc.Message):
-        #banned = await get_banned(msg.user_name)
+        banned = await get_banned(msg.user_name)
         if msg.room_name.startswith("mp_"):
             global games_open
             mp_id = re.findall(r"mp_([0-9]+)", msg.room_name)[0]
@@ -113,10 +107,10 @@ class SpookyBot(osu_irc.Client):
                     await add_user(msg.user_name, user.user_id, msg.content) # add user to db
                     await log_command(msg.user_name, user.user_id, msg.content) # log the message
                     
-                    #if banned:
-                    #    return
-                    #else:
-                    r = responce
+                    if banned:
+                        return
+                    else:
+                        r = responce
                     
                     await self.sendPM(msg.user_name, str(r))
                     print(f"Sent {msg.user_name} this \"{r}\"") # debugging
