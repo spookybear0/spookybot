@@ -3,7 +3,10 @@ from helpers.parse import parse_args
 from helpers.command import prefix, is_owner
 from traceback import print_exc
 from dataclasses import dataclass
+from helpers.config import config
 import asyncio
+import os
+import pyosu
 
 modes = {
     "osu": 0,
@@ -63,19 +66,30 @@ async def add(ctx, args):
     else:
         map_id = int(map)
         mode = 0
+        
+    if os.getenv("OSUAPIKEY"):
+        api = pyosu.OsuApi(os.getenv("OSUAPIKEY"))
+    else:
+        api = pyosu.OsuApi(config["osuapikey"])
+    
+    map = await api.get_beatmap(beatmap_id=map_id)
+    
+    if not map.difficultyrating < ctx.match.maxstar or not map.difficultyrating > ctx.match.minstar:
+        await ctx.match.sendMultiMessage(f"Map is not in star range ({ctx.match.minstar}-{ctx.match.maxstar}*)!")
+        return
     
     if ctx.username in ctx.match.queue_user:
-        await ctx.match.sendMultiMessage(f"You ({ctx.username}) have already added a map to the queue!")
+        await ctx.match.sendMultiMessage(f"You have already added a map to the queue ({map.title})!")
         return
     
     if map_id in ctx.match.queue_map: # already in queue
-        await ctx.match.sendMultiMessage(f"{map_id} is already in the queue!")
+        await ctx.match.sendMultiMessage(f"{map.title} is already in the queue!")
         return
     
     ctx.match.queue_map.append(map_id)
     ctx.match.queue_user.append(ctx.username)
     
-    await ctx.match.sendMultiMessage(f"{map_id} added to queue!")
+    await ctx.match.sendMultiMessage(f"{map.title} added to queue!")
 
 async def skip(ctx, args):
     ctx.match.skip = True
@@ -103,6 +117,14 @@ async def queue(ctx, args):
     else:
         await ctx.match.sendMultiMessage(f"Your map will be played after {ind} more maps.")
 
+# close bugged lobbies
+@is_owner
+async def closemp(ctx, args):
+    mp_id = int(args[1])
+    await ctx.irc.joinChannel(f"mp_{mp_id}")
+    await ctx.irc.sendMessage(f"mp_{mp_id}", "!mp close")
+    await ctx.match.sendMultiMessage(f"Closed {mp_id}")
+
 commands = {
             "say": {"handler": say, "aliases": []},
             "exec": {"handler": eval, "aliases": ["eval"]},
@@ -110,14 +132,17 @@ commands = {
             "skip": {"handler": skip, "aliases": ["s"]},
             "forceskip": {"handler": force_skip, "aliases": ["fs"]},
             "info": {"handler": info, "aliases": ["i"]},
-            "queue": {"handler": queue, "aliases": ["q"]}
+            "queue": {"handler": queue, "aliases": ["q"]},
+            "closemp": {"handler": closemp, "aliases": ["cmp"]}
             }
 
 class Match:
-    def __init__(self, irc, mp_id: int, room_name: str):
+    def __init__(self, irc, mp_id: int, room_name: str, minstar: float, maxstar: float):
         self.irc = irc
         self.mp_id = mp_id
         self.room_name = room_name
+        self.minstar = minstar
+        self.maxstar = maxstar
         
         self.password = True
         self.slots = {}
@@ -131,8 +156,8 @@ class Match:
         self.skip = False
         
     @classmethod
-    async def create(cls, irc, mp_id: int, room_name: str):
-        ret = cls(irc, mp_id, room_name)
+    async def create(cls, irc, mp_id: int, room_name: str, minstar: float, maxstar: float):
+        ret = cls(irc, mp_id, room_name, minstar, maxstar)
         await ret.onReady()
         return ret
     
@@ -193,6 +218,7 @@ class Match:
         
     async def onMessage(self, ctx):
         msg = ctx.msg
+        print(msg)
         args = parse_args(ctx.content)
         if args[0].startswith(prefix):
             args.insert(0, args[0].replace(prefix, ""))
@@ -204,14 +230,14 @@ class Match:
                     except Exception as e:
                         print(f"Error in command {name}.")
                         print_exc()
-            for alias in info["aliases"]:
-                if args[0] == alias:
-                    try:
-                        await info["handler"](ctx, args)
-                    except Exception as e:
-                        print(f"Error in command {name}.")
-                        print_exc()
-                continue
+                for alias in info["aliases"]:
+                    if args[0] == alias:
+                        try:
+                            await info["handler"](ctx, args)
+                        except Exception as e:
+                            print(f"Error in command {name}.")
+                            print_exc()
+                    continue
         #print(msg.user_name, msg.content, self.mp_id, self.queue_map, self.queue_user)
         #elif re.match(r"is listening to \[https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#\/([0-9]+) .*\]", msg.content):
         #    map_id = re.findall(r"is listening to \[https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#\/([0-9]+) .*\]", msg.content)[0]

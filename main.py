@@ -37,20 +37,22 @@ class SpookyBot(osu_irc.Client):
         print("SpookyBot is ready!")
         
         # create matches
-        await self.create_match("5-6.99* | SpookyBot Map Queue | Testing (!info)")
+        await self.create_match("6-7.99* | SpookyBot Map Queue | Testing (!info)", 6.00, 7.99)
         await asyncio.sleep(3)
-        await self.create_match("4-5.99* | SpookyBot Map Queue | Testing (!info)")
+        await self.create_match("5-6.99* | SpookyBot Map Queue | Testing (!info)", 5.00, 6.99)
         await asyncio.sleep(3)
-        await self.create_match("3-4.99* | SpookyBot Map Queue | Testing (!info)")
+        await self.create_match("4-5.99* | SpookyBot Map Queue | Testing (!info)", 4.00, 5.99)
+        await asyncio.sleep(3)
+        await self.create_match("3-4.99* | SpookyBot Map Queue | Testing (!info)", 3.00, 4.99)
         
-    async def create_match(self, name: str):
+    async def create_match(self, name: str, minstar: float, maxstar: float):
         global recent_mp_id
         prev = recent_mp_id
         # send pm to banchobot
         await self.sendPM("BanchoBot", f"!mp make {name}")
         while prev == recent_mp_id:
             await asyncio.sleep(1)
-        match = await Match.create(self, recent_mp_id, name)
+        match = await Match.create(self, recent_mp_id, name, minstar, maxstar)
         games_open.append(match)
         return match
         
