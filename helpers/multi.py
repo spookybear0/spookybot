@@ -59,12 +59,12 @@ async def add(ctx, args):
     map = args[1]
     if re.match(r"https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#.*\/[0-9]+", map):
         mode, map_id = re.findall(r"https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#(.*)\/([0-9]+)", map)[0]
-        map_id = int(map_id)
+        map_id = map_id
         if mode != "osu":
             await ctx.match.sendMultiMessage("Only osu! is supported")
             return
     else:
-        map_id = int(map)
+        map_id = map
         mode = 0
         
     if os.getenv("OSUAPIKEY"):
@@ -120,10 +120,25 @@ async def queue(ctx, args):
 # close bugged lobbies
 @is_owner
 async def closemp(ctx, args):
-    mp_id = int(args[1])
+    try:
+        mp_id = args[1]
+    except IndexError:
+        mp_id = ctx.match.mp_id
     await ctx.irc.joinChannel(f"mp_{mp_id}")
     await ctx.irc.sendMessage(f"mp_{mp_id}", "!mp close")
+    await ctx.irc.partChannel(f"mp_{mp_id}")
     await ctx.match.sendMultiMessage(f"Closed {mp_id}")
+    
+@is_owner
+async def msgmp(ctx, args):
+    try:
+        mp_id = args[1]
+    except IndexError:
+        mp_id = ctx.match.mp_id
+    msg = args[2]
+    await ctx.irc.joinChannel(f"mp_{mp_id}")
+    await ctx.irc.sendMessage(f"mp_{mp_id}", msg)
+    await ctx.match.sendMultiMessage(f'Messaged {mp_id}: "{msg}"')
 
 commands = {
             "say": {"handler": say, "aliases": []},
@@ -133,11 +148,12 @@ commands = {
             "forceskip": {"handler": force_skip, "aliases": ["fs"]},
             "info": {"handler": info, "aliases": ["i"]},
             "queue": {"handler": queue, "aliases": ["q"]},
-            "closemp": {"handler": closemp, "aliases": ["cmp"]}
+            "closemp": {"handler": closemp, "aliases": ["cmp"]},
+            "msgmp": {"handler": msgmp, "aliases": ["mmp"]}
             }
 
 class Match:
-    def __init__(self, irc, mp_id: int, room_name: str, minstar: float, maxstar: float):
+    def __init__(self, irc, mp_id: str, room_name: str, minstar: float, maxstar: float):
         self.irc = irc
         self.mp_id = mp_id
         self.room_name = room_name
@@ -156,7 +172,7 @@ class Match:
         self.skip = False
         
     @classmethod
-    async def create(cls, irc, mp_id: int, room_name: str, minstar: float, maxstar: float):
+    async def create(cls, irc, mp_id: str, room_name: str, minstar: float, maxstar: float):
         ret = cls(irc, mp_id, room_name, minstar, maxstar)
         await ret.onReady()
         return ret
@@ -218,7 +234,6 @@ class Match:
         
     async def onMessage(self, ctx):
         msg = ctx.msg
-        print(msg)
         args = parse_args(ctx.content)
         if args[0].startswith(prefix):
             args.insert(0, args[0].replace(prefix, ""))

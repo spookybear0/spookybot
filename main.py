@@ -18,6 +18,7 @@ from helpers.multi import Match
 import osu_irc, os, re, time, asyncio, nest_asyncio, pyosu
 from threading import Thread
 from ratelimiter import RateLimiter
+import signal
 
 nest_asyncio.apply()
 path = os.path.dirname(os.path.realpath(__file__))
@@ -35,15 +36,24 @@ class SpookyBot(osu_irc.Client):
         self.pool = pool
         #await self.ping_mysql()
         print("SpookyBot is ready!")
-        
         # create matches
+        
         await self.create_match("6-7.99* | SpookyBot Map Queue | Testing (!info)", 6.00, 7.99)
-        await asyncio.sleep(3)
+        await asyncio.sleep(5)
         await self.create_match("5-6.99* | SpookyBot Map Queue | Testing (!info)", 5.00, 6.99)
-        await asyncio.sleep(3)
+        await asyncio.sleep(5)
         await self.create_match("4-5.99* | SpookyBot Map Queue | Testing (!info)", 4.00, 5.99)
-        await asyncio.sleep(3)
+        await asyncio.sleep(5)
         await self.create_match("3-4.99* | SpookyBot Map Queue | Testing (!info)", 3.00, 4.99)
+        
+    def onShutdown(self, *args):
+        for i, game in enumerate(games_open):
+            print(game, game.mp_id)
+            if i != 0:
+                time.sleep(3)
+            self.Loop.run_until_complete(self.close_match(game))
+        self.stop()
+        exit()
         
     async def create_match(self, name: str, minstar: float, maxstar: float):
         global recent_mp_id
@@ -55,17 +65,28 @@ class SpookyBot(osu_irc.Client):
         match = await Match.create(self, recent_mp_id, name, minstar, maxstar)
         games_open.append(match)
         return match
+    
+    async def close_match(self, match):
+        if isinstance(match, Match):
+            match = match.mp_id
+        await self.joinChannel(f"mp_{match}")
+        await self.sendMessage(f"mp_{match}", "!mp close")
+        await self.partChannel(f"mp_{match}")
+        
+    def close_match_sync(self, match):
+        self.Loop.run_in_executor
         
     async def onError(self, error):
         print(f"Uncatched error: {error}")
 
     async def onMessage(self, msg: osu_irc.Message):
+        print([value for value in list(dict(self.channels).keys()) if not value.startswith("#")])
         banned = await get_banned(msg.user_name)
         if msg.room_name.startswith("mp_"):
             global games_open
             mp_id = re.findall(r"mp_([0-9]+)", msg.room_name)[0]
             for game in games_open:
-                if game.mp_id == int(mp_id):
+                if game.mp_id == mp_id:
                     user = await api.get_user(msg.user_name)
                     ctx = Classify({ # context object to send to command
                         "message": msg, # message object
@@ -154,23 +175,17 @@ async def main():
     spookybot = SpookyBot(token=token, nickname=nickname)
     print("Starting SpookyBot on discord.")
     await init_bot(spookybot)
+    
+    signal.signal(signal.SIGINT, spookybot.onShutdown)
+    signal.signal(signal.SIGTERM, spookybot.onShutdown)
 
+    print("Starting SpookyBot.")
     try:
-        print("Starting SpookyBot.")
         spookybot.run()
-    except RuntimeError as e:
-        print(e)
-    except KeyboardInterrupt:
-        await bot.logout()
+    except RuntimeError:
+        pass
+    finally:
+        spookybot.stop()
 
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except (RuntimeError, KeyboardInterrupt, CancelledError, ConnectionResetError):
-        print("Closing Games")
-        for i, game in enumerate(games_open):
-            if i != 0:
-                time.sleep(1)
-            asyncio.run(spookybot.joinChannel(f"mp_{game.mp_id}"))
-            asyncio.run(spookybot.sendMessage(f"mp_{game.mp_id}", "!mp close"))
-        spookybot.stop()
+    asyncio.run(main())
