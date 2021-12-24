@@ -80,7 +80,6 @@ class SpookyBot(osu_irc.Client):
         print(f"Uncatched error: {error}")
 
     async def onMessage(self, msg: osu_irc.Message):
-        print([value for value in list(dict(self.channels).keys()) if not value.startswith("#")])
         banned = await get_banned(msg.user_name)
         if msg.room_name.startswith("mp_"):
             global games_open
