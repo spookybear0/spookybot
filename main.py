@@ -34,12 +34,9 @@ class SpookyBot(osu_irc.Client):
     async def onReady(self):
         from helpers.db import pool # db loaded
         self.pool = pool
-        #await self.ping_mysql()
         print("SpookyBot is ready!")
         # create matches
         
-        await self.create_match("6-7.99* | SpookyBot Map Queue | Testing (!info)", 6.00, 7.99)
-        await asyncio.sleep(5)
         await self.create_match("5-6.99* | SpookyBot Map Queue | Testing (!info)", 5.00, 6.99)
         await asyncio.sleep(5)
         await self.create_match("4-5.99* | SpookyBot Map Queue | Testing (!info)", 4.00, 5.99)
@@ -47,11 +44,12 @@ class SpookyBot(osu_irc.Client):
         await self.create_match("3-4.99* | SpookyBot Map Queue | Testing (!info)", 3.00, 4.99)
         
     def onShutdown(self, *args):
-        for i, game in enumerate(games_open):
-            print(game, game.mp_id)
-            if i != 0:
-                time.sleep(3)
-            self.Loop.run_until_complete(self.close_match(game))
+        coros = []
+        for game in games_open:
+            coros.append(self.close_match(game))
+        for coro in coros:
+            self.Loop.run_until_complete(coro)
+            time.sleep(5)
         self.stop()
         exit()
         
@@ -72,9 +70,6 @@ class SpookyBot(osu_irc.Client):
         await self.joinChannel(f"mp_{match}")
         await self.sendMessage(f"mp_{match}", "!mp close")
         await self.partChannel(f"mp_{match}")
-        
-    def close_match_sync(self, match):
-        self.Loop.run_in_executor
         
     async def onError(self, error):
         print(f"Uncatched error: {error}")
@@ -183,8 +178,9 @@ async def main():
         spookybot.run()
     except RuntimeError:
         pass
-    finally:
-        spookybot.stop()
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except (Exception, CancelledError):
+        pass
