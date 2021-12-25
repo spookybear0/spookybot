@@ -36,7 +36,6 @@ class SpookyBot(osu_irc.Client):
         self.pool = pool
         print("SpookyBot is ready!")
         # create matches
-        
         await self.create_match("5-6.99* | SpookyBot Map Queue | Testing (!info)", 5.00, 6.99)
         await asyncio.sleep(5)
         await self.create_match("4-5.99* | SpookyBot Map Queue | Testing (!info)", 4.00, 5.99)
@@ -95,6 +94,7 @@ class SpookyBot(osu_irc.Client):
             return
         
         if msg.is_private:
+            print(msg.content)
             args = parse_args(msg.content)
             user = await api.get_user(msg.user_name)
             
@@ -104,6 +104,7 @@ class SpookyBot(osu_irc.Client):
                 global recent_mp_id
                 mp_id = int(re.findall(r"Created the tournament match https:\/\/osu\.ppy\.sh\/mp\/([0-9]+)", msg.content)[0])
                 recent_mp_id = mp_id
+                return
             
             ctx = Classify({ # context object to send to command
                 "message": msg, # message object
@@ -129,28 +130,28 @@ class SpookyBot(osu_irc.Client):
                     await self.sendPM(msg.user_name, str(r))
                     print(f"Sent {msg.user_name} this \"{r}\"") # debugging
                 await send_msg()
-        if msg.content.startswith("is "):
-            user = await api.get_user(msg.user_name)
+            if msg.content.startswith("is "):
+                user = await api.get_user(msg.user_name)
 
-            print(f"Got /np from {msg.user_name} which contains this \"{msg.content}\"")
-            await log_command(msg.user_name, user.user_id, msg.content)
-            
-            # get /np
-            await add_user(msg.user_name, user.user_id, msg.content)
-            
-            all = re.findall(r"is playing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)|is listening to \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is editing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is watching \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)",
-            str(msg.content))
-            
-            mods, map_id = process_re(all)
-            
-            await set_last_beatmap(msg.user_name, map_id)
-            
-            mode = await api.get_beatmap(beatmap_id=map_id)
-            
-            result = await pp(map_id, mods, mode.mode)
-            
-            for r in result.split("\n"):
-                await self.sendPM(msg.user_name, r)
+                print(f"Got /np from {msg.user_name} which contains this \"{msg.content}\"")
+                await log_command(msg.user_name, user.user_id, msg.content)
+                
+                # get /np
+                await add_user(msg.user_name, user.user_id, msg.content)
+                
+                all = re.findall(r"is playing \[https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#(.*)\/([0-9]+) .*\]( .*|)|is listening to \[https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#(.*)\/([0-9]+) .*\]|is editing \[https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#(.*)\/([0-9]+) .*\]|is watching \[https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#(.*)\/([0-9]+) .*\]( .*|)",
+                str(msg.content))
+                
+                mods, map_id = process_re(all)
+                
+                await set_last_beatmap(msg.user_name, map_id)
+                
+                mode = await api.get_beatmap(beatmap_id=map_id)
+                
+                result = await pp(map_id, mods, mode.mode)
+                
+                for r in result.split("\n"):
+                    await self.sendPM(msg.user_name, r)
             
                     
 async def main():

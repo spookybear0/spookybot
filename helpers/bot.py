@@ -90,21 +90,27 @@ async def _exec(ctx, *, body: str):
         if result:
             await ctx.send(f"return value \n```\n{result}\n```")
     
-async def onMessage(msg: osu_irc.Message): # fake
+async def onMessage(msg: osu_irc.Message):
     banned = await get_banned(msg.user_name)
-    if not banned:
-        init_commands()
+    if msg.is_private:
         args = parse_args(msg.content)
-        print(msg.content, msg.user_name, args)
-        
         user = await api.get_user(msg.user_name)
+        
+        if msg.user_name == "BanchoBot":
+            if msg.content.startswith("You cannot create any more"):
+                return
+            global recent_mp_id
+            mp_id = int(re.findall(r"Created the tournament match https:\/\/osu\.ppy\.sh\/mp\/([0-9]+)", msg.content)[0])
+            recent_mp_id = mp_id
+            return
         
         ctx = Classify({ # context object to send to command
             "message": msg, # message object
             "msg": msg, # alias to message
             "username": msg.user_name,
             "content": msg.content, # raw message contents (not parsed)
-            "userid":  user.user_id
+            "userid":  user.user_id,
+            "match": None
         })
         responce = await parse_commands(args, ctx)
         if responce: # only send if command detected
@@ -116,31 +122,28 @@ async def onMessage(msg: osu_irc.Message): # fake
                 return str(responce)
             r = await send_msg()
             return r
-        elif msg.content.startswith("is "):
-        
+        if msg.content.startswith("is "):
+            user = await api.get_user(msg.user_name)
+
             print(f"Got /np from {msg.user_name} which contains this \"{msg.content}\"")
             await log_command(msg.user_name, user.user_id, msg.content)
             
             # get /np
             await add_user(msg.user_name, user.user_id, msg.content)
-                    
-            all = re.findall(r"is playing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)|is listening to \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is editing \[https://osu\.ppy\.sh/b/([0-9]+) .*\]|is watching \[https://osu\.ppy\.sh/b/([0-9]+) .*\]( .*|)",
+            
+            all = re.findall(r"is playing \[https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#(.*)\/([0-9]+) .*\]( .*|)|is listening to \[https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#(.*)\/([0-9]+) .*\]|is editing \[https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#(.*)\/([0-9]+) .*\]|is watching \[https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#(.*)\/([0-9]+) .*\]( .*|)",
             str(msg.content))
-                    
+            
             mods, map_id = process_re(all)
             
-            print(mods, map_id)
-                    
             await set_last_beatmap(msg.user_name, map_id)
-                    
+            
             mode = await api.get_beatmap(beatmap_id=map_id)
-                    
+            
             result = await pp(map_id, mods, mode.mode)
-                    
+            
             for r in result.split("\n"):
                 return r
-    else:
-        return "You are banned!"
     
 @bot.command()
 @commands.is_owner()
