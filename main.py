@@ -44,11 +44,8 @@ class SpookyBot(osu_irc.Client):
         await self.create_match("3-4.99* | SpookyBot Map Queue | Testing (!info)", 3.00, 4.99)
         
     def onShutdown(self, *args):
-        coros = []
         for game in games_open:
-            coros.append(self.close_match(game))
-        for coro in coros:
-            self.Loop.run_until_complete(coro)
+            self.Loop.run_until_complete(self.close_match(game))
             time.sleep(5)
         self.stop()
         exit()

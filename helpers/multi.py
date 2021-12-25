@@ -74,6 +74,10 @@ async def add(ctx, args):
     
     map = await api.get_beatmap(beatmap_id=map_id)
     
+    if map.approved < 1: # less than ranked (no leaderboard)
+        await ctx.match.sendMultiMessage(f"Map must have a leaderboard.")
+        return
+    
     if not map.difficultyrating < ctx.match.maxstar or not map.difficultyrating > ctx.match.minstar:
         await ctx.match.sendMultiMessage(f"Map is not in star range ({ctx.match.minstar}-{ctx.match.maxstar}*)!")
         return
@@ -209,6 +213,12 @@ class Match:
                     await self.startMatch(60)
             
             await asyncio.sleep(0.1)
+            
+    async def every_5_min(self):
+        while True:
+            if not self.slots:
+                await self.sendMultiMessage("keep-alive")
+                await asyncio.sleep(5*60)
     
     async def sendMultiMessage(self, message):
         return await self.irc.sendMessage(f"mp_{self.mp_id}", message) # remove password
@@ -230,7 +240,9 @@ class Match:
         await self.sendMultiCommand("password") # remove password
         await self.sendMultiCommand("mods Freemod") # add Freemod
         
-        asyncio.get_event_loop().create_task(self.loop())
+        loop = asyncio.get_event_loop()
+        loop.create_task(self.every_5_min())
+        loop.create_task(self.loop()) # start loop
         
     async def onMessage(self, ctx):
         msg = ctx.msg
