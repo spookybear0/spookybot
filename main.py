@@ -36,6 +36,7 @@ class SpookyBot(osu_irc.Client):
         self.pool = pool
         print("SpookyBot is ready!")
         # create matches
+        return # not ready yet
         await self.create_match("5-6.99* | SpookyBot Map Queue | Testing (!info)", 5.00, 6.99)
         await asyncio.sleep(5)
         await self.create_match("4-5.99* | SpookyBot Map Queue | Testing (!info)", 4.00, 5.99)
