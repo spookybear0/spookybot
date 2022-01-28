@@ -189,6 +189,7 @@ def start_bot():
     global pool
     asyncio.run(connect_db(asyncio.get_event_loop()))
     from helpers.db import pool
+    init_commands()
     bot.run(config["discordbottoken"])
 
 async def init_bot(spookybot):
