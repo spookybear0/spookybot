@@ -38,7 +38,6 @@ class SpookyBot(osu_irc.Client):
         # create matches
         await self.create_match("5-6.99* | SpookyBot Map Queue | Testing (!info)", 5.00, 6.99)
         await asyncio.sleep(5)
-        return # not ready yet
         await self.create_match("4-5.99* | SpookyBot Map Queue | Testing (!info)", 4.00, 5.99)
         await asyncio.sleep(5)
         await self.create_match("3-4.99* | SpookyBot Map Queue | Testing (!info)", 3.00, 4.99)
@@ -72,12 +71,11 @@ class SpookyBot(osu_irc.Client):
         print(f"Uncatched error: {error}")
 
     async def onMessage(self, msg: osu_irc.Message):
-        banned = await get_banned(msg.user_name)
         if msg.room_name.startswith("mp_"):
             global games_open
             mp_id = re.findall(r"mp_([0-9]+)", msg.room_name)[0]
             for game in games_open:
-                if game.mp_id == mp_id:
+                if game.mp_id == int(mp_id):
                     user = await api.get_user(msg.user_name)
                     ctx = Classify({ # context object to send to command
                         "message": msg, # message object
@@ -95,6 +93,7 @@ class SpookyBot(osu_irc.Client):
             return
         
         if msg.is_private:
+            banned = await get_banned(msg.user_name)
             print(msg.content)
             args = parse_args(msg.content)
             user = await api.get_user(msg.user_name)
