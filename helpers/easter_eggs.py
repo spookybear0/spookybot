@@ -15,5 +15,3 @@ def check_phrase(msg):
     for key, value in phrases:
         if key.match(msg):
             return value
-        
-print(check_phrase("pekora"))
