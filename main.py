@@ -15,7 +15,14 @@ from helpers.classify import Classify
 from helpers.bot import init_bot, bot
 from helpers.db import add_user, log_command, set_last_beatmap, get_banned, connect_db
 from helpers.multi import Match
-import osu_irc, os, re, time, asyncio, nest_asyncio, pyosu
+from helpers.easter_eggs import check_phrase
+import osu_irc
+import os
+import re
+import time
+import asyncio
+import nest_asyncio
+import pyosu
 from threading import Thread
 from ratelimiter import RateLimiter
 import signal
@@ -100,7 +107,7 @@ class SpookyBot(osu_irc.Client):
             
             if msg.user_name == "BanchoBot":
                 if msg.content.startswith("You cannot create any more"):
-                    return
+                    return # too many tournament matches created by bot
                 global recent_mp_id
                 mp_id = int(re.findall(r"Created the tournament match https:\/\/osu\.ppy\.sh\/mp\/([0-9]+)", msg.content)[0])
                 recent_mp_id = mp_id
@@ -116,6 +123,8 @@ class SpookyBot(osu_irc.Client):
                 "match": None
             })
             responce = await parse_commands(args, ctx)
+            
+            # !commands
             if responce: # only send if command detected
                 @RateLimiter(max_calls=10, period=5) # user rate limits
                 async def send_msg():
@@ -130,7 +139,10 @@ class SpookyBot(osu_irc.Client):
                     await self.sendPM(msg.user_name, str(r))
                     print(f"Sent {msg.user_name} this \"{r}\"") # debugging
                 await send_msg()
-            if msg.content.startswith("is "):
+                return   
+            
+            # /np
+            elif msg.content.startswith("is "):
                 user = await api.get_user(msg.user_name)
 
                 print(f"Got /np from {msg.user_name} which contains this \"{msg.content}\"")
@@ -152,6 +164,12 @@ class SpookyBot(osu_irc.Client):
                 
                 for r in result.split("\n"):
                     await self.sendPM(msg.user_name, r)
+            
+            # other message, try to detect easter egg phrase    
+            else:
+                phrase = check_phrase(msg.content)
+                if phrase:
+                    await self.sendPM(msg.user_name, phrase)
             
                     
 async def main():
