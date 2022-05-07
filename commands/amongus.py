@@ -1,6 +1,6 @@
 
 
 async def amongus(ctx, args):
-    return "SUS ඞ"
+    return "ඞ"
 
 aliases = []
