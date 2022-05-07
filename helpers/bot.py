@@ -1,10 +1,16 @@
-import discord, os, asyncio, pyosu, textwrap, osu_irc, re
+import discord
+import os
+import asyncio
+import pyosu
+import textwrap
+import osu_irc
+import re
 from discord.ext import commands
 from helpers.config import config
 from helpers.parse import parse_args
 from helpers.context import Context
 from helpers.command import parse_commands, init_commands
-from helpers.db import ban_user, get_bugs, get_suggestions, get_users, unban_user, connect_db, log_command, set_last_beatmap, add_user, remove_user, get_banned, get_logs
+from helpers.db import ban_user, get_users, unban_user, connect_db, log_command, set_last_beatmap, add_user, remove_user, get_banned, get_logs
 from helpers.np import pp, process_re
 from contextlib import redirect_stdout
 from io import StringIO
@@ -35,18 +41,7 @@ async def unban_id(ctx: commands.Context, user_id):
     await unban_user(None, user_id)
     await ctx.send("Unbanned user!")
     
-@bot.command()
-@commands.is_owner()
-async def bugs(ctx: commands.Context):
-    result = await get_bugs()
-    await ctx.send(f"```{result}```")
-    
-@bot.command()
-@commands.is_owner()
-async def suggestions(ctx: commands.Context):
-    result = await get_suggestions()
-    await ctx.send(f"```{result}```")
-    
+
 @bot.command()
 @commands.is_owner()
 async def users(ctx: commands.Context):

@@ -1,4 +1,5 @@
-import os, traceback
+import os
+import traceback
 
 prefix = "!"
 realpath = os.path.dirname(os.path.realpath(__file__))
@@ -44,25 +45,19 @@ commands = {}
 
 def init_commands():
     global modules
+    
     # get all commands dynamicly
-    if os.name == "nt":
-        divider = "\\"
-    elif os.name == "posix":
-        divider = "/"
-    else:
-        divider = "/"
-
     modules = [""]
-    for f in os.listdir(realpath + f"{divider}..{divider}commands{divider}"):
-        if os.path.isdir(realpath + f"{divider}..{divider}commands{divider}{f}"):
-            modules.append(f)
+    for file in os.listdir(realpath + f"/../commands/"):
+        if os.path.isdir(realpath + f"/../commands/{file}"):
+            modules.append(file)
         
-    for m in modules:
-        for f in os.listdir(realpath + f"{divider}..{divider}commands{divider}{m}"):
-            if f.endswith(".py") and f != "__init__.py" and f != os.path.isdir(f):
+    for module in modules:
+        for file in os.listdir(realpath + f"/../commands/{module}"):
+            if file.endswith(".py") and file != "__init__.py" and file != os.path.isdir(file):
                 name = f.replace(".py", "")
                 if m:
-                    command = __import__(f"commands.{m}.{name}")
+                    command = __import__(f"commands.{module}.{name}")
                 else:
                     command = __import__(f"commands.{name}")
                 
@@ -75,6 +70,6 @@ def init_commands():
                     aliases = []
                 
                 if m:
-                    commands[name] = {"handler": getattr(getattr(getattr(command, m), name), name), "aliases": aliases}
+                    commands[name] = {"handler": getattr(getattr(getattr(command, module), name), name), "aliases": aliases}
                 else:
                     commands[name] = {"handler": getattr(getattr(command, name), name), "aliases": aliases}

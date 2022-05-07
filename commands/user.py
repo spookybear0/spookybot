@@ -1,4 +1,5 @@
-import pyosu, os
+import pyosu
+import os
 from helpers.config import config
 
 path = os.path.dirname(os.path.realpath(__file__))

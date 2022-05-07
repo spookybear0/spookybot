@@ -1,4 +1,6 @@
-import aiohttp, pyosu, time, os
+import aiohttp
+import pyosu
+import os
 from helpers.config import config
 from maniera.calculator import Maniera
 

@@ -36,26 +36,6 @@ async def log_command(username, user_id, content):
     await cursor.close()
     await conn.commit()
     
-async def report_bug(username, user_id, bug):
-    conn = await pool.acquire()
-    cursor = await conn.cursor()
-    await cursor.execute( # report bug
-    """INSERT INTO `bugreports`(bug, userid, username)
-    VALUES (%s, %s, %s);""",(bug, user_id, username))
-                    
-    await cursor.close()
-    await conn.commit()
-    
-async def add_suggestion(username, user_id, suggestion):
-    conn = await pool.acquire()
-    cursor = await conn.cursor()
-    await cursor.execute( # add suggestion
-    """INSERT INTO `suggestions`(bug, userid, username)
-    VALUES (%s, %s, %s);""",(suggestion, user_id, username))
-                    
-    await cursor.close()
-    await conn.commit()
-    
 async def ban_user(username, user_id, reason):
     conn = await pool.acquire()
     cursor = await conn.cursor()
@@ -65,28 +45,6 @@ async def ban_user(username, user_id, reason):
                     
     await cursor.close()
     await conn.commit()
-    
-async def get_bugs():
-    conn = await pool.acquire()
-    cursor = await conn.cursor()
-    await cursor.execute("SELECT * FROM bugreports;")
-    
-    result = await cursor.fetchall()
-    
-    await cursor.close()
-    
-    return result
-
-async def get_suggestions():
-    conn = await pool.acquire()
-    cursor = await conn.cursor()
-    await cursor.execute("SELECT * FROM suggestions;")
-    
-    result = await cursor.fetchall()
-    
-    await cursor.close()
-    
-    return result
 
 async def get_users():
     conn = await pool.acquire()

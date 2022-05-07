@@ -1,4 +1,7 @@
-import os, pyosu, pyoppai, aiohttp
+import os
+import pyosu
+import pyoppai
+import aiohttp
 from helpers.config import config
 
 path = os.path.dirname(os.path.realpath(__file__))
@@ -18,29 +21,29 @@ def num_to_mod(number):
     number = int(number)
     mod_list = []
 
-    if number & 1<<0:   mod_list.append('NF')
-    if number & 1<<1:   mod_list.append('EZ')
-    if number & 1<<3:   mod_list.append('HD')
-    if number & 1<<4:   mod_list.append('HR')
-    if number & 1<<5:   mod_list.append('SD')
-    if number & 1<<9:   mod_list.append('NC')
-    elif number & 1<<6: mod_list.append('DT')
-    if number & 1<<7:   mod_list.append('RX')
-    if number & 1<<8:   mod_list.append('HT')
-    if number & 1<<10:  mod_list.append('FL')
-    if number & 1<<12:  mod_list.append('SO')
-    if number & 1<<14:  mod_list.append('PF')
-    if number & 1<<15:  mod_list.append('4 KEY')
-    if number & 1<<16:  mod_list.append('5 KEY')
-    if number & 1<<17:  mod_list.append('6 KEY')
-    if number & 1<<18:  mod_list.append('7 KEY')
-    if number & 1<<19:  mod_list.append('8 KEY')
-    if number & 1<<20:  mod_list.append('FI')
-    if number & 1<<24:  mod_list.append('9 KEY')
-    if number & 1<<25:  mod_list.append('10 KEY')
-    if number & 1<<26:  mod_list.append('1 KEY')
-    if number & 1<<27:  mod_list.append('3 KEY')
-    if number & 1<<28:  mod_list.append('2 KEY')
+    if number & 1<<0:   mod_list.append("NF")
+    if number & 1<<1:   mod_list.append("EZ")
+    if number & 1<<3:   mod_list.append("HD")
+    if number & 1<<4:   mod_list.append("HR")
+    if number & 1<<5:   mod_list.append("SD")
+    if number & 1<<9:   mod_list.append("NC")
+    elif number & 1<<6: mod_list.append("DT")
+    if number & 1<<7:   mod_list.append("RX")
+    if number & 1<<8:   mod_list.append("HT")
+    if number & 1<<10:  mod_list.append("FL")
+    if number & 1<<12:  mod_list.append("SO")
+    if number & 1<<14:  mod_list.append("PF")
+    if number & 1<<15:  mod_list.append("4 KEY")
+    if number & 1<<16:  mod_list.append("5 KEY")
+    if number & 1<<17:  mod_list.append("6 KEY")
+    if number & 1<<18:  mod_list.append("7 KEY")
+    if number & 1<<19:  mod_list.append("8 KEY")
+    if number & 1<<20:  mod_list.append("FI")
+    if number & 1<<24:  mod_list.append("9 KEY")
+    if number & 1<<25:  mod_list.append("10 KEY")
+    if number & 1<<26:  mod_list.append("1 KEY")
+    if number & 1<<27:  mod_list.append("3 KEY")
+    if number & 1<<28:  mod_list.append("2 KEY")
 
     return mod_list
 
@@ -49,7 +52,7 @@ def num_to_mod(number):
 async def download_file(url, filename):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
-            with open(filename, 'wb') as f:
+            with open(filename, "wb") as f:
                 while True:
                     chunk = await response.content.read(1024)
                     if not chunk:
@@ -58,18 +61,17 @@ async def download_file(url, filename):
             return await response.release()
 
 async def py_oppai(map_id:str, accs=[100], mods=0, misses=0, combo=None, fc=None):
-    url = 'https://osu.ppy.sh/osu/{}'.format(map_id)
+    url = "https://osu.ppy.sh/osu/{}".format(map_id)
 
-    # try:
     ctx = pyoppai.new_ctx()
     b = pyoppai.new_beatmap(ctx)
 
     BUFSIZE = 2000000
     buf = pyoppai.new_buffer(BUFSIZE)
 
-    file_path = 'data/osu/temp/{}.osu'.format(map_id) # some unique filepath
+    file_path = "data/osu/temp/{}.osu".format(map_id) # some unique filepath
     await download_file(url, file_path) # this is the file name that it downloaded
-    pyoppai.parse(file_path, b, buf, BUFSIZE, True, 'data/osu/cache/')
+    pyoppai.parse(file_path, b, buf, BUFSIZE, True, "data/osu/cache/")
     dctx = pyoppai.new_d_calc_ctx(ctx)
     pyoppai.apply_mods(b, mods)
 
@@ -96,36 +98,34 @@ async def py_oppai(map_id:str, accs=[100], mods=0, misses=0, combo=None, fc=None
         total_pp_list.append(fc_pp)
 
     pyoppai_json = {
-        'version': pyoppai.version(b),
-        'title': pyoppai.title(b),
-        'artist': pyoppai.artist(b),
-        'creator': pyoppai.creator(b),
-        'combo': combo,
-        'misses': misses,
-        'max_combo': pyoppai.max_combo(b),
-        'mode': pyoppai.mode(b),
-        'num_objects': pyoppai.num_objects(b),
-        'num_circles': pyoppai.num_circles(b),
-        'num_sliders': pyoppai.num_sliders(b),
-        'num_spinners': pyoppai.num_spinners(b),
-        'stars': stars,
-        'aim_stars': aim,
-        'speed_stars': speed,
-        'pp': total_pp_list, # list
-        'aim_pp': aim_pp_list,
-        'speed_pp': speed_pp_list,
-        'acc_pp': acc_pp_list,
-        'acc': accs, # list
-        'cs': cs,
-        'od': od,
-        'ar': ar,
-        'hp': hp
+        "version": pyoppai.version(b),
+        "title": pyoppai.title(b),
+        "artist": pyoppai.artist(b),
+        "creator": pyoppai.creator(b),
+        "combo": combo,
+        "misses": misses,
+        "max_combo": pyoppai.max_combo(b),
+        "mode": pyoppai.mode(b),
+        "num_objects": pyoppai.num_objects(b),
+        "num_circles": pyoppai.num_circles(b),
+        "num_sliders": pyoppai.num_sliders(b),
+        "num_spinners": pyoppai.num_spinners(b),
+        "stars": stars,
+        "aim_stars": aim,
+        "speed_stars": speed,
+        "pp": total_pp_list, # list
+        "aim_pp": aim_pp_list,
+        "speed_pp": speed_pp_list,
+        "acc_pp": acc_pp_list,
+        "acc": accs, # list
+        "cs": cs,
+        "od": od,
+        "ar": ar,
+        "hp": hp
         }
 
     os.remove(file_path)
     return pyoppai_json
-    #except:
-        #return None
 
 # end from owo bot
 
