@@ -2,7 +2,7 @@ import discord, os, asyncio, pyosu, textwrap, osu_irc, re
 from discord.ext import commands
 from helpers.config import config
 from helpers.parse import parse_args
-from helpers.classify import Classify
+from helpers.context import Context
 from helpers.command import parse_commands, init_commands
 from helpers.db import ban_user, get_bugs, get_suggestions, get_users, unban_user, connect_db, log_command, set_last_beatmap, add_user, remove_user, get_banned, get_logs
 from helpers.np import pp, process_re
@@ -104,7 +104,7 @@ async def onMessage(msg: osu_irc.Message):
             recent_mp_id = mp_id
             return
         
-        ctx = Classify({ # context object to send to command
+        ctx = Context({ # context object to send to command
             "message": msg, # message object
             "msg": msg, # alias to message
             "username": msg.user_name,

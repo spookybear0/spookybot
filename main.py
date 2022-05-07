@@ -11,7 +11,7 @@ except SystemExit:
 from helpers.parse import parse_args
 from helpers.command import parse_commands, init_commands
 from helpers.np import pp, process_re
-from helpers.classify import Classify
+from helpers.context import Context
 from helpers.bot import init_bot, bot
 from helpers.db import add_user, log_command, set_last_beatmap, get_banned, connect_db
 from helpers.multi import Match
@@ -84,7 +84,7 @@ class SpookyBot(osu_irc.Client):
             for game in games_open:
                 if game.mp_id == int(mp_id):
                     user = await api.get_user(msg.user_name)
-                    ctx = Classify({ # context object to send to command
+                    ctx = Context({ # context object to send to command
                         "message": msg, # message object
                         "msg": msg, # alias to message
                         "username": msg.user_name,
@@ -113,7 +113,7 @@ class SpookyBot(osu_irc.Client):
                 recent_mp_id = mp_id
                 return
             
-            ctx = Classify({ # context object to send to command
+            ctx = Context({ # context object to send to command
                 "message": msg, # message object
                 "msg": msg, # alias to message
                 "username": msg.user_name,

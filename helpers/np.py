@@ -76,39 +76,40 @@ def mod_to_num(mods):
 def num_to_mod(num):
     mod_list = []
 
-    if num & 1<<0: mod_list.append('NF')
-    if num & 1<<1:   mod_list.append('EZ')
-    if num & 1<<3:   mod_list.append('HD')
-    if num & 1<<4:   mod_list.append('HR')
-    if num & 1<<5:   mod_list.append('SD')
-    if num & 1<<9:   mod_list.append('NC')
-    elif num & 1<<6: mod_list.append('DT')
-    if num & 1<<7:   mod_list.append('RX')
-    if num & 1<<8:   mod_list.append('HT')
-    if num & 1<<10:  mod_list.append('FL')
-    if num & 1<<12:  mod_list.append('SO')
-    if num & 1<<14:  mod_list.append('PF')
-    if num & 1<<15:  mod_list.append('4 KEY')
-    if num & 1<<16:  mod_list.append('5 KEY')
-    if num & 1<<17:  mod_list.append('6 KEY')
-    if num & 1<<18:  mod_list.append('7 KEY')
-    if num & 1<<19:  mod_list.append('8 KEY')
-    if num & 1<<20:  mod_list.append('FI')
-    if num & 1<<24:  mod_list.append('9 KEY')
-    if num & 1<<25:  mod_list.append('10 KEY')
-    if num & 1<<26:  mod_list.append('1 KEY')
-    if num & 1<<27:  mod_list.append('3 KEY')
-    if num & 1<<28:  mod_list.append('2 KEY')
+    if num & 1<<0:   mod_list.append("NF")
+    if num & 1<<1:   mod_list.append("EZ")
+    if num & 1<<3:   mod_list.append("HD")
+    if num & 1<<4:   mod_list.append("HR")
+    if num & 1<<5:   mod_list.append("SD")
+    if num & 1<<9:   mod_list.append("NC")
+    elif num & 1<<6: mod_list.append("DT")
+    if num & 1<<7:   mod_list.append("RX")
+    if num & 1<<8:   mod_list.append("HT")
+    if num & 1<<10:  mod_list.append("FL")
+    if num & 1<<12:  mod_list.append("SO")
+    if num & 1<<14:  mod_list.append("PF")
+    if num & 1<<15:  mod_list.append("4 KEY")
+    if num & 1<<16:  mod_list.append("5 KEY")
+    if num & 1<<17:  mod_list.append("6 KEY")
+    if num & 1<<18:  mod_list.append("7 KEY")
+    if num & 1<<19:  mod_list.append("8 KEY")
+    if num & 1<<20:  mod_list.append("FI")
+    if num & 1<<24:  mod_list.append("9 KEY")
+    if num & 1<<25:  mod_list.append("10 KEY")
+    if num & 1<<26:  mod_list.append("1 KEY")
+    if num & 1<<27:  mod_list.append("3 KEY")
+    if num & 1<<28:  mod_list.append("2 KEY")
 
     return "".join(mod_list)
 
 def can_be_int(num):
     try:
         int(num)
-    except:
+    except Exception:
         return False
     return True
 
+# what the fuck even is this, i don't remember writing this
 def process_re(all):
     mods = ""
     map_id = 0 # beatmap id
@@ -131,7 +132,7 @@ def process_re(all):
 async def download_file(url, filename):
     async with aiohttp.ClientSession() as session:
         async with session.get(url) as response:
-            with open(filename, 'wb') as f:
+            with open(filename, "wb") as f:
                 while True:
                     chunk = await response.content.read(1024)
                     if not chunk:
@@ -150,6 +151,7 @@ async def mania_pp(map_id: int, mods: int, score: int):
     
     await download_file(url, filepath + "{map_id}.osu")
     
+    # calculate pp with Maniera module
     calc = Maniera(filepath + "{map_id}.osu", mods, score)
     calc.calculate()
     

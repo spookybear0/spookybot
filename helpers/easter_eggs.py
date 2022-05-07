@@ -1,7 +1,7 @@
 import re
 
 phrases = (
-    (re.compile(r".*(ඞ|sus).*", re.IGNORECASE), "thats pretty sus if you ask me"),
+    (re.compile(r".*(ඞ|sus).*", re.IGNORECASE), "https://a.spoo.uk"), # amogus
     (re.compile(r"bad recursion", re.IGNORECASE), "bad recursion"),
     (re.compile(r".*get good.*", re.IGNORECASE), "play more"),
     # if you mention a vtuber it will reply "touch grass"
