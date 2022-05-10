@@ -64,16 +64,12 @@ class TestRank(unittest.TestCase):
 
 class TestRecent(unittest.TestCase):
     def test_if_fail(self): # triple check for recent plays
-        try:
-            r = asyncio.run(recent.recent({}, ["!recent", "WhiteCat"]))
-        except Exception as e:
+        succeded = False
+        for username in ["mrekk", "spookybear0", "WhiteCat", "BTMC"]:
             try:
-                r = asyncio.run(recent.recent({}, ["!recent", "Vaxei"]))
+                asyncio.run(recent.recent({}, ["!recent", username]))
             except Exception as e:
-                try:
-                    r = asyncio.run(recent.recent({}, ["!recent", "BTMC"]))
-                except Exception as e:
-                    self.fail(e)
+                self.fail(e)
 
 # top play test will be made later (maybe I will use peppys)
 
