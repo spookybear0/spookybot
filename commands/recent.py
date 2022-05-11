@@ -6,8 +6,6 @@ from helpers.config import config
 
 path = os.path.dirname(os.path.realpath(__file__))
 
-api = pyosu.OsuApi(config["osuapikey"])
-
 def acc_calc(n300, n100, n50, misses):
     """calculates accuracy (0.0-1.0)"""
     h = n300 + n100 + n50 + misses

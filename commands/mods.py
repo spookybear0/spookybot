@@ -3,9 +3,12 @@ from helpers.db import get_last_beatmap
 from helpers.config import config
 import pyosu
 
-api = pyosu.OsuApi(config["osuapikey"])
-
 async def mods(ctx, args):
+    if os.getenv("OSUAPIKEY"):
+        api = pyosu.OsuApi(os.getenv("OSUAPIKEY"))
+    else:
+        api = pyosu.OsuApi(config["osuapikey"])
+    
     try:
         modlist = args[1]
     except:

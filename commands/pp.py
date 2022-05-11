@@ -2,10 +2,14 @@ from helpers.np import pp as np
 from helpers.config import config
 from helpers.db import set_last_beatmap
 import pyosu
-
-api = pyosu.OsuApi(config["osuapikey"])
+import os
 
 async def pp(ctx, args):
+    if os.getenv("OSUAPIKEY"):
+        api = pyosu.OsuApi(os.getenv("OSUAPIKEY"))
+    else:
+        api = pyosu.OsuApi(config["osuapikey"])
+    
     try:
         map = args[1]
     except IndexError:
@@ -13,6 +17,7 @@ async def pp(ctx, args):
     
     mode = await api.get_beatmap(beatmap_id=map)
     
-    await set_last_beatmap(ctx.username, map)
+    if ctx:
+        await set_last_beatmap(ctx.username, map)
     
     return await np(map, 0, mode.mode)

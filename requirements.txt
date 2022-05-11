@@ -1,4 +1,4 @@
-aiohttp
+aiohttp==3.4.3
 ratelimiter
 git+https://github.com/Renondedju/Osu.py
 git+https://github.com/Francesco149/oppai#egg=pyoppai&subdirectory=pyoppai
