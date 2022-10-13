@@ -1,4 +1,4 @@
-from typing import Dict, Optional, Callable, List, Type
+from typing import Dict, Optional, Callable, List, Type, TYPE_CHECKING
 from collections.abc import KeysView, ValuesView
 from helpers.exceptions import CommandNotFound
 import inspect

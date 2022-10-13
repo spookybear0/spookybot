@@ -1,7 +1,6 @@
 from threading import Thread
 from helpers.config import load_config, config
 from helpers.logger import setup_logger, logger
-from helpers.command import command_manager
 from helpers.db import db_init
 from client import SpookyBot
 import asyncio
@@ -32,8 +31,6 @@ async def main(log_level: int=logging.INFO, testmode: bool=False):
     await db_init()
 
     spookybot = SpookyBot(token=config["token"], nickname=nickname, loop=loop)
-
-    command_manager.init_manager(spookybot)
 
     logger.info("Starting spookybot!")
 
