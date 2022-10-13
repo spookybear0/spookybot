@@ -1,6 +1,7 @@
 from typing import Dict, Optional, Callable, List, Type, TYPE_CHECKING
 from collections.abc import KeysView, ValuesView
 from helpers.exceptions import CommandNotFound
+from helpers.logger import logger
 import inspect
 import osu_irc
 import pyosu
@@ -59,9 +60,11 @@ class CommandManager:
 
     def register(self, command: Type[Command]) -> None:
         cmd = command()
+        logger.debug(f"Registering command {cmd.name}")
         self.commands[cmd.name] = cmd # initalize class
 
     def unregister(self, command) -> None:
+        logger.debug(f"Unregistering command {command.name}")
         del self.commands[command.name]
 
     def get_all(self) -> ValuesView[Command]:
@@ -114,5 +117,6 @@ class CommandManager:
                 cmd_class = getattr(commands, command)
                 if type(cmd_class) == type and Command in cmd_class.__bases__:
                     self.register(cmd_class)
+        logger.info("All commands registered")
 
 command_manager = CommandManager()
