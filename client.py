@@ -29,6 +29,18 @@ class SpookyBot(osu_irc.Client):
         await extension_manager.on_ratelimit()
         return await super().onLimit(payload)
 
+    async def onMemberJoin(self, channel: osu_irc.Channel, user: osu_irc.User) -> None:
+        await extension_manager.on_member_join(channel, user)
+        return await super().onMemberJoin(channel, user)
+
+    async def onMemberPart(self, channel: osu_irc.Channel, user: osu_irc.User) -> None:
+        await extension_manager.on_member_part(channel, user)
+        return await super().onMemberPart(channel, user)
+
+    async def onMemberQuit(self, user: osu_irc.User, reason: str) -> None:
+        await extension_manager.on_member_quit(user, reason)
+        return await super().onMemberQuit(user, reason)
+
     # end extension hooks
 
     # utility functions

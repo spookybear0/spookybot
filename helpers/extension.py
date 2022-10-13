@@ -39,13 +39,25 @@ class Extension:
     async def on_ready(self):
         pass
 
-    async def on_join_channel(self, channel):
+    async def on_error(self, error: BaseException):
         pass
 
-    async def on_part_channel(self, channel):
+    async def on_join_channel(self, channel: Union[osu_irc.Channel, str]):
+        pass
+
+    async def on_part_channel(self, channel: Union[osu_irc.Channel, str]):
         pass
 
     async def on_ratelimit(self):
+        pass
+
+    async def on_member_join(self, user: osu_irc.User):
+        pass
+
+    async def on_member_part(self, user: osu_irc.User):
+        pass
+
+    async def on_member_quit(self, user: osu_irc.User, reason: str):
         pass
 
 class ExtensionManager:
@@ -89,19 +101,31 @@ class ExtensionManager:
 
     async def on_error(self, error: BaseException):
         for ext in self.extensions.values():
-            await ext.on_error()
+            await ext.on_error(error)
 
     async def on_join_channel(self, channel: Union[osu_irc.Channel, str]):
         for ext in self.extensions.values():
-            await ext.on_join_channel()
+            await ext.on_join_channel(channel)
 
     async def on_part_channel(self, channel: Union[osu_irc.Channel, str]):
         for ext in self.extensions.values():
-            await ext.on_part_channel()
+            await ext.on_part_channel(channel)
 
     async def on_ratelimit(self):
         for ext in self.extensions.values():
             await ext.on_ratelimit()
+
+    async def on_member_join(self, channel: osu_irc.Channel, user: osu_irc.User):
+        for ext in self.extensions.values():
+            await ext.on_member_join(channel, user)
+
+    async def on_member_part(self, channel: osu_irc.Channel, user: osu_irc.User):
+        for ext in self.extensions.values():
+            await ext.on_member_part(channel, user)
+
+    async def on_member_quit(self, user: osu_irc.User, reason: str):
+        for ext in self.extensions.values():
+            await ext.on_member_quit(user, reason)
 
     # add more handlers
 
