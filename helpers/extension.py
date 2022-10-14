@@ -1,6 +1,7 @@
 from typing import Dict, Optional, Callable, List, Type, Union
 from collections.abc import KeysView, ValuesView
 from helpers.command import Context
+from helpers.logger import logger
 import osu_irc
 
 class Extension:
@@ -72,6 +73,7 @@ class ExtensionManager:
 
     def register(self, extension: Type[Extension]) -> None:
         ext = extension()
+        logger.debug(f"Registering extension {ext.name}")
         self.extensions[ext.name] = ext # initalize class
 
     def unregister(self, ext) -> None:
@@ -89,30 +91,37 @@ class ExtensionManager:
         return None
 
     async def on_message(self, ctx: Context):
+        logger.debug(f"EVENT on_message({ctx.message})")
         for ext in self.extensions.values():
             await ext.on_message(ctx)
 
     async def on_reconnect(self, ctx: Context):
+        logger.debug("EVENT on_reconnect()")
         for ext in self.extensions.values():
             await ext.on_reconnect(ctx)
 
     async def on_ready(self, ctx: Context):
+        logger.debug("EVENT on_ready()")
         for ext in self.extensions.values():
             await ext.on_ready(ctx)
 
     async def on_error(self, ctx: Context, error: BaseException):
+        logger.debug(f"EVENT on_error({error})")
         for ext in self.extensions.values():
             await ext.on_error(ctx, error)
 
     async def on_join_channel(self, ctx: Context, channel: Union[osu_irc.Channel, str]):
+        logger.debug(f"EVENT on_join_channel({channel})")
         for ext in self.extensions.values():
             await ext.on_join_channel(ctx, channel)
 
     async def on_part_channel(self, ctx: Context, channel: Union[osu_irc.Channel, str]):
+        logger.debug(f"EVENT on_part_channel({channel})")
         for ext in self.extensions.values():
             await ext.on_part_channel(ctx, channel)
 
     async def on_ratelimit(self, ctx: Context):
+        logger.debug("EVENT on_ratelimit()")
         for ext in self.extensions.values():
             await ext.on_ratelimit(ctx)
 
@@ -137,5 +146,7 @@ class ExtensionManager:
                 ext_class = getattr(extensions, ext)
                 if type(ext_class) == type and Extension in ext_class.__bases__:
                     self.register(ext_class)
+
+        logger.info("All extension registered")
 
 extension_manager = ExtensionManager()
