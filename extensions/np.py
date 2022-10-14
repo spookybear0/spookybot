@@ -1,3 +1,4 @@
+from typing import List
 from helpers.extension import Extension
 from helpers.logger import logger
 from helpers.osu import mod_to_num, num_to_mod
@@ -14,7 +15,8 @@ class NPExtension(Extension):
 
     async def on_message(self, ctx: Context):
         if ctx.message.content.startswith("is "):
-            #is playing [https://osu.ppy.sh/beatmapsets/714359#/1509693 Kondo Koji - Slider [64 DIMENSIONS]] +HardRock
+            final = ""
+
             map_id, mods = re.findall(r"is (?:playing|listening to|editing|watching) \[https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#.*\/([0-9]+) .*\](?: \+|)(.*|)",
                             str(ctx.message.content))[0]
             mods_num = mod_to_num(mods)
@@ -22,11 +24,18 @@ class NPExtension(Extension):
 
             map = await ctx.bot.api.get_beatmap(beatmap_id=map_id)
 
-            print(map_id, mods, mods_num, map)
-
+             # ripple api to get pp
             async with aiohttp.ClientSession() as session:
-                async with session.get(f"https://ripple.moe/letsapi/v1/pp?b={map}&m={mods}&g={mode}") as r: # ripple api to get pp
+                async with session.get(f"https://ripple.moe/letsapi/v1/pp?b={map_id}&m={mods_num}&g={map.mode}") as r:
                     req = await r.json()
 
-            #r["song_name"] + " |" + final + " " + str(round(r["stars"], 2)) + "* | " + str(r["bpm"]) + " BPM | AR " + str(r["ar"]) + " +" + num_to_mod(mods)
-            return await ctx.send(f'{req["song_name"]} | {req["stars"]}* | {req["bpm"]} BPM | AR {req["ar"]} +{num_to_mod(mods)}')
+            pp: List = req["pp"]
+            pp.reverse()
+
+            for i in range(4):
+                final += f"{i+97}%: {round(pp[i], 2)}pp | "
+            
+            mods_str = f" +{mods}"
+            final += f'{req["song_name"]} | {req["stars"]}* | {req["bpm"]} BPM | AR {req["ar"]}{mods_str}'
+
+            return await ctx.send(final)
