@@ -1,3 +1,4 @@
+from ctypes import Union
 from typing import Dict, Optional, Callable, List, Type, TYPE_CHECKING
 from collections.abc import KeysView, ValuesView
 from helpers.exceptions import CommandNotFound
@@ -6,7 +7,9 @@ import osu_irc
 import pyosu
 
 class Context:
-    def __init__(self, message: osu_irc.Message, user: pyosu.models.User, bot: osu_irc.Client, command_name: str="") -> None:
+    def __init__(self, message: osu_irc.Message=None, user: pyosu.models.User=None, bot: osu_irc.Client=None, command_name: str="", lazy_init=False) -> None:
+        if lazy_init:
+            return
         self.message: osu_irc.Message = message
         self.msg: osu_irc.Message = message
         self.username: str = message.user_name
@@ -15,6 +18,20 @@ class Context:
         self.userid: int = user.user_id
         self.bot: osu_irc.Client = bot
         self.command_name: str = command_name
+
+    @classmethod
+    def create_event_context(cls, bot: osu_irc.Client, message: osu_irc.Message=None, user: pyosu.models.User=None) -> None:
+        ret = cls(lazy_init=True)
+        ret.bot = bot
+        ret.message = message
+        if message is not None:
+            ret.username = message.user_name
+            ret.content = message.content
+        ret.user = user
+        if user is not None:
+            ret.userid = user.user_id
+        ret.command_name = None
+        return ret
 
     async def send(self, message: str) -> None:
         await self.bot.send(message, user=self.username)

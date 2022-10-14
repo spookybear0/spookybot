@@ -1,1 +1,1 @@
-from .test import TestExtension
+from .np import NPExtension

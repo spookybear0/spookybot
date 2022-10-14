@@ -1,5 +1,6 @@
 from typing import Dict, Optional, Callable, List, Type, Union
 from collections.abc import KeysView, ValuesView
+from helpers.command import Context
 import osu_irc
 
 class Extension:
@@ -30,34 +31,34 @@ class Extension:
     def __str__(self):
         return self.name
 
-    async def on_message(self, message: osu_irc.Message, user):
+    async def on_message(self, ctx: Context):
         pass
 
-    async def on_reconnect(self):
+    async def on_reconnect(self, ctx: Context):
         pass
 
-    async def on_ready(self):
+    async def on_ready(self, ctx: Context):
         pass
 
-    async def on_error(self, error: BaseException):
+    async def on_error(self, ctx: Context, error: BaseException):
         pass
 
-    async def on_join_channel(self, channel: Union[osu_irc.Channel, str]):
+    async def on_join_channel(self, ctx: Context, channel: Union[osu_irc.Channel, str]):
         pass
 
-    async def on_part_channel(self, channel: Union[osu_irc.Channel, str]):
+    async def on_part_channel(self, ctx: Context, channel: Union[osu_irc.Channel, str]):
         pass
 
-    async def on_ratelimit(self):
+    async def on_ratelimit(self, ctx: Context):
         pass
 
-    async def on_member_join(self, user: osu_irc.User):
+    async def on_member_join(self, ctx: Context, user: osu_irc.User):
         pass
 
-    async def on_member_part(self, user: osu_irc.User):
+    async def on_member_part(self, ctx: Context, user: osu_irc.User):
         pass
 
-    async def on_member_quit(self, user: osu_irc.User, reason: str):
+    async def on_member_quit(self, ctx: Context, user: osu_irc.User, reason: str):
         pass
 
 class ExtensionManager:
@@ -87,45 +88,45 @@ class ExtensionManager:
             return self.extensions[name]
         return None
 
-    async def on_message(self, message: osu_irc.Message, user):
+    async def on_message(self, ctx: Context):
         for ext in self.extensions.values():
-            await ext.on_message(message, user)
+            await ext.on_message(ctx)
 
-    async def on_reconnect(self):
+    async def on_reconnect(self, ctx: Context):
         for ext in self.extensions.values():
-            await ext.on_reconnect()
+            await ext.on_reconnect(ctx)
 
-    async def on_ready(self):
+    async def on_ready(self, ctx: Context):
         for ext in self.extensions.values():
-            await ext.on_ready()
+            await ext.on_ready(ctx)
 
-    async def on_error(self, error: BaseException):
+    async def on_error(self, ctx: Context, error: BaseException):
         for ext in self.extensions.values():
-            await ext.on_error(error)
+            await ext.on_error(ctx, error)
 
-    async def on_join_channel(self, channel: Union[osu_irc.Channel, str]):
+    async def on_join_channel(self, ctx: Context, channel: Union[osu_irc.Channel, str]):
         for ext in self.extensions.values():
-            await ext.on_join_channel(channel)
+            await ext.on_join_channel(ctx, channel)
 
-    async def on_part_channel(self, channel: Union[osu_irc.Channel, str]):
+    async def on_part_channel(self, ctx: Context, channel: Union[osu_irc.Channel, str]):
         for ext in self.extensions.values():
-            await ext.on_part_channel(channel)
+            await ext.on_part_channel(ctx, channel)
 
-    async def on_ratelimit(self):
+    async def on_ratelimit(self, ctx: Context):
         for ext in self.extensions.values():
-            await ext.on_ratelimit()
+            await ext.on_ratelimit(ctx)
 
-    async def on_member_join(self, channel: osu_irc.Channel, user: osu_irc.User):
+    async def on_member_join(self, ctx: Context, user: osu_irc.User, channel: osu_irc.Channel):
         for ext in self.extensions.values():
-            await ext.on_member_join(channel, user)
+            await ext.on_member_join(ctx, user, channel)
 
-    async def on_member_part(self, channel: osu_irc.Channel, user: osu_irc.User):
+    async def on_member_part(self, ctx: Context, user: osu_irc.User, channel: osu_irc.Channel):
         for ext in self.extensions.values():
-            await ext.on_member_part(channel, user)
+            await ext.on_member_part(ctx, user, channel)
 
-    async def on_member_quit(self, user: osu_irc.User, reason: str):
+    async def on_member_quit(self, ctx: Context, user: osu_irc.User, reason: str):
         for ext in self.extensions.values():
-            await ext.on_member_quit(user, reason)
+            await ext.on_member_quit(ctx, user, reason)
 
     # add more handlers
 
