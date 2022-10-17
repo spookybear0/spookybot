@@ -125,9 +125,9 @@ class ExtensionManager:
         for ext in self.extensions.values():
             await ext.on_ratelimit(ctx)
 
-    async def on_member_join(self, ctx: Context, user: osu_irc.User, channel: osu_irc.Channel):
+    async def on_member_join(self, ctx: Context, user: osu_irc.User):
         for ext in self.extensions.values():
-            await ext.on_member_join(ctx, user, channel)
+            await ext.on_member_join(ctx, user)
 
     async def on_member_part(self, ctx: Context, user: osu_irc.User, channel: osu_irc.Channel):
         for ext in self.extensions.values():

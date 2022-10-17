@@ -30,7 +30,7 @@ class SpookyBot(osu_irc.Client):
         return await super().onLimit(payload)
 
     async def onMemberJoin(self, channel: osu_irc.Channel, user: osu_irc.User) -> None:
-        await extension_manager.on_member_join(Context.create_event_context(self), user, channel)
+        await extension_manager.on_member_join(Context.create_event_context(self), user)
         return await super().onMemberJoin(channel, user)
 
     async def onMemberPart(self, channel: osu_irc.Channel, user: osu_irc.User) -> None:
@@ -47,7 +47,7 @@ class SpookyBot(osu_irc.Client):
 
     async def send(self, message: str, user: Optional[str] = None, channel: Optional[str] = None) -> None:
         if self.testmode:
-            logger.debug(f"Replied to message: {message}")
+            logger.info(f"Replied to message: {message}")
             return
 
         if channel:

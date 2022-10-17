@@ -45,7 +45,7 @@ async def main(log_level: int=logging.INFO, testmode: bool=False):
 @click.option("--debug", is_flag=True, help="Enables debug mode")
 @click.option("--testmode", is_flag=True, help="Enables test mode")
 def cli(debug, testmode):
-    if debug or testmode:
+    if debug:
         level = logging.DEBUG
     else:
         level = logging.INFO
