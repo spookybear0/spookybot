@@ -6,9 +6,9 @@ import osu_irc
 
 class Extension:
     # default values
-    name = None
-    func = None
-    help = None
+    name: str = ""
+    func: Optional[Callable] = None
+    help: str = ""
     aliases: List[str] = []
 
     @staticmethod

@@ -1,5 +1,4 @@
-from ctypes import Union
-from typing import Dict, Optional, Callable, List, Type, TYPE_CHECKING
+from typing import Any, Dict, Optional, Callable, List, Type
 from collections.abc import KeysView, ValuesView
 from helpers.exceptions import CommandNotFound
 from helpers.logger import logger
@@ -8,21 +7,32 @@ import osu_irc
 import pyosu
 
 class Context:
-    def __init__(self, message: osu_irc.Message=None, user: pyosu.models.User=None, bot: osu_irc.Client=None, command_name: str="", lazy_init=False) -> None:
-        if lazy_init:
-            return
-        self.message: osu_irc.Message = message
-        self.msg: osu_irc.Message = message
-        self.username: str = message.user_name
-        self.user: pyosu.models.User = user
-        self.content: str = message.content
-        self.userid: int = user.user_id
-        self.bot: osu_irc.Client = bot
-        self.command_name: str = command_name
+    def __init__(self) -> None:
+        """
+        Internal method, do not use.
+
+        Use `Context.create` for command contexts.
+
+        Use `Context.create_event_context` for extension event contexts.
+        """
+        pass
 
     @classmethod
-    def create_event_context(cls, bot: osu_irc.Client, message: osu_irc.Message=None, user: pyosu.models.User=None) -> None:
-        ret = cls(lazy_init=True)
+    def create(cls, message: osu_irc.Message, user: pyosu.models.User, bot: osu_irc.Client, command_name: str="") -> Any:
+        ret = cls()
+        ret.message: osu_irc.Message = message
+        ret.msg: osu_irc.Message = message
+        ret.username: str = message.user_name
+        ret.user: pyosu.models.User = user
+        ret.content: str = message.content
+        ret.userid: int = user.user_id
+        ret.bot: osu_irc.Client = bot
+        ret.command_name: str = command_name
+        return ret
+
+    @classmethod
+    def create_event_context(cls, bot: osu_irc.Client, message: osu_irc.Message=None, user: pyosu.models.User=None) -> Any:
+        ret = cls()
         ret.bot = bot
         ret.message = message
         if message is not None:
@@ -122,7 +132,7 @@ class CommandManager:
                     except Exception:
                         pass
 
-                context = Context(message, user, self.bot, command_name)
+                context = Context.create(message, user, self.bot, command_name)
                 await command(context, *args)
             else:
                 raise CommandNotFound(f"Command {command_name} not found!")

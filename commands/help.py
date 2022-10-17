@@ -10,9 +10,9 @@ class Help(Command):
 
     async def func(self, ctx: Context, command: Optional[Union[str, int]]=None):
         try:
-            pagenum: int = int(command)
+            pagenum: Optional[int] = int(command)
         except (ValueError, TypeError):
-            pagenum = None
+            pagenum: Optional[int] = None
         
         if command is None or pagenum is not None:
             if pagenum is None:
