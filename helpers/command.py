@@ -15,10 +15,17 @@ class Context:
 
         Use `Context.create_event_context` for extension event contexts.
         """
-        pass
+        self.message: osu_irc.Message | str = ""
+        self.msg: osu_irc.Message | str = ""
+        self.username: str = ""
+        self.user: Optional[osu_irc.User] = None
+        self.content: str = ""
+        self.userid: int = -1
+        self.bot: Optional[osu_irc.Client] = None
+        self.command_name: str = ""
 
     @classmethod
-    def create(cls, message: osu_irc.Message, user: pyosu.models.User, bot: osu_irc.Client, command_name: str="") -> Any:
+    def create(cls, message: osu_irc.Message, user: pyosu.models.User, bot: osu_irc.Client, command_name: str="") -> "Context":
         ret = cls()
         ret.message: osu_irc.Message = message
         ret.msg: osu_irc.Message = message
@@ -31,7 +38,7 @@ class Context:
         return ret
 
     @classmethod
-    def create_event_context(cls, bot: osu_irc.Client, message: osu_irc.Message=None, user: pyosu.models.User=None) -> Any:
+    def create_event_context(cls, bot: osu_irc.Client, message: osu_irc.Message=None, user: pyosu.models.User=None) -> "Context":
         ret = cls()
         ret.bot = bot
         ret.message = message
