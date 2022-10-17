@@ -56,7 +56,7 @@ class Extension:
     async def on_member_join(self, ctx: Context, user: osu_irc.User):
         pass
 
-    async def on_member_part(self, ctx: Context, user: osu_irc.User):
+    async def on_member_part(self, ctx: Context, user: osu_irc.User, channel: osu_irc.Channel):
         pass
 
     async def on_member_quit(self, ctx: Context, user: osu_irc.User, reason: str):
@@ -72,7 +72,7 @@ class ExtensionManager:
         self.register_all_extensions()
 
     def register(self, extension: Type[Extension]) -> None:
-        ext = extension()
+        ext: Extension = extension()
         logger.debug(f"Registering extension {ext.name}")
         self.extensions[ext.name] = ext # initalize class
 
