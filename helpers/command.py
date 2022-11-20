@@ -18,7 +18,7 @@ class Context:
         self.message: osu_irc.Message | str = ""
         self.msg: osu_irc.Message | str = ""
         self.username: str = ""
-        self.user: Optional[osu_irc.User] = None
+        self.user: Optional[pyosu.models.User] = None
         self.content: str = ""
         self.userid: int = -1
         self.bot: Optional[osu_irc.Client] = None
@@ -73,14 +73,17 @@ class Command:
         cmd.aliases = aliases
         return cmd
 
-    def __call__(self, context, *args, **kwargs):
+    async def setup(self, ctx: Context):
+        pass
+
+    def __call__(self, context, *args, **kwargs) -> Any:
         return self.func(context, *args, **kwargs)
 
     def __repr__(self):
-        return f"Command({self.name}, {self.func}, {self.help})"
+        return f"{self.__class__.__name__}({self.name}, {self.func}, {self.help})"
 
     def __str__(self):
-        return self.name
+        return repr(self)
 
 class CommandManager:
     def __init__(self, prefix="!", bot=None) -> None:
@@ -88,14 +91,15 @@ class CommandManager:
         self.prefix: str = prefix
         self.commands: Dict[str, Command] = {}
 
-    def init_manager(self, bot):
+    async def init_manager(self, bot):
         self.bot = bot
-        self.register_all_commands()
+        await self.register_all_commands()
 
-    def register(self, command: Type[Command]) -> None:
+    def register(self, command: Type[Command]) -> Command:
         cmd = command()
         logger.debug(f"Registering command {cmd.name}")
         self.commands[cmd.name] = cmd # initalize class
+        return cmd
 
     def unregister(self, command) -> None:
         logger.debug(f"Unregistering command {command.name}")
@@ -140,17 +144,21 @@ class CommandManager:
                         pass
 
                 context = Context.create(message, user, self.bot, command_name)
-                await command(context, *args)
+                try:
+                    await command(context, *args)
+                except TypeError:
+                    await context.send(f"Invalid arguments for command `{command_name}`, use `{self.prefix}help {command_name}` for more info.")
             else:
                 raise CommandNotFound(f"Command {command_name} not found!")
 
-    def register_all_commands(self):
+    async def register_all_commands(self):
         import commands
         for command in dir(commands):
             if not command.startswith("_"):
                 cmd_class = getattr(commands, command)
                 if type(cmd_class) == type and Command in cmd_class.__bases__:
-                    self.register(cmd_class)
+                    cmd = self.register(cmd_class)
+                    await cmd.setup(Context.create_event_context(self.bot))
         logger.info("All commands registered")
 
 command_manager = CommandManager()

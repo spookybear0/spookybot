@@ -1,5 +1,5 @@
 from helpers.command import Command, Context, command_manager
-from typing import List, Optional, Union
+from typing import List, Optional, Union, _UnionGenericAlias
 import inspect
 import math
 
@@ -27,22 +27,37 @@ class Help(Command):
             for i, cmd in enumerate(cmds, 1):
                 params_ = list(inspect.signature(cmd.func).parameters.values())[1:]
                 params: List[str] = []
+
                 for param in params_:
+                    paramstring = str(param)
+
+                    if type(param.annotation) is _UnionGenericAlias:
+                        hint = ""
+                        for i, annotation in enumerate(param.annotation.__args__):
+                            if annotation is not type(None):
+                                if i != 0:
+                                    hint += "|"
+                                hint += annotation.__name__
+
+                        paramstring = f"{param.name}: {hint}"
+                                
+
                     if param.default is param.empty:
                         # required
-                        params.append(f'<{str(param).replace(" ", "")}>')
+                        params.append(f'<{str(paramstring).replace(" ", "").replace(":", ": ")}>')
                     else:
                         # not required
-                        params.append(f'[{str(param).replace(" ", "")}]')
+                        params.append(f'[{str(paramstring).replace(" ", "").replace(":", ": ")}]')
                 cmd_list.append(f"{(pagenum*3)-3+i}. - {command_manager.prefix}{cmd.name}{' ' if params else ''}{' '.join(params)}: {cmd.help}")
 
             for cmd in cmd_list:
                 await ctx.send(cmd)
             return await ctx.send("Use !help <page number> to view more commands, or !help <command> for specific info.")
+        else:
+            command = command_manager.get_command(command)
 
-        command = command_manager.commands.get(command, None)
+            if command is None:
+                return await ctx.send("Command not found!")
 
-        if command is None:
-            return await ctx.send("Command not found!")
-
-        return await ctx.send(f"{command.name}: {command.help}")
+            await ctx.send(f"{command.name}: {command.help}")
+            await ctx.send(f"Aliases: {', '.join(command.aliases)}")

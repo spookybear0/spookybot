@@ -6,6 +6,7 @@ from helpers.extension import extension_manager
 from helpers.exceptions import CommandNotFound
 import osu_irc
 import pyosu
+import asyncio
 import os
 
 path = os.path.dirname(os.path.realpath(__file__))
@@ -13,6 +14,16 @@ path = os.path.dirname(os.path.realpath(__file__))
 class SpookyBot(osu_irc.Client):
     api = pyosu.OsuApi(config["osuapikey"])
     testmode = False
+
+    async def start(self):
+        # setup
+        await command_manager.init_manager(self)
+        await extension_manager.init_manager(self)
+        await super().start()
+    
+    async def stop(self):
+        await extension_manager.get_extension("matchmaker").close_all_matches()
+        super().stop()
 
     # extension hooks
 
@@ -60,8 +71,6 @@ class SpookyBot(osu_irc.Client):
     # end utility functions
 
     async def onReady(self) -> None:
-        command_manager.init_manager(self)
-        extension_manager.init_manager(self)
         logger.info("Bot is ready!")
         await extension_manager.on_ready(Context.create_event_context(self))
 

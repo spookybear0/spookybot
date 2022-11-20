@@ -1,5 +1,6 @@
 from typing import Dict, Optional, Callable, List, Type, Union
 from collections.abc import KeysView, ValuesView
+from typing_extensions import Self
 from helpers.command import Context
 from helpers.logger import logger
 import osu_irc
@@ -27,10 +28,16 @@ class Extension:
         return self.func(context, *args, **kwargs)
 
     def __repr__(self):
-        return f"Extension({self.name}, {self.func}, {self.help})"
+        return f"{self.__class__.__name__}({self.name}, {self.func}, {self.help})"
 
     def __str__(self):
-        return self.name
+        return repr(self)
+
+    def shared_instance(self) -> Self:
+        return extension_manager[self.name]
+
+    async def setup(self, ctx: Context):
+        pass
 
     async def on_message(self, ctx: Context):
         pass
@@ -67,14 +74,15 @@ class ExtensionManager:
         self.bot = bot
         self.extensions: Dict[str, Extension] = {}
 
-    def init_manager(self, bot):
+    async def init_manager(self, bot):
         self.bot = bot
-        self.register_all_extensions()
+        await self.register_all_extensions()
 
-    def register(self, extension: Type[Extension]) -> None:
+    def register(self, extension: Type[Extension]) -> Extension:
         ext: Extension = extension()
         logger.debug(f"Registering extension {ext.name}")
         self.extensions[ext.name] = ext # initalize class
+        return ext
 
     def unregister(self, ext) -> None:
         del self.extensions[ext.name]
@@ -85,7 +93,7 @@ class ExtensionManager:
     def get_all_names(self) -> KeysView[str]:
         return self.extensions.keys()
 
-    def get_extensions(self, name: str) -> Optional[Extension]:
+    def get_extension(self, name: str) -> Optional[Extension]:
         if name in self.extensions:
             return self.extensions[name]
         return None
@@ -139,13 +147,14 @@ class ExtensionManager:
 
     # add more handlers
 
-    def register_all_extensions(self):
+    async def register_all_extensions(self):
         import extensions
         for ext in dir(extensions):
             if not ext.startswith("_"):
                 ext_class = getattr(extensions, ext)
                 if type(ext_class) == type and Extension in ext_class.__bases__:
-                    self.register(ext_class)
+                    registered_ext = self.register(ext_class)
+                    await registered_ext.setup(Context.create_event_context(self.bot))
 
         logger.info("All extension registered")
 

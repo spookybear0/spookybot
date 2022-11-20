@@ -7,6 +7,7 @@ import asyncio
 import logging
 import osu_irc
 import click
+import signal
 
 nickname = "spookybear0"
 
@@ -39,7 +40,12 @@ async def main(log_level: int=logging.INFO, testmode: bool=False):
         spookybot.testmode = True
         Thread(target=asyncio.run, args=(test(spookybot),)).start()
 
-    await spookybot.start()
+    try:
+        await spookybot.start()
+    except Exception:
+        pass
+    finally:
+        await spookybot.stop()
 
 @click.command()
 @click.option("--debug", is_flag=True, help="Enables debug mode")
