@@ -34,7 +34,7 @@ class Recent(Command):
         
         mods = "".join(num_to_mod(recent.enabled_mods))
         
-        return await ctx.send(f"{username} | {map.artist} - {map.title} [{map.version}] +{mods} {round(acc, 2)}% *{round(map.difficultyrating, 2)} " \
+        return await ctx.send(f"{username} | {map.artist} - {map.title} [{map.version}] +{mods} {round(acc, 2)}% {round(map.difficultyrating, 2)}* " \
             f"| {recent.rank} | {pp}pp | {int(recent.score)} | {recent.maxcombo}x | {recent.count300}x 300, {recent.count100}x 100, " \
             f"{recent.count50}x 50, {recent.countmiss}x miss {perfect}"
         )
