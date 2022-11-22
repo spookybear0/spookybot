@@ -23,6 +23,7 @@ class Context:
         self.userid: int = -1
         self.bot: Optional[osu_irc.Client] = None
         self.command_name: str = ""
+        self.api: pyosu.OsuApi = None
 
     @classmethod
     def create(cls, message: osu_irc.Message, user: pyosu.models.User, bot: osu_irc.Client, command_name: str="") -> "Context":
@@ -35,6 +36,7 @@ class Context:
         ret.userid: int = user.user_id
         ret.bot: osu_irc.Client = bot
         ret.command_name: str = command_name
+        ret.api: pyosu.OsuApi = bot.api
         return ret
 
     @classmethod
@@ -49,6 +51,7 @@ class Context:
         if user is not None:
             ret.userid = user.user_id
         ret.command_name = None
+        ret.api = bot.api
         return ret
 
     async def send(self, message: str) -> None:
@@ -146,8 +149,11 @@ class CommandManager:
                 context = Context.create(message, user, self.bot, command_name)
                 try:
                     await command(context, *args)
-                except TypeError:
-                    await context.send(f"Invalid arguments for command `{command_name}`, use `{self.prefix}help {command_name}` for more info.")
+                except TypeError as e:
+                    if ".func() takes from" in str(e):
+                        await context.send(f"Invalid arguments for command `{command_name}`, use `{self.prefix}help {command_name}` for more info.")
+                    else:
+                        raise e
             else:
                 raise CommandNotFound(f"Command {command_name} not found!")
 
