@@ -1,17 +1,19 @@
-from typing import Optional, Union
+from typing import Optional, Union, Tuple, Dict
 from helpers.logger import logger
 from helpers.config import config
 from helpers.command import command_manager, Context
 from helpers.extension import extension_manager
 from helpers.exceptions import CommandNotFound
+from helpers.osu import DictDecay
 import osu_irc
 import pyosu
-import asyncio
 import os
 
 path = os.path.dirname(os.path.realpath(__file__))
 
 class SpookyBot(osu_irc.Client):
+    # username, map_id
+    recent_maps: Dict[str, str] = DictDecay(900)
     api = pyosu.OsuApi(config["osuapikey"])
     testmode = False
 

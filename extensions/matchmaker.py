@@ -27,7 +27,7 @@ class Lobby:
         return self
 
     async def send_message(self, message: str):
-        await self.bot.sendMessage(f"mp_{self.id}", message)
+        await self.bot.sendPM(f"mp_{self.id}", message)
 
     async def invite(self, member: pyosu.models.User | str):
         if isinstance(member, pyosu.models.User):

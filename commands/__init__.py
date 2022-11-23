@@ -6,3 +6,5 @@ from .versus import Versus
 from .github import Github
 from .recent import Recent
 from .rank import Rank
+from .mods import Mods
+from .acc import Acc

@@ -1,6 +1,34 @@
 import aiohttp
 import pyoppai
+import time
 import os
+
+
+class DictDecay(dict):
+    """
+    Used if values are not needed after a certain amount of time
+    """
+    def __init__(self, decay_after: int=900, *args, **kwargs):
+        """
+        decay_after is in seconds
+        """
+        self.decay_after = decay_after
+        super().__init__(*args, **kwargs)
+
+    def __setitem__(self, key, value):
+        super().__setitem__(key, (value, time.time()))
+
+    def __getitem__(self, key):
+        if (time.time() - super().__getitem__(key)[1]) > self.decay_after:
+            del self[key]
+            return None
+        return super().__getitem__(key)[0]
+
+    def __repr__(self):
+        dict_ = {}
+        for key, value in self.items():
+            dict_[key] = value[0]
+        return f"{self.__class__.__name__}({self.decay_after}, {dict_})"
 
 async def download_file(url, filename):
     async with aiohttp.ClientSession() as session:
