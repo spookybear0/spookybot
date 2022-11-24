@@ -108,10 +108,10 @@ class CommandManager:
         logger.debug(f"Unregistering command {command.name}")
         del self.commands[command.name]
 
-    def get_all(self) -> ValuesView[Command]:
+    def get_all(self) -> Any:
         return self.commands.values()
 
-    def get_all_names(self) -> KeysView[str]:
+    def get_all_names(self) -> Any:
         return self.commands.keys()
 
     def get_all_aliases(self) -> List[str]:
