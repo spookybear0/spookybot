@@ -1,27 +1,47 @@
-import pyosu
-import os
-from helpers.config import config
+from typing import Optional
+from helpers.command import Command, Context, command_manager
 
-path = os.path.dirname(os.path.realpath(__file__))
+class User(Command):
+    def __init__(self) -> None:
+        self.name = "user"
+        self.help = "Gets info about a user."
+        self.aliases = ["u", "osu", "standard", "taiko", "ctb", "mania"]
 
-async def user(ctx, args):
-    if os.getenv("OSUAPIKEY"):
-        api = pyosu.OsuApi(os.getenv("OSUAPIKEY"))
-    else:
-        api = pyosu.OsuApi(config["osuapikey"])
-        
-    try:
-        username = args[1]
-    except IndexError:
-        username = ctx.username
-    try:
-        mode = args[2]
-    except IndexError:
-        mode = 0
-    u = await api.get_user(username, mode)
-    try:
-        return f"{username} has {u.pp_raw}pp and is rank #{u.pp_rank} globally and #{u.pp_country_rank} rank in the {u.country}."
-    except AttributeError:
-        return "User not found!"
-    
-aliases = ["osu"]
+        self.modes = {
+            "standard": 0,
+            "taiko": 1,
+            "ctb": 2,
+            "mania": 3,
+            "0": 0,
+            "1": 1,
+            "2": 2,
+            "3": 3
+        }
+
+        self.num_to_mode = {
+            0: "standard",
+            1: "taiko",
+            2: "ctb",
+            3: "mania"
+        }
+
+    async def func(self, ctx: Context, username: Optional[str]=None, mode: str="standard"):
+        if not username:
+            username = ctx.username
+        if username in self.modes.keys(): # if username is a mode
+            return await ctx.send(f"Username cannot be a mode, use {command_manager.prefix}{username} instead.")
+
+        mode_num = self.modes.get(ctx.command_name) # try with command name
+
+        if mode_num is None:
+            mode_num = self.modes.get(mode, None) # try with mode arg
+
+        if mode_num is None:
+            return await ctx.send("Invalid mode!")
+
+        user = await ctx.bot.api.get_user(username, mode_num)
+
+        if not user:
+            return await ctx.send("User not found!")
+
+        return await ctx.send(f"In {self.num_to_mode[mode_num]}, {username} has {user.pp_raw}pp and is rank #{user.pp_rank} globally and #{user.pp_country_rank} rank in {user.country}.")

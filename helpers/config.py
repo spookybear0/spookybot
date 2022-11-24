@@ -1,7 +1,15 @@
-import os
 import json
+import os
 
-path = os.path.dirname(os.path.realpath(__file__))
+path = os.path.dirname(os.path.realpath(__file__)) + "/../"
+
+class ConfigDict(dict):
+    loaded = False
+    def __getitem__(self, __k):
+        if not self.loaded:
+            load_config()
+            self.loaded = True
+        return super().__getitem__(__k)
 
 class JsonFile:
     def __init__(self, file_name: str):
@@ -21,30 +29,23 @@ class JsonFile:
             json.dump(new_content, f, indent=4)
         self.file = new_content
 
-def dict_keys(dictioary: dict) -> tuple:
+def dict_keys(dictionary: dict) -> tuple:
     """Returns a tuple of all the dictionary keys."""
-    return tuple(dictioary.keys())
+    return tuple(dictionary.keys())
 
 default_config = {
-    "sql_server": "localhost",
-    "sql_user": "root",
-    "sql_db": "spookybot",
-    "sql_password": "",
-    "sql_port": 3306,
-    "osuapikey": "",
-    "token": "",
+    "sqlite_file": "db.sqlite3",
+    "osuapikey": os.getenv("OSUAPIKEY", ""),
+    "token": os.getenv("OSUTOKEN", ""),
     "discordbottoken": ""
 }
 
-config = {
-"osuapikey": os.getenv("OSUAPIKEY"),
-"token": os.getenv("OSUTOKEN")
-}
+config = ConfigDict()
 
 config_options = list(default_config.keys())
 
 
-def load_config(location: str=path + "/../config.json"):
+def load_config(location: str=path + "/config.json"):
     conf = JsonFile(location)
     user_config_temp = conf.get_file()
 
