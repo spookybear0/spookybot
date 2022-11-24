@@ -1,28 +1,19 @@
-from helpers.np import mod_to_num, pp
-from helpers.db import get_last_beatmap
-from helpers.config import config
-import pyosu
+from helpers.extension import extension_manager
+from helpers.command import Command, Context
+from helpers.osu import mod_to_num
+from extensions.np import NPExtension
 
-async def mods(ctx, args):
-    if os.getenv("OSUAPIKEY"):
-        api = pyosu.OsuApi(os.getenv("OSUAPIKEY"))
-    else:
-        api = pyosu.OsuApi(config["osuapikey"])
-    
-    try:
-        modlist = args[1]
-    except:
-        modlist = 0
-    
-    map = await get_last_beatmap(ctx.username)
-    
-    map = map[0][0]
-    
-    if not map:
-        return "No recent map!"
-    
-    mode = await api.get_beatmap(beatmap_id=map)
-    
-    return await pp(map, mod_to_num(modlist), mode.mode)
 
-aliases = ["with"]
+class Mods(Command):
+    def __init__(self) -> None:
+        self.name = "mods"
+        self.help = "Calculates the pp most recent map would give with the given mods."
+        self.aliases = ["with"]
+
+    async def func(self, ctx: Context, mods: str):
+        #return await ctx.send("Not implemented!")
+
+        mods = mod_to_num(mods)
+        np: NPExtension = extension_manager.get_extension("np")
+        ctx.message = ctx.bot.recent_maps[ctx.username]
+        await np.on_message(ctx, mods=mods)
