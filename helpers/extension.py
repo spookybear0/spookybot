@@ -3,6 +3,8 @@ from collections.abc import KeysView, ValuesView
 from typing_extensions import Self
 from helpers.command import Context
 from helpers.logger import logger
+import threading
+import asyncio
 import osu_irc
 
 class Extension:
@@ -36,6 +38,12 @@ class Extension:
     def shared_instance(self) -> Self:
         return extension_manager[self.name]
 
+    def schedule_loop(self, ctx: Context):
+        async def func():
+            while True:
+                await self.loop(ctx)
+        threading.Thread(target=asyncio.run, args=(func(),), daemon=True).start()
+
     async def setup(self, ctx: Context):
         pass
 
@@ -67,6 +75,9 @@ class Extension:
         pass
 
     async def on_member_quit(self, ctx: Context, user: osu_irc.User, reason: str):
+        pass
+
+    async def loop(self, ctx: Context):
         pass
 
 class ExtensionManager:

@@ -16,6 +16,7 @@ class SpookyBot(osu_irc.Client):
     recent_maps: Dict[str, str] = DictDecay(900)
     api = pyosu.OsuApi(config["osuapikey"])
     testmode = False
+    test_user = None
 
     async def start(self):
         # setup
@@ -59,9 +60,11 @@ class SpookyBot(osu_irc.Client):
     # utility functions
 
     async def send(self, message: str, user: Optional[str] = None, channel: Optional[str] = None) -> None:
-        if self.testmode:
+        if self.testmode and user == self.test_user:
             logger.info(f"Replied to message: {message}")
             return
+
+        logger.info(f"Sending message to {user or channel}: {message}")
 
         if channel:
             await self.sendMessage(channel, message)

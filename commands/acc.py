@@ -1,6 +1,5 @@
 from helpers.extension import extension_manager
 from helpers.command import Command, Context
-from helpers.osu import mod_to_num
 from extensions.np import NPExtension
 
 

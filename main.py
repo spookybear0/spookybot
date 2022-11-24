@@ -14,6 +14,7 @@ nickname = "spookybear0"
 async def test(bot):
     await asyncio.sleep(3)
     username = input("Enter username >>> ")
+    bot.test_user = username
     while True:
         inp = input(">>> ")
         msg = osu_irc.Message("")
