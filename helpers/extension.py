@@ -1,5 +1,4 @@
-from typing import Dict, Optional, Callable, List, Type, Union
-from collections.abc import KeysView, ValuesView
+from typing import Dict, Optional, Callable, List, Type, Union, Any
 from typing_extensions import Self
 from helpers.command import Context
 from helpers.logger import logger
@@ -98,10 +97,10 @@ class ExtensionManager:
     def unregister(self, ext) -> None:
         del self.extensions[ext.name]
 
-    def get_all(self) -> ValuesView[Extension]:
+    def get_all(self) -> Any:
         return self.extensions.values()
 
-    def get_all_names(self) -> KeysView[str]:
+    def get_all_names(self) -> Any:
         return self.extensions.keys()
 
     def get_extension(self, name: str) -> Optional[Extension]:
