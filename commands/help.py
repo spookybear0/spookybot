@@ -20,6 +20,9 @@ class Help(Command):
 
             pages_available: int = math.ceil(len(command_manager.commands)/3)
 
+            if pagenum > pages_available:
+                return await ctx.send(f"Page {pagenum} does not exist! There are {pages_available} pages available.")
+
             cmds: List[Command] = list(command_manager.commands.values())[(pagenum*3)-3:(pagenum*3)]
 
             cmd_list: List[str] = [f"--- {pagenum} of {pages_available} pages of commands available ---"]
@@ -33,9 +36,9 @@ class Help(Command):
 
                     if type(param.annotation) is _UnionGenericAlias:
                         hint = ""
-                        for i, annotation in enumerate(param.annotation.__args__):
+                        for j, annotation in enumerate(param.annotation.__args__):
                             if annotation is not type(None):
-                                if i != 0:
+                                if j != 0:
                                     hint += "|"
                                 hint += annotation.__name__
 
@@ -48,6 +51,7 @@ class Help(Command):
                     else:
                         # not required
                         params.append(f'[{str(paramstring).replace(" ", "").replace(":", ": ")}]')
+
                 cmd_list.append(f"{(pagenum*3)-3+i}. - {command_manager.prefix}{cmd.name}{' ' if params else ''}{' '.join(params)}: {cmd.help}")
 
             for cmd in cmd_list:
