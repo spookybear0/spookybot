@@ -11,7 +11,7 @@ bot = discord.Bot()
 class Discord(Extension):
     def __init__(self) -> None:
         self.name = "discord"
-        self.help = "Discord bot interaction extension"
+        self.help = "Discord bot interaction extension."
         self.irc_bot: Optional[osu_irc.Client] = None
         self.bot: discord.Bot = bot
 

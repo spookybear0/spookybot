@@ -8,6 +8,7 @@ import re
 class NPExtension(Extension):
     def __init__(self) -> None:
         self.name = "np"
+        self.help = "Gets information about a map."
 
     async def setup(self, ctx: Context):
         self.expression = re.compile(r"is (?:playing|listening to|editing|watching) \[https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#.*\/([0-9]+) .*\](?: \+|)(.*|)")

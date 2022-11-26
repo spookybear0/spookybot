@@ -57,7 +57,7 @@ class Match:
 class Matchmaker(Extension):
     def __init__(self) -> None:
         self.name = "matchmaker"
-        self.help = "Matchmaking extension"
+        self.help = "Matchmaking extension."
         self.bot: Optional[osu_irc.Client] = None
 
     async def setup(self, ctx: Context):

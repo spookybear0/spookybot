@@ -11,7 +11,7 @@ import random
 class BanchoBot(Extension):
     def __init__(self) -> None:
         self.name = "banchobot"
-        self.help = "BanchoBot interaction extension"
+        self.help = "BanchoBot interaction extension."
         self.bot: Optional[osu_irc.Client] = None
         self.last_mp_id = -1
 
