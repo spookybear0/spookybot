@@ -43,6 +43,16 @@ class Extension:
                 await self.loop(ctx)
         threading.Thread(target=asyncio.run, args=(func(),), daemon=True).start()
 
+    def start_async_thread(self, func: Callable, *args, **kwargs) -> threading.Thread:
+        t = threading.Thread(target=asyncio.run, args=(func(*args, **kwargs),), daemon=True)
+        t.start()
+        return t
+
+    def start_thread(self, func: Callable, *args, **kwargs) -> threading.Thread:
+        t = threading.Thread(target=func, args=args, kwargs=kwargs, daemon=True)
+        t.start()
+        return t
+
     async def setup(self, ctx: Context):
         pass
 

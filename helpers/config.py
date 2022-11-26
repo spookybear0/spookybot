@@ -37,7 +37,8 @@ default_config = {
     "sqlite_file": "db.sqlite3",
     "osuapikey": os.getenv("OSUAPIKEY", ""),
     "token": os.getenv("OSUTOKEN", ""),
-    "discordbottoken": ""
+    "discordbottoken": "",
+    "discordguildid": "",
 }
 
 config = ConfigDict()

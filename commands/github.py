@@ -7,4 +7,4 @@ class Github(Command):
         self.aliases = ["gh", "source"]
 
     async def func(self, ctx: Context):
-        return await ctx.send("https://github.com/spookybear0/spookybot/tree/rewrite")
+        return await ctx.send("https://github.com/spookybear0/spookybot/")
