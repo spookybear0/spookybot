@@ -8,7 +8,7 @@ class Help(Command):
         self.name = "help"
         self.help = "Shows this message."
 
-    async def func(self, ctx: Context, command: Optional[Union[str, int]]=None):
+    async def func(self, ctx: Context, command: Optional[Union[str, int]]=None) -> None:
         try:
             pagenum: Optional[int] = int(command)
         except (ValueError, TypeError):

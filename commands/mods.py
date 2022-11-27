@@ -10,7 +10,7 @@ class Mods(Command):
         self.help = "Calculates the pp most recent map would give with the given mods."
         self.aliases = ["with"]
 
-    async def func(self, ctx: Context, mods: str):
+    async def func(self, ctx: Context, mods: str) -> None:
         #return await ctx.send("Not implemented!")
 
         mods = mod_to_num(mods)

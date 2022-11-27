@@ -10,10 +10,10 @@ class Unwatch(Command):
         self.help = "Stops messaging you a users recent plays."
         self.aliases = ["uw"]
 
-    async def setup(self, ctx: Context):
+    async def setup(self, ctx: Context) -> None:
         self.watch_ext: WatchExtension = extension_manager.get_extension("watch")
 
-    async def func(self, ctx: Context, username: Optional[str]=None):
+    async def func(self, ctx: Context, username: Optional[str]=None) -> None:
         if self.watch_ext is None:
             self.watch_ext: WatchExtension = extension_manager.get_extension("watch")
 

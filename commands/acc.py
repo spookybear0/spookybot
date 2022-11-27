@@ -10,7 +10,7 @@ class Acc(Command):
         self.help = "Calculates the pp most recent map would give with the given accuracy."
         self.aliases = ["accuracy"]
 
-    async def func(self, ctx: Context, acc: float):
+    async def func(self, ctx: Context, acc: float) -> None:
         # not implemented since ripple api breaks with specific accs
         return await ctx.send("Not implemented!")
         np: NPExtension = extension_manager.get_extension("np")

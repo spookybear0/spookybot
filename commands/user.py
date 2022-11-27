@@ -25,7 +25,7 @@ class User(Command):
             3: "mania"
         }
 
-    async def func(self, ctx: Context, username: Optional[str]=None, mode: str="standard"):
+    async def func(self, ctx: Context, username: Optional[str]=None, mode: str="standard") -> None:
         if not username:
             username = ctx.username
         if username in self.modes.keys(): # if username is a mode

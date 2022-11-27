@@ -2,7 +2,7 @@ from helpers.command import Command, Context
 from typing import Union
 import aiohttp
 
-def to_int(x):
+def to_int(x) -> int:
     final = 0
     num_map = {"K": 1000, "M": 1000000}
     if x.isdigit():
@@ -18,7 +18,7 @@ class Rank(Command):
         self.name = "rank"
         self.help = "Converts between the rank of a user and their pp"
 
-    async def func(self, ctx: Context, value: Union[int, str], type_: str=None):
+    async def func(self, ctx: Context, value: Union[int, str], type_: str=None) -> None:
         if type_ == "rank":
             ret = to_int(value.replace("#", ""))
         elif type_ == "pp":

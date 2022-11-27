@@ -5,6 +5,6 @@ class Info(Command):
         self.name = "info"
         self.help = "Gets info about the bot."
 
-    async def func(self, ctx: Context):
+    async def func(self, ctx: Context) -> None:
         await ctx.send("Github: https://github.com/spookybear0/spookybot.")
         # add more

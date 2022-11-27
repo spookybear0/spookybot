@@ -8,7 +8,7 @@ class Recent(Command):
         self.help = "Returns recent plays of a user"
         self.aliases = ["rs", "replay", "last"]
 
-    async def func(self, ctx: Context, username: str=None, mode: int=0):
+    async def func(self, ctx: Context, username: str=None, mode: int=0) -> None:
         if username is None:
             username = ctx.username
 
