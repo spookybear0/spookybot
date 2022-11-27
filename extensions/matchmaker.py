@@ -48,11 +48,12 @@ class Match:
         self.creator: pyosu.models.User = members[0]
         self.lobby: Optional[Lobby] = None
 
-    async def create_lobby(self):
+    async def create_lobby(self) -> Lobby:
         bancho_bot: Extension = extension_manager.get_extension("banchobot")
         self.lobby: Lobby = await bancho_bot.mp_make("Matchmaking Lobby")
         for member in self.members[1:]:
             await self.lobby.invite(member)
+        return self.lobby
 
 class Matchmaker(Extension):
     def __init__(self) -> None:
@@ -60,15 +61,16 @@ class Matchmaker(Extension):
         self.help = "Matchmaking extension."
         self.bot: Optional[osu_irc.Client] = None
 
-    async def setup(self, ctx: Context):
+    async def setup(self, ctx: Context) -> None:
         self.bot = ctx.bot
         self.matches: List = []
 
-    async def close_all_matches(self):
+    async def close_all_matches(self) -> None:
         for match in self.matches:
             await match.lobby.close()
 
-    async def match(self, ctx: Context, other_user: pyosu.models.User):
+    async def match(self, ctx: Context, other_user: pyosu.models.User) -> Match:
         match = Match(MatchType.SINGLES, [ctx.user, other_user])
         self.matches.append(match)
         await match.create_lobby()
+        return match

@@ -13,11 +13,11 @@ class Watch(Extension):
 
         self.watched_users: dict[str, List[Tuple[str, int]]] = {}
 
-    async def setup(self, ctx: Context):
+    async def setup(self, ctx: Context) -> None:
         self.bot = ctx.bot
         self.schedule_loop(ctx)
 
-    async def loop(self, ctx: Context):
+    async def loop(self, ctx: Context) -> None:
         for user, watched in self.watched_users.items():
             for username, last_play in watched:
                 recent = await ctx.api.get_user_recent(username)

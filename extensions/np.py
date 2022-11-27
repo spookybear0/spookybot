@@ -10,10 +10,10 @@ class NPExtension(Extension):
         self.name = "np"
         self.help = "Gets information about a map."
 
-    async def setup(self, ctx: Context):
+    async def setup(self, ctx: Context) -> None:
         self.expression = re.compile(r"is (?:playing|listening to|editing|watching) \[https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#.*\/([0-9]+) .*\](?: \+|)(.*|)")
 
-    async def on_message(self, ctx: Context, mods: Optional[int]=None, acc: Optional[float]=None):
+    async def on_message(self, ctx: Context, mods: Optional[int]=None, acc: Optional[float]=None) -> None:
         if type(ctx.message) == int or ctx.message.content.startswith("is "):
             final = ""
 

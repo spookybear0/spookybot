@@ -27,10 +27,12 @@ class Discord(Extension):
 
         await self.bot.start(config["discordbottoken"])
 
+irc_bot = Discord().shared_instance
+
 @bot.event
 async def on_ready() -> None:
     logger.info("Discord bot is ready")
 
 @bot.slash_command(guild_ids=[config["discordguildid"]], description="Pings discord and returns the latency.")
-async def ping(ctx):
+async def ping(ctx) -> None:
     await ctx.respond(f"Pong {bot.latency*1000:.2f}ms")

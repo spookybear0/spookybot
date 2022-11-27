@@ -1,5 +1,6 @@
 from typing import Any, Dict, Optional, Callable, List, Type
 from helpers.exceptions import CommandNotFound
+from typing_extensions import Self
 from helpers.logger import logger
 import inspect
 import osu_irc
@@ -77,6 +78,9 @@ class Command:
 
     async def setup(self, ctx: Context):
         pass
+
+    def shared_instance(self) -> Self:
+        return command_manager[self.name]
 
     def __call__(self, context, *args, **kwargs) -> Any:
         return self.func(context, *args, **kwargs)

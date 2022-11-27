@@ -4,7 +4,7 @@ import os
 
 logger = logging.getLogger("spookybot")
 
-def setup_logger(level: int=logging.INFO):
+def setup_logger(level: int=logging.INFO) -> None:
     logger.setLevel(level)
     formatter = logging.Formatter(
         "%(levelname)s - %(message)s"

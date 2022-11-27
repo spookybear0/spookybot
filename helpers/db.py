@@ -2,7 +2,7 @@ from tortoise import Tortoise
 from helpers.config import config
 from helpers.logger import logger
 
-async def db_init():
+async def db_init() -> None:
     logger.info("Initalizing database")
 
     await Tortoise.init(

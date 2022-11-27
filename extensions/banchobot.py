@@ -15,11 +15,11 @@ class BanchoBot(Extension):
         self.bot: Optional[osu_irc.Client] = None
         self.last_mp_id = -1
 
-    async def setup(self, ctx: Context):
+    async def setup(self, ctx: Context) -> None:
         self.bot = ctx.bot
         self.match_create_re = re.compile(r"Created the tournament match https:\/\/osu\.ppy\.sh\/mp\/([0-9]+)")
 
-    async def on_message(self, ctx: Context):
+    async def on_message(self, ctx: Context) -> None:
         if ctx.username == "BanchoBot":
             if self.match_create_re.match(ctx.content):
                 self.last_mp_id = int(self.match_create_re.findall(ctx.content)[0])
@@ -29,10 +29,10 @@ class BanchoBot(Extension):
                 else:
                     self.last_mp_id = -2
 
-    async def send_command(self, command, *args):
+    async def send_command(self, command, *args) -> None:
         await self.bot.sendPM("BanchoBot", f"!{command} {' '.join(args)}")
 
-    async def mp_make(self, name):
+    async def mp_make(self, name) -> Lobby:
         prev = self.last_mp_id
         await self.send_command("mp", "make", name)
         while prev == self.last_mp_id:

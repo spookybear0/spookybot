@@ -34,10 +34,11 @@ class Extension:
     def __str__(self):
         return repr(self)
 
+    @property
     def shared_instance(self) -> Self:
         return extension_manager[self.name]
 
-    def schedule_loop(self, ctx: Context):
+    def schedule_loop(self, ctx: Context) -> None:
         async def func():
             while True:
                 await self.loop(ctx)
@@ -53,40 +54,40 @@ class Extension:
         t.start()
         return t
 
-    async def setup(self, ctx: Context):
+    async def setup(self, ctx: Context) -> None:
         pass
 
-    async def on_message(self, ctx: Context):
+    async def on_message(self, ctx: Context) -> None:
         pass
 
-    async def on_reconnect(self, ctx: Context):
+    async def on_reconnect(self, ctx: Context) -> None:
         pass
 
-    async def on_ready(self, ctx: Context):
+    async def on_ready(self, ctx: Context) -> None:
         pass
 
-    async def on_error(self, ctx: Context, error: BaseException):
+    async def on_error(self, ctx: Context, error: BaseException) -> None:
         pass
 
-    async def on_join_channel(self, ctx: Context, channel: Union[osu_irc.Channel, str]):
+    async def on_join_channel(self, ctx: Context, channel: Union[osu_irc.Channel, str]) -> None:
         pass
 
-    async def on_part_channel(self, ctx: Context, channel: Union[osu_irc.Channel, str]):
+    async def on_part_channel(self, ctx: Context, channel: Union[osu_irc.Channel, str]) -> None:
         pass
 
-    async def on_ratelimit(self, ctx: Context):
+    async def on_ratelimit(self, ctx: Context) -> None:
         pass
 
-    async def on_member_join(self, ctx: Context, user: osu_irc.User):
+    async def on_member_join(self, ctx: Context, user: osu_irc.User) -> None:
         pass
 
-    async def on_member_part(self, ctx: Context, user: osu_irc.User, channel: osu_irc.Channel):
+    async def on_member_part(self, ctx: Context, user: osu_irc.User, channel: osu_irc.Channel) -> None:
         pass
 
-    async def on_member_quit(self, ctx: Context, user: osu_irc.User, reason: str):
+    async def on_member_quit(self, ctx: Context, user: osu_irc.User, reason: str) -> None:
         pass
 
-    async def loop(self, ctx: Context):
+    async def loop(self, ctx: Context) -> None:
         pass
 
 class ExtensionManager:
@@ -94,7 +95,7 @@ class ExtensionManager:
         self.bot = bot
         self.extensions: Dict[str, Extension] = {}
 
-    async def init_manager(self, bot):
+    async def init_manager(self, bot) -> None:
         self.bot = bot
         await self.register_all_extensions()
 
@@ -107,10 +108,10 @@ class ExtensionManager:
     def unregister(self, ext) -> None:
         del self.extensions[ext.name]
 
-    def get_all(self) -> Any:
+    def get_all(self) -> List:
         return self.extensions.values()
 
-    def get_all_names(self) -> Any:
+    def get_all_names(self) -> List:
         return self.extensions.keys()
 
     def get_extension(self, name: str) -> Optional[Extension]:
@@ -118,56 +119,56 @@ class ExtensionManager:
             return self.extensions[name]
         return None
 
-    async def on_message(self, ctx: Context):
+    async def on_message(self, ctx: Context) -> None:
         logger.debug(f"EVENT on_message({ctx.message})")
         for ext in self.extensions.values():
             await ext.on_message(ctx)
 
-    async def on_reconnect(self, ctx: Context):
+    async def on_reconnect(self, ctx: Context) -> None:
         logger.debug("EVENT on_reconnect()")
         for ext in self.extensions.values():
             await ext.on_reconnect(ctx)
 
-    async def on_ready(self, ctx: Context):
+    async def on_ready(self, ctx: Context) -> None:
         logger.debug("EVENT on_ready()")
         for ext in self.extensions.values():
             await ext.on_ready(ctx)
 
-    async def on_error(self, ctx: Context, error: BaseException):
+    async def on_error(self, ctx: Context, error: BaseException) -> None:
         logger.debug(f"EVENT on_error({error})")
         for ext in self.extensions.values():
             await ext.on_error(ctx, error)
 
-    async def on_join_channel(self, ctx: Context, channel: Union[osu_irc.Channel, str]):
+    async def on_join_channel(self, ctx: Context, channel: Union[osu_irc.Channel, str]) -> None:
         logger.debug(f"EVENT on_join_channel({channel})")
         for ext in self.extensions.values():
             await ext.on_join_channel(ctx, channel)
 
-    async def on_part_channel(self, ctx: Context, channel: Union[osu_irc.Channel, str]):
+    async def on_part_channel(self, ctx: Context, channel: Union[osu_irc.Channel, str]) -> None:
         logger.debug(f"EVENT on_part_channel({channel})")
         for ext in self.extensions.values():
             await ext.on_part_channel(ctx, channel)
 
-    async def on_ratelimit(self, ctx: Context):
+    async def on_ratelimit(self, ctx: Context) -> None:
         logger.debug("EVENT on_ratelimit()")
         for ext in self.extensions.values():
             await ext.on_ratelimit(ctx)
 
-    async def on_member_join(self, ctx: Context, user: osu_irc.User):
+    async def on_member_join(self, ctx: Context, user: osu_irc.User) -> None:
         for ext in self.extensions.values():
             await ext.on_member_join(ctx, user)
 
-    async def on_member_part(self, ctx: Context, user: osu_irc.User, channel: osu_irc.Channel):
+    async def on_member_part(self, ctx: Context, user: osu_irc.User, channel: osu_irc.Channel) -> None:
         for ext in self.extensions.values():
             await ext.on_member_part(ctx, user, channel)
 
-    async def on_member_quit(self, ctx: Context, user: osu_irc.User, reason: str):
+    async def on_member_quit(self, ctx: Context, user: osu_irc.User, reason: str) -> None:
         for ext in self.extensions.values():
             await ext.on_member_quit(ctx, user, reason)
 
     # add more handlers
 
-    async def register_all_extensions(self):
+    async def register_all_extensions(self) -> None:
         import extensions
         for ext in dir(extensions):
             if not ext.startswith("_"):

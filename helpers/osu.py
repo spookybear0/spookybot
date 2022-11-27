@@ -108,7 +108,7 @@ async def py_oppai(map_id:str, accs=[100], mods=0, misses=0, combo=None, fc=None
     os.remove(file_path)
     return pyoppai_json
 
-def mod_to_num(mods):
+def mod_to_num(mods) -> int:
     total = 0
     
     if mods == "":
@@ -144,7 +144,7 @@ def mod_to_num(mods):
 
     return int(total)
 
-def num_to_mod(num):
+def num_to_mod(num) -> str:
     mod_list = []
 
     if num & 1<<0:   mod_list.append("NF")
@@ -173,7 +173,7 @@ def num_to_mod(num):
 
     return "".join(mod_list)
 
-def acc_calc(n300, n100, n50, misses):
+def acc_calc(n300, n100, n50, misses) -> float:
     """calculates accuracy (0.0-1.0)"""
     h = n300 + n100 + n50 + misses
 
