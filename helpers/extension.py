@@ -34,23 +34,26 @@ class Extension:
     def __str__(self):
         return repr(self)
 
-    @property
     def shared_instance(self) -> Self:
-        return extension_manager[self.name]
+        return extension_manager.get_extension(self.name)
 
     def schedule_loop(self, ctx: Context) -> None:
         async def func():
             while True:
                 await self.loop(ctx)
-        threading.Thread(target=asyncio.run, args=(func(),), daemon=True).start()
+        t = threading.Thread(target=asyncio.run, args=(func(),))
+        t.daemon = True
+        t.start()
 
     def start_async_thread(self, func: Callable, *args, **kwargs) -> threading.Thread:
-        t = threading.Thread(target=asyncio.run, args=(func(*args, **kwargs),), daemon=True)
+        t = threading.Thread(target=asyncio.run, args=(func(*args, **kwargs),))
+        t.daemon = True
         t.start()
         return t
 
     def start_thread(self, func: Callable, *args, **kwargs) -> threading.Thread:
-        t = threading.Thread(target=func, args=args, kwargs=kwargs, daemon=True)
+        t = threading.Thread(target=func, args=args, kwargs=kwargs)
+        t.daemon = True
         t.start()
         return t
 

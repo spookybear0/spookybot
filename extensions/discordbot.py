@@ -27,7 +27,7 @@ class Discord(Extension):
 
         await self.bot.start(config["discordbottoken"])
 
-irc_bot = Discord().shared_instance
+irc_bot = Discord().shared_instance().irc_bot
 
 @bot.event
 async def on_ready() -> None:

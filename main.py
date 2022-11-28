@@ -23,8 +23,16 @@ async def test(bot):
 
         await bot.onMessage(msg)
 
+def exit_(sig, frame):
+    logger.info("Exiting...")
+    asyncio.run(main(log_level=logging.DEBUG))
+    exit(0)
+
 async def main(log_level: int=logging.INFO, testmode: bool=False):
     loop = asyncio.get_event_loop()
+
+    signal.signal(signal.SIGINT, exit_)
+    signal.signal(signal.SIGTERM, exit_)
     
     setup_logger(level=log_level)
 

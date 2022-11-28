@@ -80,7 +80,7 @@ class Command:
         pass
 
     def shared_instance(self) -> Self:
-        return command_manager[self.name]
+        return command_manager.get_command(self.name)
 
     def __call__(self, context, *args, **kwargs) -> Any:
         return self.func(context, *args, **kwargs)

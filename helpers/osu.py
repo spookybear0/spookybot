@@ -114,33 +114,33 @@ def mod_to_num(mods) -> int:
     if mods == "":
         return 0
 
-    if "NoFail" in mods:    total += 1<<0
-    if "Easy" in mods:    total += 1<<1
-    if "Hidden" in mods:    total += 1<<3
-    if "HardRock" in mods:    total += 1<<4
-    if "SuddenDeath" in mods:    total += 1<<5
-    if "DoubleTime" in mods:    total += 1<<6
-    if "Relax" in mods:    total += 1<<7
-    if "HalfTime" in mods:    total += 1<<8
-    if "Nightcore" in mods:    total += 1<<9
-    if "Flashlight" in mods:    total += 1<<10
-    if "SpunOut" in mods:    total += 1<<12
-    if "Perfect" in mods:    total += 1<<14
+    if "NoFail" in mods: total += 1<<0
+    if "Easy" in mods: total += 1<<1
+    if "Hidden" in mods: total += 1<<3
+    if "HardRock" in mods: total += 1<<4
+    if "SuddenDeath" in mods: total += 1<<5
+    if "DoubleTime" in mods: total += 1<<6
+    if "Relax" in mods: total += 1<<7
+    if "HalfTime" in mods: total += 1<<8
+    if "Nightcore" in mods: total += 1<<9
+    if "Flashlight" in mods: total += 1<<10
+    if "SpunOut" in mods: total += 1<<12
+    if "Perfect" in mods: total += 1<<14
     
     mods = mods.upper()
     
-    if "NF" in mods:    total += 1<<0
-    if "EZ" in mods:    total += 1<<1
-    if "HD" in mods:    total += 1<<3
-    if "HR" in mods:    total += 1<<4
-    if "SD" in mods:    total += 1<<5
-    if "DT" in mods:    total += 1<<6
-    if "RX" in mods:    total += 1<<7
-    if "HT" in mods:    total += 1<<8
-    if "NC" in mods:    total += 1<<9
-    if "FL" in mods:    total += 1<<10
-    if "SO" in mods:    total += 1<<12
-    if "PF" in mods:    total += 1<<14
+    if "NF" in mods: total += 1<<0
+    if "EZ" in mods: total += 1<<1
+    if "HD" in mods: total += 1<<3
+    if "HR" in mods: total += 1<<4
+    if "SD" in mods: total += 1<<5
+    if "DT" in mods: total += 1<<6
+    if "RX" in mods: total += 1<<7
+    if "HT" in mods: total += 1<<8
+    if "NC" in mods: total += 1<<9
+    if "FL" in mods: total += 1<<10
+    if "SO" in mods: total += 1<<12
+    if "PF" in mods: total += 1<<14
 
     return int(total)
 
