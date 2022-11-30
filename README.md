@@ -34,4 +34,4 @@ If you'd like to contribute to spookybot (name may change in the future) you can
 
 ### Side note
 
-I'm looking for a name for the bot when I eventually get a seperate bot account for it. I'm open to suggestions ;).
+I'm looking for a name for the bot when I eventually get a separate bot account for it. I'm open to suggestions ;).
