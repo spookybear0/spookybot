@@ -12,7 +12,7 @@ The bot is currently running on my account: `spookybear0`
 
 Just message the bot a command (such as !help) to start.
 
-I would really appreciate you trying this bot out so I can get a seperate account for this bot. osu!support requires at least 50 active users per month to give a bot account, so please help me reach this goal
+I would really appreciate you trying this bot out so I can get a separate account for this bot. osu!support requires at least 50 active users per month to give a bot account, so please help me reach this goal
 
 ## Features
 
