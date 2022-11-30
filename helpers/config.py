@@ -39,6 +39,7 @@ default_config = {
     "token": os.getenv("OSUTOKEN", ""),
     "discordbottoken": "",
     "discordguildid": "",
+    "username": "",
 }
 
 config = ConfigDict()

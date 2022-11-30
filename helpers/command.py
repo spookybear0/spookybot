@@ -17,6 +17,7 @@ class Context:
         """
         self.message: osu_irc.Message | str = ""
         self.msg: osu_irc.Message | str = ""
+        self.channel: osu_irc.Channel | str = ""
         self.username: str = ""
         self.user: Optional[pyosu.models.User] = None
         self.content: str = ""
@@ -30,6 +31,7 @@ class Context:
         ret = cls()
         ret.message: osu_irc.Message = message
         ret.msg: osu_irc.Message = message
+        ret.channel: osu_irc.Channel = message.Channel
         ret.username: str = message.user_name
         ret.user: pyosu.models.User = user
         ret.content: str = message.content
@@ -45,6 +47,7 @@ class Context:
         ret.bot = bot
         ret.message = message
         if message is not None:
+            ret.channel = message.Channel
             ret.username = message.user_name
             ret.content = message.content
         ret.user = user
@@ -62,6 +65,7 @@ class Command:
     name = None
     func = None
     help = None
+    admin = False
     aliases: List[str] = []
 
     @staticmethod
@@ -141,6 +145,10 @@ class CommandManager:
             command = self.get_command(command_name)
 
             if command:
+                if command.admin and not user.username == self.bot.username:
+                    await self.bot.send("You do not have permission to use this command.", user=message.user_name)
+                    return
+
                 params = list(inspect.signature(command.func).parameters.values())[1:]
 
                 for arg, param in zip(args, params):
@@ -153,7 +161,7 @@ class CommandManager:
                 try:
                     await command(context, *args)
                 except TypeError as e:
-                    if ".func() takes from" in str(e):
+                    if ".func() takes from" in str(e) or "required positional argument" in str(e):
                         await context.send(f"Invalid arguments for command `{command_name}`, use `{self.prefix}help {command_name}` for more info.")
                     else:
                         raise e

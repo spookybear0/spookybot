@@ -9,8 +9,6 @@ import osu_irc
 import click
 import signal
 
-nickname = "spookybear0"
-
 async def test(bot):
     await asyncio.sleep(3)
     username = input("Enter username >>> ")
@@ -40,7 +38,7 @@ async def main(log_level: int=logging.INFO, testmode: bool=False):
 
     await db_init()
 
-    spookybot = SpookyBot(token=config["token"], nickname=nickname, loop=loop)
+    spookybot = SpookyBot(token=config["token"], nickname=config["username"], loop=loop)
 
     logger.info("Starting spookybot!")
 
@@ -50,6 +48,7 @@ async def main(log_level: int=logging.INFO, testmode: bool=False):
         Thread(target=asyncio.run, args=(test(spookybot),)).start()
 
     try:
+        spookybot.username = config["username"]
         await spookybot.start()
     except Exception:
         pass

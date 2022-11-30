@@ -6,6 +6,7 @@ from helpers.extension import extension_manager
 from helpers.exceptions import CommandNotFound
 from helpers.osu import DictDecay
 import osu_irc
+import asyncio
 import pyosu
 import os
 
@@ -17,6 +18,7 @@ class SpookyBot(osu_irc.Client):
     api = pyosu.OsuApi(config["osuapikey"])
     testmode = False
     test_user = None
+    username = ""
 
     async def start(self):
         # setup
@@ -94,6 +96,9 @@ class SpookyBot(osu_irc.Client):
         user = await self.api.get_user(msg.user_name)
 
         await extension_manager.on_message(Context.create_event_context(self, msg, user))
+
+        if msg.content.startswith("!mp"):
+            return
 
         try:
             await command_manager.process_message(msg, user)

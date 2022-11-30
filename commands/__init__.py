@@ -11,6 +11,11 @@ try:
     from .acc import Acc
     from .watch import Watch
     from .unwatch import Unwatch
+
+    # admin commands
+    from .admin.create_match import CreateMatch
+    from .admin.close_match import CloseMatch
+    from .admin.msg import Message
 except Exception:
     import traceback
     traceback.print_exc()
