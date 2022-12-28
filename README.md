@@ -8,7 +8,7 @@ Please create a GitHub issue if you have any ideas for features or commands.
 
 ## How to use
 
-The bot is currently running on my account: `spookybear0`
+The bot is currently running on the bot account: `spookybot`
 
 Just message the bot a command (such as !help) to start.
 
