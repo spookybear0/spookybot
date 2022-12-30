@@ -31,7 +31,7 @@ class Watch(Extension):
 
                 if recent.beatmap_id != last_play:
                     ctx.username = user
-                    await command_manager.get_command("recent").func(ctx, username)
+                    await command_manager.get_command("recent").func(ctx, username, watch=True)
                     self.watched_users[user][watched.index((username, last_play))] = (username, recent.beatmap_id)
 
         await asyncio.sleep(10)

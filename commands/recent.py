@@ -8,7 +8,7 @@ class Recent(Command):
         self.help = "Returns recent plays of a user"
         self.aliases = ["rs", "replay", "last"]
 
-    async def func(self, ctx: Context, username: str=None, mode: int=0) -> None:
+    async def func(self, ctx: Context, username: str=None, mode: int=0, watch=False) -> None:
         if username is None:
             username = ctx.username
 
@@ -39,8 +39,12 @@ class Recent(Command):
 
         if mods:
             mods = f" +{mods}"
-        
-        return await ctx.send(f"{username} | {map.artist} - {map.title} [{map.version}]{mods} {round(acc, 2)}% {round(map.difficultyrating, 2)}* " \
+
+        resp = f"{username} | {map.artist} - {map.title} [{map.version}]{mods} {round(acc, 2)}% {round(map.difficultyrating, 2)}* " \
             f"| {recent.rank} | {pp}pp | {int(recent.score)} | {recent.maxcombo}x | {recent.count300}x 300, {recent.count100}x 100, " \
             f"{recent.count50}x 50, {recent.countmiss}x miss{perfect}"
-        )
+        
+        if watch:
+            resp += " | use !unwatch to stop watching"
+
+        return await ctx.send()
