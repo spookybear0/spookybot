@@ -30,7 +30,7 @@ class Recent(Command):
             try:
                 pp = await py_oppai(recent.map_id, acc, mods=recent.mods, misses=recent.misses, combo=recent.maxcombo, fc=recent.perfect)["pp"]
             except Exception:
-                pp = "unavailable "
+                pp = 0 # unavailable pp (probably failed or something)
         else: 
             score = await ctx.api.get_score(map.beatmap_id, user=username)
             pp = round(float(score.pp), 2)
@@ -41,8 +41,7 @@ class Recent(Command):
             mods = f" +{mods}"
 
         resp = f"{username} | {map.artist} - {map.title} [{map.version}]{mods} {round(acc, 2)}% {round(map.difficultyrating, 2)}* " \
-            f"| {recent.rank} | {pp}pp | {int(recent.score)} | {recent.maxcombo}x | {recent.count300}x 300, {recent.count100}x 100, " \
-            f"{recent.count50}x 50, {recent.countmiss}x miss{perfect}"
+            f"| {recent.rank} | {pp}pp | {int(recent.score)} | {recent.maxcombo}x | {recent.countmiss}x miss{perfect}"
         
         if watch:
             resp += " | use !unwatch to stop watching"
