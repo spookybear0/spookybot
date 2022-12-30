@@ -97,8 +97,8 @@ class SpookyBot(osu_irc.Client):
 
         await extension_manager.on_message(Context.create_event_context(self, msg, user))
 
-        if msg.content.startswith("!mp"):
-            return
+        #if msg.content.startswith("!mp"): # shouldn't need this since we want commands to work in multis
+        #    return
 
         try:
             await command_manager.process_message(msg, user)

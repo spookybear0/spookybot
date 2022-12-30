@@ -11,5 +11,3 @@ class CreateMatch(Command):
     async def func(self, ctx: Context) -> None:
         matchmaker: Matchmaker = Matchmaker().shared_instance()
         match_: Match = await matchmaker.match(ctx, ctx.username)
-        
-        await ctx.send(f"Match created! {match_.lobby.create_invite_link()} {match_.lobby.password}")

@@ -17,6 +17,7 @@ try:
     from .admin.create_match import CreateMatch
     from .admin.close_match import CloseMatch
     from .admin.msg import Message
+    from .admin.close_all_matches import CloseAllMatches
 except Exception:
     import traceback
     traceback.print_exc()
