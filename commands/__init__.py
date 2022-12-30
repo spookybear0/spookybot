@@ -11,6 +11,7 @@ try:
     from .acc import Acc
     from .watch import Watch
     from .unwatch import Unwatch
+    from .recommend import Recommend
 
     # admin commands
     from .admin.create_match import CreateMatch

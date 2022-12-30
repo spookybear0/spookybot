@@ -138,7 +138,7 @@ class CommandManager:
                 return command
         return None
 
-    async def process_message(self, message: osu_irc.Message, user):
+    async def process_message(self, message: osu_irc.Message, user) -> None:
         if message.content.startswith(self.prefix):
             command_name = message.content.split(" ")[0][1:]
             args = message.content.split(" ")[1:]
