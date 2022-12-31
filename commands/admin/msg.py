@@ -5,6 +5,7 @@ class Message(Command):
         self.name = "msg"
         self.help = "Messages somewhere"
         self.admin = True
+        self.aliases = ["message"]
 
     async def func(self, ctx: Context, location: str, message: str) -> None:
         if location.startswith("#"):

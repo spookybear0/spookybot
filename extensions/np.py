@@ -1,6 +1,6 @@
 from typing import List, Optional
 from helpers.extension import Extension
-from helpers.osu import mod_to_num, num_to_mod
+from helpers.osu import mod_to_num, num_to_mod, py_oppai
 from helpers.command import Context
 import aiohttp
 import re
@@ -14,6 +14,7 @@ class NPExtension(Extension):
         self.expression = re.compile(r"is (?:playing|listening to|editing|watching) \[https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#.*\/([0-9]+) .*\](?: \+|)(.*|)")
 
     async def on_message(self, ctx: Context, mods: Optional[int]=None, acc: Optional[float]=None) -> None:
+
         if type(ctx.message) == int or ctx.message.content.startswith("is "):
             final = ""
 
@@ -38,23 +39,18 @@ class NPExtension(Extension):
 
             map = await ctx.bot.api.get_beatmap(beatmap_id=map_id)
 
-            # ripple api to get pp
-            async with aiohttp.ClientSession() as session:
-                async with session.get(f"https://ripple.moe/letsapi/v1/pp?b={map_id}&m={mods_num}&g={map.mode}") as r:
-                    req = await r.json()
+            req = await py_oppai(map_id, mods=mods_num, accs=[97, 98, 99, 100])
             
             mods_str = ""
             if mods_num:
                 mods_str = f" +{num_to_mod(mods_num)}"
                 
-            final += f'{req["song_name"]}{mods_str} | {round(req["stars"], 2)}* | {req["bpm"]} BPM | AR {req["ar"]}'
+            final += f'{req["artist"]} - {req["title"]}{mods_str} | {round(req["stars"], 2)}* | {int(map.bpm)} BPM | AR {round(req["ar"], 2)}'
 
             if acc:
                 # guess this is broken, TODO: change from ripple api to something else
-                async with aiohttp.ClientSession() as session:
-                    async with session.get(f"https://ripple.moe/letsapi/v1/pp?b={map_id}&m={mods_num}&g={map.mode}&a={acc}") as r:
-                        req = await r.json()
-                final += f" | {acc}%: {round(req['pp'], 2)}pp"
+                req = await py_oppai(map_id, mods=mods_num, accs=[acc])
+                final += f" | {acc}%: {round(req['pp'][0], 2)}pp"
             else:
                 pp: List = req["pp"]
                 pp.reverse()

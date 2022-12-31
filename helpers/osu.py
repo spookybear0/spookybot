@@ -50,9 +50,9 @@ async def py_oppai(map_id:str, accs=[100], mods=0, misses=0, combo=None, fc=None
     BUFSIZE = 2000000
     buf = pyoppai.new_buffer(BUFSIZE)
 
-    file_path = "data/osu/temp/{}.osu".format(map_id) # some unique filepath
+    file_path = "d{}.osu".format(map_id) # some unique filepath
     await download_file(url, file_path) # this is the file name that it downloaded
-    pyoppai.parse(file_path, b, buf, BUFSIZE, True, "data/osu/cache/")
+    pyoppai.parse(file_path, b, buf, BUFSIZE, True, "cache/")
     dctx = pyoppai.new_d_calc_ctx(ctx)
     pyoppai.apply_mods(b, mods)
 
