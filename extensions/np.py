@@ -39,7 +39,7 @@ class NPExtension(Extension):
 
             map = await ctx.bot.api.get_beatmap(beatmap_id=map_id)
 
-            req = await py_oppai(map_id, mods=mods_num, accs=[97, 98, 99, 100])
+            req = await py_oppai(map_id, mods=mods_num, accs=[95, 98, 99, 100])
             
             mods_str = ""
             if mods_num:
