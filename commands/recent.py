@@ -46,4 +46,4 @@ class Recent(Command):
         if watch:
             resp += " | use !unwatch to stop watching"
 
-        return await ctx.send()
+        return await ctx.send(resp)
