@@ -15,5 +15,9 @@ class Mods(Command):
 
         mods = mod_to_num(mods)
         np: NPExtension = extension_manager.get_extension("np")
-        ctx.message = ctx.bot.recent_maps[ctx.username]
+        try:
+            ctx.message = ctx.bot.recent_maps[ctx.username]
+        except KeyError:
+            await ctx.send("No recent map found. Please use /np before using this command.")
+            return
         await np.on_message(ctx, mods=mods)

@@ -58,7 +58,10 @@ class Context:
         return ret
 
     async def send(self, message: str) -> None:
-        await self.bot.send(message, user=self.username)
+        if self.channel.name.startswith("mp_"):
+            await self.bot.send(message, channel=self.channel.name)
+        else:
+            await self.bot.send(message, user=self.username)
 
 class Command:
     # default values
@@ -137,6 +140,9 @@ class CommandManager:
             if name in command.aliases:
                 return command
         return None
+
+    def get_all_non_admin(self) -> List[Command]:
+        return [command for command in self.commands.values() if not command.admin]
 
     async def process_message(self, message: osu_irc.Message, user) -> None:
         if message.content.startswith(self.prefix):

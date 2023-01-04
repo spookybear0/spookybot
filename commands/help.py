@@ -23,7 +23,7 @@ class Help(Command):
             if pagenum > pages_available:
                 return await ctx.send(f"Page {pagenum} does not exist! There are {pages_available} pages available.")
 
-            cmds: List[Command] = list(command_manager.commands.values())[(pagenum*3)-3:(pagenum*3)]
+            cmds: List[Command] = list(command_manager.get_all_non_admin())[(pagenum*3)-3:(pagenum*3)]
 
             cmd_list: List[str] = [f"--- {pagenum} of {pages_available} pages of commands available ---"]
 
