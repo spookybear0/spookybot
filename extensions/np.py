@@ -49,11 +49,9 @@ class NPExtension(Extension):
 
             if acc:
                 req = await py_oppai(map_id, mods=mods_num, accs=[acc])
-                req["pp"].reverse()
                 final += f" | {acc}%: {round(req['pp'][0], 2)}pp"
             else:
                 pp: List = req["pp"]
-                pp.reverse()
 
                 for i in range(4):
                     final += f" | {i+97}%: {round(pp[i], 2)}pp"
