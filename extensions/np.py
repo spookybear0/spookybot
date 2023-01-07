@@ -48,8 +48,8 @@ class NPExtension(Extension):
             final += f'{req["artist"]} - {req["title"]}{mods_str} | {round(req["stars"], 2)}* | {int(map.bpm)} BPM | AR {round(req["ar"], 2)}'
 
             if acc:
-                # guess this is broken, TODO: change from ripple api to something else
                 req = await py_oppai(map_id, mods=mods_num, accs=[acc])
+                req["pp"].reverse()
                 final += f" | {acc}%: {round(req['pp'][0], 2)}pp"
             else:
                 pp: List = req["pp"]
