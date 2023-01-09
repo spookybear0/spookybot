@@ -58,10 +58,11 @@ class Context:
         return ret
 
     async def send(self, message: str) -> None:
-        if self.channel.name.startswith("mp_"):
-            await self.bot.send(message, channel=self.channel.name)
-        else:
-            await self.bot.send(message, user=self.username)
+        if self.channel:
+            if self.channel.name.startswith("mp_"):
+                await self.bot.send(message, channel=self.channel.name)
+                return
+        await self.bot.send(message, user=self.username)
 
 class Command:
     # default values
