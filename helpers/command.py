@@ -152,7 +152,7 @@ class CommandManager:
             command = self.get_command(command_name)
 
             if command:
-                if command.admin and not user.username in [self.bot.username, "spookybear0"]:
+                if command.admin and not user.username in [self.bot.username, "spookybear"]:
                     await self.bot.send("You do not have permission to use this command.", user=message.user_name)
                     return
 
