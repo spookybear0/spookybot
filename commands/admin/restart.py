@@ -10,4 +10,4 @@ class Restart(Command):
 
     async def func(self, ctx: Context) -> None:
         await ctx.send("Restarting...")
-        os.system(f'echo "{config["root_password"]}\n" | sudo -S service restart spookybot') # is this safe?
+        os.system(f'echo "{config["root_password"]}\n" | sudo -S service spookybot restart') # is this safe?
