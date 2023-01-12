@@ -66,9 +66,12 @@ class SpookyBot(osu_irc.Client):
             logger.info(f"Replied to message: {message}")
             return
 
-        username = None
+        username = user
         if user:
-            username = user.username
+            try:
+                username = user.username
+            except AttributeError:
+                pass
 
         logger.info(f"Sending message to {username or channel}: {message}")
 
