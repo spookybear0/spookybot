@@ -1,5 +1,5 @@
 from helpers.command import Command, Context
-import asyncio
+from helpers.config import config
 import os
 
 class Restart(Command):
@@ -10,4 +10,4 @@ class Restart(Command):
 
     async def func(self, ctx: Context) -> None:
         await ctx.send("Restarting...")
-        os.system("sudo service restart spookybot") # is this safe?
+        os.system(f"{config['root_password']} | sudo -S service restart spookybot") # is this safe?
