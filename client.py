@@ -66,7 +66,11 @@ class SpookyBot(osu_irc.Client):
             logger.info(f"Replied to message: {message}")
             return
 
-        logger.info(f"Sending message to {user or channel}: {message}")
+        username = None
+        if user:
+            username = user.username
+
+        logger.info(f"Sending message to {username or channel}: {message}")
 
         if channel:
             await self.sendMessage(channel, message)

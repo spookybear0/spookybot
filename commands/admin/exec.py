@@ -43,7 +43,7 @@ class Exec(Command):
             result = out.result()
             if result:
                 result = str(result)
-                if len(result) >= 520:
+                if len(result) > 520:
                     await ctx.send("Message is over 520 characters, maybe want to fix that...")
                 elif len(result) >= 130:
                     n = 130
