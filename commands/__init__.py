@@ -19,7 +19,6 @@ try:
     from .admin.msg import Message
     from .admin.close_all_matches import CloseAllMatches
     from .admin.exec import Exec
-    from .admin.restart import Restart
 except Exception:
     import traceback
     traceback.print_exc()
