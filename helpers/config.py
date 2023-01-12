@@ -40,7 +40,6 @@ default_config = {
     "discordbottoken": "",
     "discordguildid": "",
     "username": "",
-    "root_password": ""
 }
 
 config = ConfigDict()
