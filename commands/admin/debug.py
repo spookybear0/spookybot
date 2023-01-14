@@ -1,5 +1,6 @@
 from helpers.command import Command, Context
 from helpers.logger import logger, OsuDebugHandler
+import logging
 
 class Debug(Command):
     def __init__(self) -> None:
@@ -13,7 +14,9 @@ class Debug(Command):
             if isinstance(filter, OsuDebugHandler):
                 logger.removeFilter(filter)
                 await ctx.send("Debug mode disabled!")
+                logger.setLevel(logging.INFO)
                 return
         
         logger.addHandler(OsuDebugHandler())
+        logger.setLevel(logging.DEBUG)
         await ctx.send("Debug mode enabled!")
