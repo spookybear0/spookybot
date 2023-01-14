@@ -61,9 +61,10 @@ class SpookyBot(osu_irc.Client):
 
     # utility functions
 
-    async def send(self, message: str, user: Optional[str] = None, channel: Optional[str] = None) -> None:
+    async def send(self, message: str, user: Optional[str] = None, channel: Optional[str] = None, nodebug: bool=False) -> None:
         if self.testmode and user == self.test_user:
-            logger.info(f"Replied to message: {message}")
+            if not nodebug:
+                logger.info(f"Replied to message: {message}")
             return
 
         username = user
@@ -73,7 +74,8 @@ class SpookyBot(osu_irc.Client):
             except AttributeError:
                 pass
 
-        logger.info(f"Sending message to {username or channel}: {message}")
+        if not nodebug:
+            logger.info(f"Sending message to {username or channel}: {message}")
 
         if channel:
             await self.sendMessage(channel, message)
@@ -110,4 +112,5 @@ class SpookyBot(osu_irc.Client):
         try:
             await command_manager.process_message(msg, user)
         except CommandNotFound:
-            return await self.send("Command not found!", user=user)
+            await self.send("Command not found!", user=user)
+            return

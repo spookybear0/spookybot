@@ -40,6 +40,8 @@ async def main(log_level: int=logging.INFO, testmode: bool=False):
 
     spookybot = SpookyBot(token=config["token"], nickname=config["username"], loop=loop)
 
+    config["bot"] = spookybot
+
     logger.info("Starting spookybot!")
 
     if testmode:
