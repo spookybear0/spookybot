@@ -154,6 +154,7 @@ class ExtensionManager:
 
     async def on_ratelimit(self, ctx: Context) -> None:
         logger.debug("EVENT on_ratelimit()")
+        logger.warning("Ratelimited!")
         for ext in self.extensions.values():
             await ext.on_ratelimit(ctx)
 

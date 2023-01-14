@@ -75,7 +75,7 @@ class SpookyBot(osu_irc.Client):
                 pass
 
         if not nodebug:
-            logger.info(f"Sending message to {username or channel}: {message}")
+            logger.info(f"{username or channel} --> {message}")
 
         if channel:
             await self.sendMessage(channel, message)
@@ -100,7 +100,7 @@ class SpookyBot(osu_irc.Client):
         return await super().onError(ex)
 
     async def onMessage(self, msg: osu_irc.Message) -> None:
-        logger.debug(f"Message received: {msg.content}")
+        logger.debug(f"{msg.user_name} <-- {msg.content}")
 
         user = await self.api.get_user(msg.user_name)
 
