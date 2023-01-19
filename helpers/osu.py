@@ -1,3 +1,4 @@
+from typing import Union
 import aiohttp
 import pyoppai
 import time
@@ -103,7 +104,7 @@ async def py_oppai(map_id:str, accs=[100], mods=0, misses=0, combo=None, fc=None
         "od": od,
         "ar": ar,
         "hp": hp
-        }
+    }
 
     os.remove(file_path)
     return pyoppai_json
@@ -172,6 +173,20 @@ def num_to_mod(num) -> str:
     if num & 1<<28:  mod_list.append("2 KEY")
 
     return "".join(mod_list)
+
+def remove_non_essential_mods(mods: Union[int, str]) -> int:
+    if type(mods) == int:
+        mods = num_to_mod(mods).upper()
+    else:
+        mods = mods.upper()
+
+    # only ranked mods
+    mods = mods.replace("NC", "DT")
+    mods = mods.replace("PF", "")
+    mods = mods.replace("SD", "")
+    mods = mods.replace("TD", "")
+
+    return mod_to_num(mods)
 
 def acc_calc(n300, n100, n50, misses) -> float:
     """calculates accuracy (0.0-1.0)"""

@@ -1,5 +1,6 @@
 from helpers.command import Command, Context
 from helpers.extension import extension_manager
+from helpers.osu import remove_non_essential_mods
 from extensions.np import NPExtension
 from helpers.models import User
 import random
@@ -44,6 +45,6 @@ class Recommend(Command):
                 if play.pp >= avg_pp-pp_variance and play.pp <= avg_pp+pp_variance:
                     np: NPExtension = extension_manager.get_extension("np")
                     ctx.message = play.beatmap_id
-                    msg = await np.on_message(ctx, mods=play.enabled_mods)
+                    msg = await np.on_message(ctx, mods=remove_non_essential_mods(play.enabled_mods))
                     await ctx.send(msg + f" | Future you: {round(play.pp, 2)}pp")
                     return
