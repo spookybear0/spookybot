@@ -11,7 +11,7 @@ class Recommend(Command):
         self.aliases = ["r"]
 
     async def func(self, ctx: Context) -> None:   
-        user = await User.filter(name=ctx.username).first()
+        user = await User.get_or_create(name=ctx.username, osu_id=ctx.user.user_id, rank=ctx.user.pp_rank)
 
         rank_sensitivity = 1.8
         rank_variance = (user.rank**rank_sensitivity)/30000
