@@ -20,4 +20,6 @@ class Mods(Command):
         except KeyError:
             await ctx.send("No recent map found. Please use /np before using this command.")
             return
-        await np.on_message(ctx, mods=mods)
+
+        msg = await np.on_message(ctx, mods=mods)
+        await ctx.send(msg)

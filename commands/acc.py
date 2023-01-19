@@ -21,4 +21,5 @@ class Acc(Command):
             await ctx.send("No recent map found. Please use /np before using this command.")
             return
 
-        await np.on_message(ctx, acc=acc)
+        msg = await np.on_message(ctx, acc=acc)
+        await ctx.send(msg)

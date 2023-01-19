@@ -4,6 +4,7 @@ from helpers.extension import Extension
 from helpers.command import Context
 from helpers.config import config
 from helpers.logger import logger
+from helpers.models import User
 import osu_irc
 
 bot = discord.Bot()
@@ -36,3 +37,12 @@ async def on_ready() -> None:
 @bot.slash_command(guild_ids=[config["discordguildid"]], description="Pings discord and returns the latency.")
 async def ping(ctx) -> None:
     await ctx.respond(f"Pong {bot.latency*1000:.2f}ms")
+
+@bot.slash_command(guild_ids=[config["discordguildid"]], description="Add user to database.")
+async def adduser(ctx, username: str) -> None:
+    user = await config["bot"].api.get_user(username)
+    if user is None:
+        await ctx.respond("User not found")
+        return
+    await User.update_or_create(name=username, osu_id=user.user_id, rank=user.pp_rank)
+    await ctx.respond(f"Added user {username} to database")

@@ -13,7 +13,7 @@ class NPExtension(Extension):
     async def setup(self, ctx: Context) -> None:
         self.expression = re.compile(r"is (?:playing|listening to|editing|watching) \[https:\/\/osu\.ppy\.sh\/beatmapsets\/[0-9]+\#.*\/([0-9]+) .*\](?: \+|)(.*|)")
 
-    async def on_message(self, ctx: Context, mods: Optional[int]=None, acc: Optional[float]=None) -> None:
+    async def on_message(self, ctx: Context, mods: Optional[int]=None, acc: Optional[float]=None) -> Optional[str]:
 
         if type(ctx.message) == int or ctx.message.content.startswith("is "):
             final = ""
@@ -28,7 +28,7 @@ class NPExtension(Extension):
                     return # no matches, return because it's probably just a message that starts with "is"
 
             map_id = int(map_id)
-            if mods:
+            if mods is not None:
                 mods_num = mods
             elif acc:
                 mods_num = 0
@@ -55,5 +55,7 @@ class NPExtension(Extension):
 
                 for i in range(4):
                     final += f" | {i+97}%: {round(pp[i], 2)}pp"
-
-            return await ctx.send(final)
+            
+            if type(ctx.message) == int:
+                return final
+            await ctx.send(final)

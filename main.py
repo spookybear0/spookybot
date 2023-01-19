@@ -23,14 +23,13 @@ async def test(bot):
 
 def exit_(sig, frame):
     logger.info("Exiting...")
-    asyncio.run(main(log_level=logging.DEBUG))
     exit(0)
 
 async def main(log_level: int=logging.INFO, testmode: bool=False):
     loop = asyncio.get_event_loop()
 
-    signal.signal(signal.SIGINT, exit_)
-    signal.signal(signal.SIGTERM, exit_)
+    #signal.signal(signal.SIGINT, exit_)
+    #signal.signal(signal.SIGTERM, exit_)
     
     setup_logger(level=log_level)
 
@@ -47,7 +46,7 @@ async def main(log_level: int=logging.INFO, testmode: bool=False):
     if testmode:
         logger.info("Test mode enabled!")
         spookybot.testmode = True
-        Thread(target=asyncio.run, args=(test(spookybot),)).start()
+        Thread(target=asyncio.run, args=(test(spookybot),), daemon=True).start()
 
     try:
         spookybot.username = config["username"]
@@ -56,6 +55,7 @@ async def main(log_level: int=logging.INFO, testmode: bool=False):
         pass
     finally:
         await spookybot.stop()
+        exit(0)
 
 @click.command()
 @click.option("--debug", is_flag=True, help="Enables debug mode")
@@ -66,7 +66,10 @@ def cli(debug, testmode):
     else:
         level = logging.INFO
     
-    asyncio.run(main(log_level=level, testmode=testmode))
+    try:
+        asyncio.run(main(log_level=level, testmode=testmode))
+    except (KeyboardInterrupt, RuntimeError):
+        exit(0)
 
 if __name__ == "__main__":
     cli()
