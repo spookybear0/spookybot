@@ -45,5 +45,5 @@ class Recommend(Command):
                     np: NPExtension = extension_manager.get_extension("np")
                     ctx.message = play.beatmap_id
                     msg = await np.on_message(ctx, mods=play.enabled_mods)
-                    await ctx.send(msg + f" | Future you: {play.pp}pp")
+                    await ctx.send(msg + f" | Future you: {round(play.pp, 2)}pp")
                     return
