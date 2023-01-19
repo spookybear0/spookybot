@@ -45,7 +45,7 @@ class NPExtension(Extension):
             if mods_num:
                 mods_str = f" +{num_to_mod(mods_num)}"
                 
-            final += f'{req["artist"]} - {req["title"]}{mods_str} | {round(req["stars"], 2)}* | {int(map.bpm)} BPM | AR {round(req["ar"], 2)}'
+            final += f'[https://osu.ppy.sh/beatmapsets/{map.beatmapset_id}/{map_id} {map.artist} - {map.title}]{mods_str} | {round(req["stars"], 2)}* | {int(map.bpm)} BPM | AR {round(req["ar"], 2)}'
 
             if acc:
                 req = await py_oppai(map_id, mods=mods_num, accs=[acc])

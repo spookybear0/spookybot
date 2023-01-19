@@ -43,7 +43,7 @@ class Recent(Command):
         if mods:
             mods = f" +{mods}"
 
-        resp = f"{username} | {map.artist} - {map.title} [{map.version}]{mods} {round(acc, 2)}% {round(map.difficultyrating, 2)}* " \
+        resp = f"{username} | [https://osu.ppy.sh/beatmapsets/{map.beatmapset_id}/{map.beatmap_id} {map.artist} - {map.title} [{map.version}]]{mods} {round(acc, 2)}% {round(map.difficultyrating, 2)}* " \
             f"| {recent.rank} | {pp}pp | {pp_for_fc}pp if FC | {recent.maxcombo}x | {recent.countmiss}x miss{perfect}"
         
         if watch:
