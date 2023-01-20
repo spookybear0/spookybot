@@ -5,6 +5,7 @@ class User(Model):
     name = fields.CharField(50)
     osu_id = fields.IntField()
     rank = fields.IntField()
+    recommended_maps = fields.JSONField(default=[])
 
     def __str__(self):
         return f"{self.name} ({self.osu_id}, #{self.rank})"

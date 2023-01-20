@@ -22,8 +22,6 @@ class Recommend(Command):
 
         similar_users = await User.filter(rank__gte=user.rank-rank_variance, rank__lte=user.rank+rank_variance, id__not=user.id).all()
 
-        similar_users.append(User(name="FSFJ", rank=48826, osu_id=12201122))
-
         if len(similar_users) == 0:
             await ctx.send("No recommendations found for your rank! This could be because you're too far away from the nearest ranked person who uses this bot.")
             return
