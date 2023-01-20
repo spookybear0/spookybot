@@ -21,6 +21,7 @@ class Recommend(Command):
         rank_variance = (user.rank**rank_sensitivity)/30000
 
         similar_users = await User.filter(rank__gte=user.rank-rank_variance, rank__lte=user.rank+rank_variance, id__not=user.id).all()
+        print(similar_users)
 
         if len(similar_users) == 0:
             await ctx.send("No recommendations found for your rank! This could be because you're too far away from the nearest ranked person who uses this bot.")
@@ -40,9 +41,15 @@ class Recommend(Command):
 
             for play in top_plays:
                 # add stuff so it doesn't recommend maps that are already recommended
-                if play.pp >= avg_pp-pp_variance and play.pp <= avg_pp+pp_variance:
+                if play.pp >= avg_pp-pp_variance and play.pp <= avg_pp+pp_variance and play.beatmap_id not in user.recommended_maps:
                     np: NPExtension = extension_manager.get_extension("np")
                     ctx.message = play.beatmap_id
                     msg = await np.on_message(ctx, mods=remove_non_essential_mods(play.enabled_mods))
                     await ctx.send(msg + f" | Future you: {round(play.pp, 2)}pp")
+
+                    user.recommended_maps.append(play.beatmap_id)
+                    await user.save()
+
                     return
+
+        await ctx.send("No recommendations found for your rank! This could be because you're too far away from the nearest ranked person who uses this bot.")

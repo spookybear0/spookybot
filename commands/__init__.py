@@ -20,6 +20,7 @@ try:
     from .admin.close_all_matches import CloseAllMatches
     from .admin.exec import Exec
     from .admin.debug import Debug
+    from .admin.add_user import AddUser
 except Exception:
     import traceback
     traceback.print_exc()

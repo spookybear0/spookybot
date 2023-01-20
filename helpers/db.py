@@ -18,4 +18,5 @@ async def db_init() -> None:
     await Tortoise.init(
         config=tortoise_config
     )
-    #await Tortoise.generate_schemas() # create tables
+    #await Tortoise.get_connection("default").execute_query('ALTER TABLE "user" ADD "recommended_maps" JSON NOT NULL;')
+    await Tortoise.generate_schemas() # create tables

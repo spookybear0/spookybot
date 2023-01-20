@@ -7,7 +7,7 @@ import asyncio
 import logging
 import osu_irc
 import click
-import signal
+import os
 
 async def test(bot):
     await asyncio.sleep(3)
@@ -27,6 +27,8 @@ def exit_(sig, frame):
 
 async def main(log_level: int=logging.INFO, testmode: bool=False):
     loop = asyncio.get_event_loop()
+
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
     #signal.signal(signal.SIGINT, exit_)
     #signal.signal(signal.SIGTERM, exit_)

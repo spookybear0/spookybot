@@ -134,3 +134,5 @@ bugreport.txt
 unique_users.txt
 config.json
 discordtoken
+*.sqlite3-shm
+*.sqlite3-wal
