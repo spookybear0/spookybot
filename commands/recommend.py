@@ -1,6 +1,6 @@
 from helpers.command import Command, Context
 from helpers.extension import extension_manager
-from helpers.osu import remove_non_essential_mods
+from helpers.osu import remove_non_essential_mods, mod_to_num
 from extensions.np import NPExtension
 from helpers.models import User
 import random
@@ -11,7 +11,9 @@ class Recommend(Command):
         self.help = "Recommends a map for your skill level."
         self.aliases = ["r"]
 
-    async def func(self, ctx: Context) -> None:   
+    async def func(self, ctx: Context, mods: str="") -> None:
+        mod_pref = mod_to_num(mods)
+
         user = await User.filter(name=ctx.username).first()
 
         if user is None:
@@ -39,8 +41,9 @@ class Recommend(Command):
             random.shuffle(top_plays)
 
             for play in top_plays:
-                # add stuff so it doesn't recommend maps that are already recommended
-                if play.pp >= avg_pp-pp_variance and play.pp <= avg_pp+pp_variance and play.beatmap_id not in user.recommended_maps:
+                if (play.pp >= avg_pp-pp_variance and play.pp <= avg_pp+pp_variance
+                and play.beatmap_id not in user.recommended_maps
+                and mod_pref == remove_non_essential_mods(play.enabled_mods)):
                     np: NPExtension = extension_manager.get_extension("np")
                     ctx.message = play.beatmap_id
                     msg = await np.on_message(ctx, mods=remove_non_essential_mods(play.enabled_mods))
