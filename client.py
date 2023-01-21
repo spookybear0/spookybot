@@ -6,7 +6,7 @@ from helpers.extension import extension_manager
 from helpers.exceptions import CommandNotFound
 from helpers.osu import DictDecay
 import osu_irc
-import asyncio
+import ossapi
 import pyosu
 import os
 
@@ -16,6 +16,7 @@ class SpookyBot(osu_irc.Client):
     # username, map_id
     recent_maps: Dict[str, str] = DictDecay(900)
     api = pyosu.OsuApi(config["osuapikey"])
+    apiv2 = ossapi.OssapiV2(config["osuapiv2clientid"], config["osuapiv2key"])
     testmode = False
     test_user = None
     username = ""

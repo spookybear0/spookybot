@@ -16,6 +16,7 @@ Just message the bot a command (such as !help) to start.
 
 * Getting pp information from a map (through /np)
 * Watching (or getting) a users recent plays
+* Map recommendations
 * Converting between pp and rank (seeing how much pp you need to be #rank)
 * Hidden easter eggs
 * Many more to come
@@ -24,7 +25,6 @@ Just message the bot a command (such as !help) to start.
 
 * Multiplayer lobby management
 * 1v1 Matchmaking
-* Map recommendations
 
 ## Contributing
 

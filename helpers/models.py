@@ -1,5 +1,8 @@
 from tortoise import Model, fields
 
+class Hidden: # type hint
+    pass
+
 class User(Model):
     id = fields.IntField(pk=True)
     name = fields.CharField(50)

@@ -35,6 +35,8 @@ def dict_keys(dictionary: dict) -> tuple:
 
 default_config = {
     "sqlite_file": "db.sqlite3",
+    "osuapiv2key": os.getenv("OSU_API_V2", ""),
+    "osuapiv2clientid": os.getenv("OSU_API_V2_CLIENT_ID", ""),
     "osuapikey": os.getenv("OSUAPIKEY", ""),
     "token": os.getenv("OSUTOKEN", ""),
     "discordbottoken": "",

@@ -3,6 +3,10 @@ from helpers.extension import extension_manager
 from helpers.osu import remove_non_essential_mods, mod_to_num
 from extensions.np import NPExtension
 from helpers.models import User
+from ossapi import Cursor, RankingType, Rankings
+from ossapi.models import UserStatistics
+from helpers.models import Hidden
+from typing import List
 import random
 
 class Recommend(Command):
@@ -11,10 +15,31 @@ class Recommend(Command):
         self.help = "Recommends a map for your skill level."
         self.aliases = ["r"]
 
-    async def func(self, ctx: Context, mods: str="") -> None:
+        self.similar_user_attempts = 0
+
+    async def database_similar_users(self, ctx: Context, api_user, mods, similar_user_attempts) -> None:
+        cursor = Cursor(page=int(api_user.pp_country_rank)//50)
+        users: List[UserStatistics] = ctx.apiv2.ranking("osu", RankingType.PERFORMANCE, country=api_user.country, cursor=cursor).ranking
+        # get like 10 users near the callers rank to save in the database 
+        similar_country_rank_users: List[UserStatistics] = random.sample(users, 25)
+
+        for similar_user in similar_country_rank_users:
+            # if doesn't exist create
+            if User.get_or_none(name=similar_user.user.username) is None:
+                await User.create(name=similar_user.user.username, osu_id=similar_user.user.id, rank=int(similar_user.global_rank))
+
+        # rerun, this time with users of similar rank databased
+        return await self.func(ctx, mods, similar_user_attempts+1)
+
+    async def func(self, ctx: Context, mods: str="", similar_user_attempts: Hidden=0) -> None:
         mod_pref = mod_to_num(mods)
 
         user = await User.filter(name=ctx.username).first()
+        api_user = await ctx.api.get_user(ctx.username)
+
+        if api_user is None:
+            await ctx.send("An error occured while fetching your user data.")
+            return
 
         if user is None:
             user = await User.create(name=ctx.username, osu_id=ctx.user.user_id, rank=ctx.user.pp_rank)
@@ -25,6 +50,14 @@ class Recommend(Command):
         similar_users = await User.filter(rank__gte=user.rank-rank_variance, rank__lte=user.rank+rank_variance, id__not=user.id).all()
 
         if len(similar_users) == 0:
+            if similar_user_attempts > 5:
+                await ctx.send("No similar users could be found from your country.")
+                return
+            if int(api_user.pp_country_rank) <= 10000:
+                if similar_user_attempts == 0:
+                    await ctx.send("No similar users found in database, fetching from osu!api...")
+                return await self.database_similar_users(ctx, api_user, mods, similar_user_attempts)
+
             await ctx.send("No recommendations found for your rank! This could be because you're too far away from the nearest ranked person who uses this bot.")
             return
 
@@ -37,6 +70,9 @@ class Recommend(Command):
         pp_variance = 0.2*(avg_pp**pp_sensitivity)
 
         for similar_user in similar_users:
+            if similar_user.id == user.id:
+                continue
+
             top_plays = await ctx.api.get_user_bests(similar_user.osu_id, limit=100)
             random.shuffle(top_plays)
 
@@ -53,5 +89,8 @@ class Recommend(Command):
                     await user.save()
 
                     return
-
+        
+        if int(api_user.pp_country_rank) <= 10000:
+            return await self.database_similar_users(ctx, api_user, mods)
+        
         await ctx.send("No recommendations found for your rank! This could be because you're too far away from the nearest ranked person who uses this bot.")
