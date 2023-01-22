@@ -44,6 +44,8 @@ async def main(log_level: int=logging.INFO, testmode: bool=False):
     config["bot"] = spookybot
 
     logger.info("Starting spookybot!")
+    
+    spookybot.lang.load_language_packs()
 
     if testmode:
         logger.info("Test mode enabled!")

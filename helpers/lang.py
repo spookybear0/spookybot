@@ -10,8 +10,6 @@ class LanguageManager:
         self.language_pack: Dict[str, Dict[str, str]] = {}
         self.default = "en"
 
-        self.load_language_packs()
-
     def load_language_packs(self) -> None:
         logger.info("Loading language packs...")
 
