@@ -30,6 +30,6 @@
     "all_matches_closed": "All matches closed",
     "debug_enabled": "Debug mode enabled.",
     "debug_disabled": "Debug mode disabled.",
-    "invalid_language": "Invalid language. You can find a list of valid languages on the GitHub wiki, It's not like I wanted to help you or anything.",
-    "language_changed": "Language changed to \"{}\", It's not like I wanted you to do that."
+    "invalid_language": "Invalid language. You can find a list of valid languages on the GitHub wiki, it's not like I wanted to help you or anything.",
+    "language_changed": "Language changed to \"{}\", it's not like I wanted you to do that."
 }
