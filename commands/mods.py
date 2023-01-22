@@ -18,7 +18,7 @@ class Mods(Command):
         try:
             ctx.message = ctx.bot.recent_maps[ctx.username]
         except KeyError:
-            await ctx.send("No recent map found. Please use /np before using this command.")
+            await ctx.send(await ctx.bot.lang.get(ctx, "no_recent_map"))
             return
 
         msg = await np.on_message(ctx, mods=mods)

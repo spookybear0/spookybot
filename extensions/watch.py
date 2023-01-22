@@ -20,7 +20,7 @@ class Watch(Extension):
     async def loop(self, ctx: Context) -> None:
         for user, watched in self.watched_users.items():
             for username, last_play in watched:
-                recent = await ctx.api.get_user_recent(username)
+                recent = await ctx.bot.api.get_user_recent(username)
 
                 if last_play == -1:
                     self.watched_users[user][watched.index((username, last_play))] = (username, recent.beatmap_id)

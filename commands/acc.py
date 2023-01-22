@@ -2,7 +2,6 @@ from helpers.extension import extension_manager
 from helpers.command import Command, Context
 from extensions.np import NPExtension
 
-
 # TODO: add a way to use !acc with !mods
 class Acc(Command):
     def __init__(self) -> None:
@@ -18,7 +17,7 @@ class Acc(Command):
         try:
             ctx.message = ctx.bot.recent_maps[ctx.username]
         except KeyError:
-            await ctx.send("No recent map found. Please use /np before using this command.")
+            await ctx.send(await ctx.bot.lang.get(ctx, "no_recent_map"))
             return
 
         msg = await np.on_message(ctx, acc=acc)

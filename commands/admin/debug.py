@@ -13,10 +13,10 @@ class Debug(Command):
         for filter in logger.filters:
             if isinstance(filter, OsuDebugHandler):
                 logger.removeFilter(filter)
-                await ctx.send("Debug mode disabled!")
+                await ctx.send(await ctx.bot.lang.get(ctx, "debug_disabled"))
                 logger.setLevel(logging.INFO)
                 return
         
         logger.addHandler(OsuDebugHandler())
         logger.setLevel(logging.DEBUG)
-        await ctx.send("Debug mode enabled!")
+        await ctx.send(await ctx.bot.lang.get(ctx, "debug_enabled"))

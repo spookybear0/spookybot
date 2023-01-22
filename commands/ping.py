@@ -6,4 +6,4 @@ class Ping(Command):
         self.help = "Checks if bot is online and returns ping"
 
     async def func(self, ctx: Context) -> None:
-        await ctx.send("Pong!")
+        await ctx.send(await ctx.bot.lang.get(ctx, "ping"))

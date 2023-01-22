@@ -31,13 +31,13 @@ class Rank(Command):
                 type_ = "rank"
                 ret = to_int(value.replace("#", ""))
             else:
-                return await ctx.send('Invalid type. Value must start with "#", end with "pp", or the value type must be specified with "rank" or "pp".')
+                return await ctx.send(await ctx.bot.lang.get(ctx, "invalid_type"))
         
         async with aiohttp.ClientSession() as session:
             async with session.get(f"https://osudaily.net/data/getPPRank.php?t={type_}&v={ret}&m=0") as r:
                 text = await r.text()
 
         if type_ == "pp":
-            return await ctx.send(f"You need rank #{text} to have {ret}pp.")
+            return await ctx.send(await ctx.bot.lang.get(ctx, "rank_for_pp", text, ret))
         elif type_ == "rank":
-            return await ctx.send(f"You need {text}pp to be rank {value} (#{ret}).")
+            return await ctx.send(await ctx.bot.lang.get(ctx, "pp_for_rank", text, value, ret))

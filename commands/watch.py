@@ -25,15 +25,15 @@ class Watch(Command):
         if self.watch_ext.watched_users.get(ctx.username):
             if username in self.watch_ext.watched_users[ctx.username]:
                 if user_arg:
-                    return await ctx.send(f"Already watching {username}, did you mean to use !unwatch?")
+                    return await ctx.send(await ctx.bot.lang.get(ctx, "already_watching", username))
                 else:
-                    return await ctx.send("Already watching your recent plays, did you mean to use !unwatch?")
+                    return await ctx.send(await ctx.bot.lang.get(ctx, "already_watching_self"))
 
             self.watch_ext.watched_users[ctx.username].append((username, -1))
         else:
             self.watch_ext.watched_users[ctx.username] = [(username, -1)]
 
         if user_arg:
-            return await ctx.send(f"Now watching {username}.")
+            return await ctx.send(await ctx.bot.lang.get(ctx, "started_watching", username))
         else:
-            return await ctx.send(f"Now watching your recent plays.")
+            return await ctx.send(await ctx.bot.lang.get(ctx, "started_watching_self"))

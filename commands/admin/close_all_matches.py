@@ -10,4 +10,4 @@ class CloseAllMatches(Command):
 
     async def func(self, ctx: Context, mp_id: int) -> None:
         await extension_manager.get_extension("matchmaker").close_all_matches()
-        await ctx.send("All matches closed")
+        await ctx.send(await ctx.bot.lang.get(ctx, "all_matches_closed"))

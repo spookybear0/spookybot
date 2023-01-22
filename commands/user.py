@@ -29,7 +29,7 @@ class User(Command):
         if not username:
             username = ctx.username
         if username in self.modes.keys(): # if username is a mode
-            return await ctx.send(f"Username cannot be a mode, use {command_manager.prefix}{username} instead.")
+            return await ctx.send(await ctx.bot.lang.get(ctx, "username_not_mode", command_manager.prefix, username))
 
         mode_num = self.modes.get(ctx.command_name) # try with command name
 
@@ -37,11 +37,11 @@ class User(Command):
             mode_num = self.modes.get(mode, None) # try with mode arg
 
         if mode_num is None:
-            return await ctx.send("Invalid mode!")
+            return await ctx.send(await ctx.bot.lang.get(ctx, "invalid_mode"))
 
         user = await ctx.bot.api.get_user(username, mode_num)
 
         if not user:
-            return await ctx.send("User not found!")
+            return await ctx.send(await ctx.bot.lang.get(ctx, "user_not_found"))
 
-        return await ctx.send(f"In {self.num_to_mode[mode_num]}, {username} has {user.pp_raw}pp and is rank #{user.pp_rank} globally and #{user.pp_country_rank} rank in {user.country}.")
+        return await ctx.send(await ctx.bot.lang.get(ctx, "user_info", self.num_to_mode[mode_num], username, user.pp_raw, user.pp_rank, user.pp_country_rank, user.country))

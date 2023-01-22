@@ -11,13 +11,13 @@ class AddUser(Command):
     async def func(self, ctx: Context, username: str) -> None:
         user = await config["bot"].api.get_user(username)
         if user is None:
-            await ctx.send("User not found")
+            await ctx.send(await ctx.bot.lang.get(ctx, "user_not_found"))
             return
 
         db_user = await User.filter(osu_id=user.user_id).first()
         if db_user is not None:
-            await ctx.send("User already exists in database")
+            await ctx.send(await ctx.bot.lang.get(ctx, "user_already_in_database", username))
             return
 
         await User.update_or_create(name=username, osu_id=user.user_id, rank=user.pp_rank)
-        await ctx.send(f"Added user {username} to database")
+        await ctx.send(await ctx.bot.lang.get(ctx, "add_user_to_database", username))

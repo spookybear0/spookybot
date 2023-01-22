@@ -14,6 +14,7 @@ class Unwatch(Command):
         self.watch_ext: WatchExtension = extension_manager.get_extension("watch")
 
     async def func(self, ctx: Context, username: Optional[str]=None) -> None:
+        # TODO urgent: fix this, it's broken
         if self.watch_ext is None:
             self.watch_ext: WatchExtension = extension_manager.get_extension("watch")
 
@@ -26,13 +27,13 @@ class Unwatch(Command):
             if username in self.watch_ext.watched_users[ctx.username]:
                 self.watch_ext.watched_users[ctx.username].remove(username)
                 if user_arg:
-                    return await ctx.send(f"Stopped watching {username}.")
+                    return await ctx.send(await ctx.bot.lang.get(ctx, "stopped_watching", username))
                 else:
-                    return await ctx.send("Stopped watching your recent plays.")
+                    return await ctx.send(await ctx.bot.lang.get(ctx, "stopped_watching_self"))
             
             if user_arg:
-                return await ctx.send(f"You are not watching {username}, did you mean to use !watch?")
+                return await ctx.send(await ctx.bot.lang.get(ctx, "not_watching", username))
             else:
-                return await ctx.send("You are not watching your recent plays, did you mean to use !watch?")
+                return await ctx.send(await ctx.bot.lang.get(ctx, "not_watching_self"))
         else:
-            return await ctx.send(f"You are not watching {username}.")
+            return await ctx.send(await ctx.bot.lang.get(ctx, "not_watching", username))

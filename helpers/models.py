@@ -9,9 +9,10 @@ class User(Model):
     osu_id = fields.IntField()
     rank = fields.IntField()
     recommended_maps = fields.JSONField(default=[])
+    language = fields.CharField(10, default="en")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"{self.name} ({self.osu_id}, #{self.rank})"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return f"<User {self.name} ({self.osu_id}, #{self.rank})>"

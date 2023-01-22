@@ -12,12 +12,12 @@ class Recent(Command):
         if username is None:
             username = ctx.username
 
-        recent = await ctx.api.get_user_recent(username, mode, "string")
+        recent = await ctx.bot.api.get_user_recent(username, mode, "string")
 
         if recent is None:
-            return await ctx.send(f'No recent plays found for "{username}"')
+            return await ctx.send(await ctx.bot.lang.get(ctx, "no_recent_plays", username))
 
-        map = await ctx.api.get_beatmap(beatmap_id=recent.beatmap_id)
+        map = await ctx.bot.api.get_beatmap(beatmap_id=recent.beatmap_id)
 
         ctx.bot.recent_maps[ctx.username] = recent.beatmap_id
 
@@ -35,7 +35,7 @@ class Recent(Command):
             except Exception:
                 pp = 0 # unavailable pp (probably failed or something)
         else: 
-            score = await ctx.api.get_score(map.beatmap_id, user=username)
+            score = await ctx.bot.api.get_score(map.beatmap_id, user=username)
             pp = round(float(score.pp), 2)
         
         mods = "".join(num_to_mod(recent.enabled_mods))
@@ -49,4 +49,4 @@ class Recent(Command):
         if watch:
             resp += " | use !unwatch to stop watching"
 
-        return await ctx.send(resp)
+        return await ctx.send(resp) # add language support

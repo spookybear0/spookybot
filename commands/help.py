@@ -22,11 +22,11 @@ class Help(Command):
             pages_available: int = math.ceil(len(command_manager.get_all_non_admin())/3)
 
             if pagenum > pages_available:
-                return await ctx.send(f"Page {pagenum} does not exist! There are {pages_available} pages available.")
+                return await ctx.send(await ctx.bot.lang.get(ctx, "page_not_found", pagenum, pages_available))
 
             cmds: List[Command] = list(command_manager.get_all_non_admin())[(pagenum*3)-3:(pagenum*3)]
 
-            cmd_list: List[str] = [f"--- {pagenum} of {pages_available} pages of commands available ---"]
+            cmd_list: List[str] = [await ctx.bot.lang.get(ctx, "pages_available", pagenum, pages_available)]
 
             for i, cmd in enumerate(cmds, 1):
                 params_ = list(inspect.signature(cmd.func).parameters.values())[1:]
@@ -61,12 +61,12 @@ class Help(Command):
 
             for cmd in cmd_list:
                 await ctx.send(cmd)
-            return await ctx.send("Use !help <page number> to view more commands, or !help <command> for specific info.")
+            return await ctx.send(await ctx.bot.lang.get(ctx, "help_info"))
         else:
             command = command_manager.get_command(command)
 
             if command is None:
-                return await ctx.send("Command not found!")
+                return await ctx.send(await ctx.bot.lang.get(ctx, "command_not_found"))
 
             await ctx.send(f"{command.name}: {command.help}")
             await ctx.send(f"Aliases: {', '.join(command.aliases)}")

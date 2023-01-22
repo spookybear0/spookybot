@@ -19,7 +19,7 @@ class Recommend(Command):
 
     async def database_similar_users(self, ctx: Context, api_user, mods, similar_user_attempts) -> None:
         cursor = Cursor(page=int(api_user.pp_country_rank)//50)
-        users: List[UserStatistics] = ctx.apiv2.ranking("osu", RankingType.PERFORMANCE, country=api_user.country, cursor=cursor).ranking
+        users: List[UserStatistics] = ctx.bot.apiv2.ranking("osu", RankingType.PERFORMANCE, country=api_user.country, cursor=cursor).ranking
         # get like 10 users near the callers rank to save in the database 
         similar_country_rank_users: List[UserStatistics] = random.sample(users, 25)
 
@@ -35,10 +35,10 @@ class Recommend(Command):
         mod_pref = mod_to_num(mods)
 
         user = await User.filter(name=ctx.username).first()
-        api_user = await ctx.api.get_user(ctx.username)
+        api_user = await ctx.bot.api.get_user(ctx.username)
 
         if api_user is None:
-            await ctx.send("An error occured while fetching your user data.")
+            await ctx.send(await ctx.bot.lang.get(ctx, "error_fetching_user_data"))
             return
 
         if user is None:
@@ -51,17 +51,17 @@ class Recommend(Command):
 
         if len(similar_users) == 0:
             if similar_user_attempts > 5:
-                await ctx.send("No similar users could be found from your country.")
+                await ctx.send(await ctx.bot.lang.get(ctx, "no_similar_users_country"))
                 return
             if int(api_user.pp_country_rank) <= 10000:
                 if similar_user_attempts == 0:
-                    await ctx.send("No similar users found in database, fetching from osu!api...")
+                    await ctx.send(await ctx.bot.lang.get(ctx, "no_similar_users_database"))
                 return await self.database_similar_users(ctx, api_user, mods, similar_user_attempts)
 
-            await ctx.send("No recommendations found for your rank! This could be because you're too far away from the nearest ranked person who uses this bot.")
+            await ctx.send(await ctx.bot.lang.get(ctx, "no_recommendation"))
             return
 
-        bests = await ctx.api.get_user_bests(ctx.user.user_id, limit=10)
+        bests = await ctx.bot.api.get_user_bests(ctx.user.user_id, limit=10)
         best_pps = list(map(lambda x: x.pp, bests))
         avg_pp = sum(best_pps)/len(best_pps) # avg of top 10 plays
 
@@ -73,7 +73,7 @@ class Recommend(Command):
             if similar_user.id == user.id:
                 continue
 
-            top_plays = await ctx.api.get_user_bests(similar_user.osu_id, limit=100)
+            top_plays = await ctx.bot.api.get_user_bests(similar_user.osu_id, limit=100)
             random.shuffle(top_plays)
 
             for play in top_plays:
@@ -82,6 +82,7 @@ class Recommend(Command):
                 and mod_pref == remove_non_essential_mods(play.enabled_mods)):
                     np: NPExtension = extension_manager.get_extension("np")
                     ctx.message = play.beatmap_id
+                    # add language support
                     msg = await np.on_message(ctx, mods=remove_non_essential_mods(play.enabled_mods))
                     await ctx.send(msg + f" | Future you: {round(play.pp, 2)}pp")
 
@@ -93,4 +94,4 @@ class Recommend(Command):
         if int(api_user.pp_country_rank) <= 10000:
             return await self.database_similar_users(ctx, api_user, mods)
         
-        await ctx.send("No recommendations found for your rank! This could be because you're too far away from the nearest ranked person who uses this bot.")
+        await ctx.send(await ctx.bot.lang.get(ctx, "no_recommendation"))

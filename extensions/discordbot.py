@@ -42,7 +42,7 @@ async def ping(ctx) -> None:
 async def adduser(ctx, username: str) -> None:
     user = await config["bot"].api.get_user(username)
     if user is None:
-        await ctx.respond("User not found")
+        await ctx.respond(await config["bot"].lang.get(ctx, "user_not_found"))
         return
     await User.update_or_create(name=username, osu_id=user.user_id, rank=user.pp_rank)
-    await ctx.respond(f"Added user {username} to database")
+    await ctx.respond(await config["bot"].lang.get(ctx, "add_user_to_database", username))

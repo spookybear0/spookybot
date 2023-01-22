@@ -4,7 +4,6 @@ try:
     from .info import Info
     from .help import Help
     from .versus import Versus
-    from .github import Github
     from .recent import Recent
     from .rank import Rank
     from .mods import Mods
@@ -12,6 +11,7 @@ try:
     from .watch import Watch
     from .unwatch import Unwatch
     from .recommend import Recommend
+    from .language import Language
 
     # admin commands
     from .admin.create_match import CreateMatch
