@@ -10,7 +10,7 @@
     "rank_for_pp": "You need rank #{} to have {}pp, I-it's not like I'm trying to be mean or anything.",
     "pp_for_rank": "You need {}pp to become rank {} (#{}), if you really want to.",
     "no_recommendation": "It's not like I care, but there are no recommendations found for your rank! Maybe you're too far away from the nearest ranked person who uses this bot.",
-    "no_similar_users_country": "It's not like I'm interested or anything, but there are no similar users found in your country.",
+    "no_similar_users_country": "It's not like I'm interested or anything, but there are no similar users found in your country. Maybe you're too far away from the nearest ranked person who uses this bot.",
     "no_similar_users_database": "It's not like I'm trying to help you or anything, but there are no similar users found in database, fetching from osu!api...",
     "error_fetching_user_data": "It's not like it's my problem or anything, but an error occured while fetching your user data.",
     "stopped_watching": "I guess I stopped watching {}.",

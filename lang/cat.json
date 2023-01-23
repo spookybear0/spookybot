@@ -10,7 +10,7 @@
     "rank_for_pp": "You need rank #{} to have {}pp.",
     "pp_for_rank": "You need {}pp to be rank {} (#{}).",
     "no_recommendation": "Nyo recommendations found fow youw rank! This could be because you'we too faw away fwom the nearest ranked person who uses dis bot.",
-    "no_similar_users_country": "Nyo similaw usews found in youw countwy.",
+    "no_similar_users_country": "Nyo similaw usews found in youw countwy. This could be because you'we too faw away fwom the nearest ranked person who uses dis bot.",
     "no_similar_users_database": "Nyo similaw usews found in database, fetching fwom osu!api...",
     "error_fetching_user_data": "An ewwow occuwed while fetching youw usew data.",
     "stopped_watching": "Stopped watching {}.",

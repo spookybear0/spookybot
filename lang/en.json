@@ -10,7 +10,7 @@
     "rank_for_pp": "You need rank #{} to have {}pp.",
     "pp_for_rank": "You need {}pp to be rank {} (#{}).",
     "no_recommendation": "No recommendations found for your rank! This could be because you're too far away from the nearest ranked person who uses this bot.",
-    "no_similar_users_country": "No similar users found in your country.",
+    "no_similar_users_country": "No similar users found in your country. This could be because you're too far away from the nearest ranked person who uses this bot.",
     "no_similar_users_database": "No similar users found in database, fetching from osu!api...",
     "error_fetching_user_data": "An error occured while fetching your user data.",
     "stopped_watching": "Stopped watching {}.",
