@@ -34,6 +34,6 @@ class Watch(Command):
             self.watch_ext.watched_users[ctx.username] = [(username, -1)]
 
         if user_arg:
-            return await ctx.send(await ctx.bot.lang.get(ctx, "started_watching", username))
+            return await ctx.send(await ctx.bot.lang.get(ctx, "now_watching", username))
         else:
-            return await ctx.send(await ctx.bot.lang.get(ctx, "started_watching_self"))
+            return await ctx.send(await ctx.bot.lang.get(ctx, "now_watching_self"))
