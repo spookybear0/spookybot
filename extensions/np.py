@@ -2,6 +2,8 @@ from typing import List, Optional
 from helpers.extension import Extension
 from helpers.osu import mod_to_num, num_to_mod, py_oppai
 from helpers.command import Context
+from time import strftime
+from time import gmtime
 import aiohttp
 import re
 
@@ -45,7 +47,9 @@ class NPExtension(Extension):
             if mods_num:
                 mods_str = f" +{num_to_mod(mods_num)}"
                 
-            final += f'[https://osu.ppy.sh/beatmapsets/{map.beatmapset_id}#osu/{map_id} {map.artist} - {map.title} [{map.version}]]{mods_str} | {round(req["stars"], 2)}* | {int(map.bpm)} BPM | AR {round(req["ar"], 2)}'
+            length = strftime("%M:%S", gmtime(map.hit_length))
+
+            final += f'[https://osu.ppy.sh/beatmapsets/{map.beatmapset_id}#osu/{map_id} {map.artist} - {map.title} [{map.version}]]{mods_str} | {round(req["stars"], 2)}* | {length} | {int(map.bpm)} BPM | AR {round(req["ar"], 2)}'
 
             if acc:
                 req = await py_oppai(map_id, mods=mods_num, accs=[acc])
