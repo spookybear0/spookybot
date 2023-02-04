@@ -25,8 +25,10 @@ class Recommend(Command):
 
         for similar_user in similar_country_rank_users:
             # if doesn't exist create
-            if User.get_or_none(name=similar_user.user.username) is None:
-                await User.create(name=similar_user.user.username, osu_id=similar_user.user.id, rank=int(similar_user.global_rank))
+            user_ = await User.get_or_none(name=similar_user.user.username)
+            if user_ is None:
+                user = await User.create(name=similar_user.user.username, osu_id=similar_user.user.id, rank=int(similar_user.global_rank))
+                await user.save()
 
         # rerun, this time with users of similar rank databased
         return await self.func(ctx, mods, similar_user_attempts+1)
