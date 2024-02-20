@@ -59,9 +59,9 @@ class Context:
     async def send(self, message: str) -> None:
         if self.channel:
             if self.channel.name.startswith("mp_"):
-                await self.bot.send(self, message, channel=self.channel.name)
+                await self.bot.send(message, channel=self.channel.name)
                 return
-        await self.bot.send(self, message, user=self.username)
+        await self.bot.send(message, user=self.username)
 
 class Command:
     # default values
@@ -152,7 +152,7 @@ class CommandManager:
 
             if command:
                 if command.admin and not user.username in [self.bot.username, "spookybear"]:
-                    await self.bot.send(None, "You do not have permission to use this command.", user=message.user_name)
+                    await self.bot.send("You do not have permission to use this command.", user=message.user_name)
                     return
 
                 params = list(inspect.signature(command.func).parameters.values())[1:]
