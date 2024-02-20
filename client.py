@@ -64,7 +64,7 @@ class SpookyBot(osu_irc.Client):
 
     # utility functions
 
-    async def send(self, ctx: Context, message: str, user: Optional[str] = None, channel: Optional[str] = None, nodebug: bool=False) -> None:
+    async def send(self, message: str, user: Optional[str] = None, channel: Optional[str] = None, nodebug: bool=False) -> None:
         if self.testmode and user == self.test_user:
             if not nodebug:
                 logger.info(f"Replied to message: {message}")
