@@ -8,6 +8,7 @@ from ossapi.models import UserStatistics
 from helpers.models import Hidden
 from typing import List
 import random
+import ossapi
 
 class Recommend(Command):
     def __init__(self) -> None:
@@ -46,9 +47,11 @@ class Recommend(Command):
         if user is None:
             user = await User.create(name=ctx.username, osu_id=ctx.user.user_id, rank=ctx.user.pp_rank)
 
-        rank_sensitivity = 1.8
-        rank_variance = (user.rank**rank_sensitivity)/30000
+        #rank_sensitivity = 1.7
+        #rank_variance = (user.rank**rank_sensitivity)/30000
+        rank_variance = user.rank * (1/4)
 
+        # TODO: optimize by getting similar ranked users
         similar_users = await User.filter(rank__gte=user.rank-rank_variance, rank__lte=user.rank+rank_variance, id__not=user.id).all()
 
         if len(similar_users) == 0:
@@ -64,6 +67,11 @@ class Recommend(Command):
             return
 
         bests = await ctx.bot.api.get_user_bests(ctx.user.user_id, limit=10)
+        if not bests:
+            # i don't like using this non-async api, but if a
+            # player has ONLY played lazer, it's necassary to
+            # use apiv2 (TODO: maybe switche libraries sometime)
+            bests = ctx.bot.apiv2.user_scores(ctx.user.user_id, ossapi.ScoreType.BEST)
         best_pps = list(map(lambda x: x.pp, bests))
         avg_pp = sum(best_pps)/len(best_pps) # avg of top 10 plays
 
@@ -76,6 +84,8 @@ class Recommend(Command):
                 continue
 
             top_plays = await ctx.bot.api.get_user_bests(similar_user.osu_id, limit=100)
+            if not top_plays:
+                continue
             random.shuffle(top_plays)
 
             for play in top_plays:
@@ -84,7 +94,7 @@ class Recommend(Command):
                 and mod_pref == remove_non_essential_mods(play.enabled_mods)):
                     np: NPExtension = extension_manager.get_extension("np")
                     ctx.message = play.beatmap_id
-                    # add language support
+                    # TODO: add language support
                     msg = await np.on_message(ctx, mods=remove_non_essential_mods(play.enabled_mods))
                     await ctx.send(msg + f" | Future you: {round(play.pp, 2)}pp")
 

@@ -1,4 +1,5 @@
 from helpers.command import Command, Context
+from typing import Optional
 
 class Message(Command):
     def __init__(self) -> None:
@@ -7,7 +8,11 @@ class Message(Command):
         self.admin = True
         self.aliases = ["message"]
 
-    async def func(self, ctx: Context, location: str, message: str) -> None:
+    async def func(self, ctx: Context, location: str, message: Optional[str]=None) -> None:
+        if message is None:
+            message = location
+            location = ctx.channel
+
         if location.startswith("#"):
             # remember: bot accounts can't send unsolicited messages and can't send messages
             # to channels that aren't #multiplayer or #spectator

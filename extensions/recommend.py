@@ -17,9 +17,10 @@ class Recommend(Extension):
     async def on_message(self, ctx: Context) -> None:
         user = await User.filter(name=ctx.username).first()
 
-        if ctx.user is None:
+        if ctx.user is None or ctx.user.pp_rank is None:
             return
 
+        
         if user is None:
             user = await User.create(name=ctx.username, osu_id=ctx.user.user_id, rank=ctx.user.pp_rank)
         else:

@@ -64,7 +64,7 @@ class SpookyBot(osu_irc.Client):
 
     # utility functions
 
-    async def send(self, message: str, user: Optional[str] = None, channel: Optional[str] = None, nodebug: bool=False) -> None:
+    async def send(self, ctx: Context, message: str, user: Optional[str] = None, channel: Optional[str] = None, nodebug: bool=False) -> None:
         if self.testmode and user == self.test_user:
             if not nodebug:
                 logger.info(f"Replied to message: {message}")
@@ -82,8 +82,10 @@ class SpookyBot(osu_irc.Client):
 
         if channel:
             await self.sendMessage(channel, message)
+            await extension_manager.on_send(Context.create_event_context(self), message, channel)
         elif user:
             await self.sendPM(user, message)
+            await extension_manager.on_send(Context.create_event_context(self), message, user)
         else:
             raise ValueError("Must specify channel or user")
 
@@ -109,11 +111,11 @@ class SpookyBot(osu_irc.Client):
 
         await extension_manager.on_message(Context.create_event_context(self, msg, user))
 
-        #if msg.content.startswith("!mp"): # shouldn't need this since we want commands to work in multis
-        #    return
+        if msg.content.startswith("!mp"): # shouldn't need this since we want commands to work in multis
+            return
 
         try:
             await command_manager.process_message(msg, user)
         except CommandNotFound:
-            await self.send("Command not found!", user=user)
+            await self.send(None, "Command not found!", user=user)
             return

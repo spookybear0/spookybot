@@ -4,6 +4,7 @@ from helpers.logger import setup_logger, logger
 from helpers.db import db_init
 from client import SpookyBot
 import asyncio
+import signal
 import logging
 import osu_irc
 import click
@@ -30,8 +31,8 @@ async def main(log_level: int=logging.INFO, testmode: bool=False):
 
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
 
-    #signal.signal(signal.SIGINT, exit_)
-    #signal.signal(signal.SIGTERM, exit_)
+    signal.signal(signal.SIGINT, exit_)
+    signal.signal(signal.SIGTERM, exit_)
     
     setup_logger(level=log_level)
 

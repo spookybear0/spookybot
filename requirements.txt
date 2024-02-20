@@ -3,3 +3,4 @@ git+https://github.com/Renondedju/Osu.py
 tortoise-orm
 py-cord
 ossapi
+osuclient.py

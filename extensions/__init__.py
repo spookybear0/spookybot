@@ -5,6 +5,7 @@ try:
     from .watch import Watch
     from .discordbot import Discord
     from .recommend import Recommend
+    from .rosu import Rosu
 except Exception:
     import traceback
     traceback.print_exc()

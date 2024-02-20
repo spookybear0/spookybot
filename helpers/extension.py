@@ -12,6 +12,7 @@ class Extension:
     func: Optional[Callable] = None
     help: str = ""
     aliases: List[str] = []
+    enabled: bool = True
 
     @staticmethod
     def create_extension(cls, name: str, func: Callable, help: Optional[str] = None, aliases: List[str] = []):
@@ -88,6 +89,9 @@ class Extension:
         pass
 
     async def on_member_quit(self, ctx: Context, user: osu_irc.User, reason: str) -> None:
+        pass
+
+    async def on_send(self, ctx: Context, message: str, target: Optional[str]=None) -> None:
         pass
 
     async def loop(self, ctx: Context) -> None:
@@ -170,6 +174,10 @@ class ExtensionManager:
         for ext in self.extensions.values():
             await ext.on_member_quit(ctx, user, reason)
 
+    async def on_send(self, ctx: Context, message: str, target: Optional[str]=None) -> None:
+        for ext in self.extensions.values():
+            await ext.on_send(ctx, message, target)
+
     # add more handlers
 
     async def register_all_extensions(self) -> None:
@@ -177,7 +185,7 @@ class ExtensionManager:
         for ext in dir(extensions):
             if not ext.startswith("_"):
                 ext_class = getattr(extensions, ext)
-                if type(ext_class) == type and Extension in ext_class.__bases__:
+                if type(ext_class) == type and Extension in ext_class.__bases__ and ext_class.enabled:
                     registered_ext = self.register(ext_class)
                     await registered_ext.setup(Context.create_event_context(self.bot))
 

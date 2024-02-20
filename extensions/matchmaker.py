@@ -51,6 +51,9 @@ class Lobby:
     async def move(self, username: str, slot: int):
         await self.send_message(f"!mp move {username} {slot}")
 
+    async def give_host(self, username: str):
+        await self.send_message(f"!mp host {username}")
+
     async def on_message(self, ctx: Context):
         print(ctx.content)
 
@@ -59,6 +62,7 @@ class Match:
         self.type: MatchType = type
         self.members: List[pyosu.models.User] = members
         self.creator: pyosu.models.User = members[0]
+        self.rounds: int = 3 # best of 3 (must be odd >= 3)
         self.lobby: Optional[Lobby] = None
 
     async def create_lobby(self, name: str="Matchmaking Lobby") -> Lobby:
@@ -67,6 +71,17 @@ class Match:
         for member in self.members:
             await self.lobby.invite(member)
         return self.lobby
+
+    async def on_message(self, ctx: Context):
+        self.lobby.on_message(ctx)
+
+        # only supporting singles rn
+
+        host = self.members[1]
+
+        self.lobby.give_host(host.username)
+
+        self.lobby.send_message(f"{host.username}, it's your turn to pick a map!")
 
 class Matchmaker(Extension):
     def __init__(self) -> None:
@@ -93,4 +108,4 @@ class Matchmaker(Extension):
     async def on_message(self, ctx: Context) -> None:
         for match_ in self.matches:
             if match_.lobby and f"mp_{match_.lobby.id}" == str(ctx.channel):
-                await match_.lobby.on_message(ctx)
+                await match_.on_message(ctx)
