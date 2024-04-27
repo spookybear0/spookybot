@@ -117,5 +117,5 @@ class SpookyBot(osu_irc.Client):
         try:
             await command_manager.process_message(msg, user)
         except CommandNotFound:
-            await self.send(None, "Command not found!", user=user)
+            await self.send("Command not found!", user=user)
             return
