@@ -62,4 +62,4 @@ class NPExtension(Extension):
             
             if type(ctx.message) == int:
                 return final
-            await ctx.send(ctx, final)
+            await ctx.send(final)
