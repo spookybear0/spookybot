@@ -14,7 +14,6 @@ class Unwatch(Command):
         self.watch_ext: WatchExtension = extension_manager.get_extension("watch")
 
     async def func(self, ctx: Context, username: Optional[str]=None) -> None:
-        # TODO urgent: fix this, it's broken
         if self.watch_ext is None:
             self.watch_ext: WatchExtension = extension_manager.get_extension("watch")
 
