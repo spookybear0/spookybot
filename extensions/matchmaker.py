@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 from helpers.extension import Extension, extension_manager
 from helpers.command import Context
 import osu_irc
@@ -29,7 +29,7 @@ class Lobby:
     async def send_message(self, message: str):
         await self.bot.sendMessage(f"mp_{self.id}", message)
 
-    async def invite(self, member: pyosu.models.User | str):
+    async def invite(self, member: Union[pyosu.models.User, str]):
         if isinstance(member, pyosu.models.User):
             await self.send_message(f"!mp invite {member.username}")
         else:

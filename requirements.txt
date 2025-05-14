@@ -1,6 +1,10 @@
+aiohttp==3.8.3
 git+https://github.com/The-CJ/osu_irc.py.git#egg=osu_irc
 git+https://github.com/Renondedju/Osu.py
-tortoise-orm
-py-cord
-ossapi
+tortoise-orm==0.19.2
+py-cord==2.3.2
+ossapi==2.4.2
+#pyoppai===0.9.9-b1.2 # this part doesn't work, if you have trouble read instructions at: https://github.com/Francesco149/oppai/tree/master/pyoppai
 osuclient.py
+click==8.0.3
+aerich==0.7.1
